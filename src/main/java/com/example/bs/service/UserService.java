@@ -18,4 +18,23 @@ public class UserService {
     public User login(User user) {
         return userMapper.login(user);
     }
+
+    /**
+     * 注册接口1
+     * 查看是否存在相同账户
+     * @param username
+     * @return
+     */
+    public int sel(String username) {
+        return userMapper.sel(username);
+    }
+
+    /**
+     * 注册接口2
+     * 添加用户
+     * @param user
+     */
+    public void res(User user) {
+        userMapper.res(user);
+    }
 }

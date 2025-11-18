@@ -13,4 +13,18 @@ public interface UserMapper {
      */
     User login(User user);
 
+    /**
+     * 注册接口1
+     * 查看是否存在相同账户
+     * @param username
+     * @return
+     */
+    Integer sel(String username);
+
+    /**
+     * 注册接口2
+     * 添加用户
+     * @param user
+     */
+    void res(User user);
 }

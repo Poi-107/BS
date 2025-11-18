@@ -8,4 +8,13 @@
         select * from user where username=#{username} and password=#{password}
     </select>
 
+<!--    注册1 查看是否存在相同账户-->
+    <select id="sel" resultType="integer">
+        select count(*) from user where username = #{username}
+    </select>
+
+<!--    注册2 添加用户-->
+    <insert id="res">
+        insert into user(username, password) values(#{username},#{password})
+    </insert>
 </mapper>

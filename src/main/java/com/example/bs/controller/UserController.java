@@ -14,15 +14,28 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+//    登录接口
     @PostMapping("/login")
     public Result  login(@RequestBody User user){
-        log.info("login");
+        log.info("请求登录");
         User u=userService.login(user);
         if(u==null){
-            return Result.error("登陆失败");
+            return Result.error("登陆失败！");
         }
-        return Result.success("登陆成功");
-
-
+        return Result.success("登陆成功！");
     }
+
+//    注册接口
+    @PostMapping("/res")
+    public Result res(@RequestBody User user){
+        log.info("请求注册");
+        int r=userService.sel(user.getUsername());
+        if(r==0){
+            userService.res(user);
+            return Result.success("注册成功！");
+        }
+        return Result.error("用户已存在！");
+    }
+
+
 }

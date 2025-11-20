@@ -86,8 +86,6 @@
             <artifactId>fastjson</artifactId>
             <version>1.2.83</version>
         </dependency>
-
-
         <!--        aop-->
         <!--        aspect依赖-->
         <dependency>

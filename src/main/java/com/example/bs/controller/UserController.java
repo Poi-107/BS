@@ -3,7 +3,7 @@ package com.example.bs.controller;
 import com.example.bs.entity.Result;
 import com.example.bs.entity.User;
 import com.example.bs.service.UserService;
-//import com.example.bs.tools.Jwt;
+import com.example.bs.tools.Jwt;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -24,14 +24,14 @@ public class UserController {
         log.info("请求登录");
         User u=userService.login(user);
         if (u != null) {
-//            //创建JwT令牌
-//            Map<String, Object> claims = new HashMap<>();
-//            claims.put("id", u.getId());
-//            claims.put("username", u.getUsername());
-//            String jwt = Jwt.generateJwt(new HashMap<>(claims));
-//            //响应数据
-//            return Result.success(jwt);
-            return Result.success("登录成功！");
+            //创建JwT令牌
+            Map<String, Object> claims = new HashMap<>();
+            claims.put("id", u.getId());
+            claims.put("username", u.getUsername());
+            String jwt = Jwt.generateJwt(new HashMap<>(claims));
+            //响应数据
+            return Result.success(jwt);
+//            return Result.success("登录成功！");
         } else
             return Result.error("用户名不存在或密码错误！");
     }

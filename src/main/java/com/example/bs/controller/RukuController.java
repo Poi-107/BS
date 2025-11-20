@@ -1,5 +1,6 @@
 package com.example.bs.controller;
 
+import com.example.bs.aop.AopAnnotation;
 import com.example.bs.entity.Result;
 import com.example.bs.entity.Ruku;
 import com.example.bs.service.RukuService;
@@ -26,6 +27,8 @@ public class RukuController {
     }
 
 //    添加入库
+
+    @AopAnnotation(target = "入库",action = "添加入库单")
     @PostMapping("/addruku")
     public Result addruku(@RequestBody Ruku ruku){
         log.info("请求添加入库单");

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+ <!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ <mapper namespace="com.example.bs.mapper.LogMapper">
+
+<!--    查询所有日志-->
+     <select id="sellog" resultType="com.example.bs.entity.Log">
+        select * from log
+    </select>
+
+
+<!--    添加日志-->
+     <insert id="addlog" parameterType="com.example.bs.entity.Log">
+        insert into log (empid,name, time, target, action) values (#{empid},#{name}, #{time}, #{target}, #{action})
+    </insert>
+
+</mapper>

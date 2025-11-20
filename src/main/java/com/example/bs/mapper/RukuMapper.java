@@ -1,6 +1,6 @@
 package com.example.bs.mapper;
 
-import com.example.bs.pojo.Ruku;
+import com.example.bs.entity.Ruku;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;

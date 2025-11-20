@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.bs.mapper.RukuMapper">
 <!--    查询入库单-->
-    <select id="selruku" resultType="com.example.bs.pojo.Ruku">
+    <select id="selruku" resultType="com.example.bs.entity.Ruku">
         select * from ruku
     </select>
 <!--    添加入库单-->

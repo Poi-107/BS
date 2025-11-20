@@ -1,7 +1,7 @@
 package com.example.bs.service;
 
 import com.example.bs.mapper.UserMapper;
-import com.example.bs.pojo.User;
+import com.example.bs.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

@@ -1,7 +1,7 @@
 package com.example.bs.controller;
 
-import com.example.bs.pojo.Result;
-import com.example.bs.pojo.Ruku;
+import com.example.bs.entity.Result;
+import com.example.bs.entity.Ruku;
 import com.example.bs.service.RukuService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,3 +34,4 @@ public class RukuController {
         return Result.success("添加成功！");
     }
 }
+            

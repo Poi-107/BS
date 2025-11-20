@@ -1,4 +1,4 @@
-package com.example.bs.pojo;
+package com.example.bs.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

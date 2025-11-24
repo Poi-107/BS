@@ -4,4 +4,9 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.bs.mapper.ChukuMapper">
 
+<!--    出库-->
+    <insert id="chuku" parameterType="com.example.bs.entity.Chuku">
+        insert into chuku(name,client,price,quantity,money,cktime,user)
+        values(#{name},#{client},#{price},#{quantity},#{money},#{cktime},#{user})
+    </insert>
 </mapper>

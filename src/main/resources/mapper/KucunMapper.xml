@@ -12,7 +12,7 @@
     <insert id="addkucun">
         insert into kucun(name, supplier, price, quantity, money) values(#{name},#{supplier},#{price},#{quantity},#{money})
     </insert>
-<!--    添加入库 有该物品-->
+<!--    添加入库 有该物品,出库-->
     <insert id="upkucun">
         update kucun set quantity=#{quantity},money=#{money} where name=#{name}
     </insert>

@@ -9,6 +9,9 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+/**
+ * 出库单
+ */
 public class Chuku {
     private Integer id;
     private String name;
@@ -16,6 +19,6 @@ public class Chuku {
     private Integer price;
     private Integer quantity;
     private Integer money;
-    private LocalDateTime rktime;
+    private LocalDateTime cktime;
     private String user;
 }

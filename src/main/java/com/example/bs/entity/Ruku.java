@@ -9,6 +9,9 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+/**
+ * 入库单
+ */
 public class Ruku {
     private Integer id;
     private String name;

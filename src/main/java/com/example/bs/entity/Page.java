@@ -4,15 +4,15 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 /**
- * 用户类
+ * 分页查询
  */
-public class User {
-    private Integer id;
-    private String username;
-    private String password;
-    private Integer per;
+public class Page {
+     private Integer total;
+     private List rows;
 }

@@ -9,6 +9,9 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+/**
+ * 日志
+ */
 public class Log {
     private Integer id;
     private Integer empid;

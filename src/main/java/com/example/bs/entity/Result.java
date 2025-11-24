@@ -4,10 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-//接口响应类
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+/**
+ * 统一响应体
+ */
 public class Result {
     private String code;
     private String message;

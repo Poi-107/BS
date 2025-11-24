@@ -7,6 +7,9 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+/**
+ * 库存
+ */
 public class Kucun {
     private Integer id;
     private String name;

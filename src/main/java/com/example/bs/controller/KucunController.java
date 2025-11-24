@@ -5,9 +5,7 @@ import com.example.bs.entity.Result;
 import com.example.bs.service.KucunService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -28,9 +26,9 @@ public class KucunController {
 
     //根据name查询库存
     @GetMapping("/selname")
-    public Result selname(String name){
+    public Result selname(@RequestBody Kucun k){
         log.info("请求查询库存");
-        Kucun kucun=kucunService.selname(name);
+        Kucun kucun=kucunService.selname(k.getName());
         return Result.success(kucun);
     }
 

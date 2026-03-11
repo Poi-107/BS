@@ -8,7 +8,21 @@
     <select id="selaudit" resultType="com.example.bs.entity.Audit">
         select * from audit
     </select>
-
-
-
+<!--    查询status为0的表单-->
+    <select id="sel0audit" resultType="com.example.bs.entity.Audit">
+        select * from audit where status=0
+    </select>
+<!--    添加审核单-->
+    <insert id="addaudit">
+        insert into audit(type,name,parther,price,quantity,money,user,createtime,status)
+        values(#{type},#{name},#{parther},#{price},#{quantity},#{money},#{user},#{createtime},#{status})
+    </insert>
+<!--    审批表单-->
+    <update id="upaudit" parameterType="com.example.bs.entity.Audit">
+        update audit set status=#{status},reviewer=#{reviewer},reviewertime=#{reviewertime},remark=#{remark} where id=#{id}
+    </update>
+<!--    根据id查询审核表-->
+    <select id="selid" resultType="com.example.bs.entity.Audit">
+        select * from audit where id=#{id}
+    </select>
 </mapper>

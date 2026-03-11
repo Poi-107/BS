@@ -17,6 +17,8 @@ public class Excep {
     // 捕获所有运行时异常（如数据库唯一约束冲突等）
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<?> handleRuntimeException(RuntimeException ex) {
+
+        ex.printStackTrace();   // 打印异常
         Map<String, Object> response = new HashMap<>();
         response.put("code", 500);
         response.put("msg", "服务器错误！"+ex.getMessage());

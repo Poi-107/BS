@@ -23,7 +23,7 @@ public class Audit {
     private String user;
     private LocalDateTime createtime;
     private Integer status;
-    private Integer reviewer;
+    private String reviewer;
     private LocalDateTime reviewertime;
     private String  remark;
 

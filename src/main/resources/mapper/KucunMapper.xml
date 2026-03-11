@@ -14,7 +14,7 @@
     </insert>
 <!--    添加入库 有该物品,出库-->
     <insert id="upkucun">
-        update kucun set quantity=#{quantity},money=#{money} where name=#{name}
+        update kucun set quantity=#{quantity} where name=#{name}
     </insert>
 
 <!--    根据name查询库存-->

@@ -5,8 +5,12 @@
 <mapper namespace="com.example.bs.mapper.ChukuMapper">
 
 <!--    出库-->
-    <insert id="chuku" parameterType="com.example.bs.entity.Chuku">
+    <insert id="addchuku">
         insert into chuku(name,client,price,quantity,money,cktime,user)
         values(#{name},#{client},#{price},#{quantity},#{money},#{cktime},#{user})
     </insert>
+<!--    查询出库单-->
+    <select id="selchuku" resultType="com.example.bs.entity.Chuku">
+        select * from chuku
+    </select>
 </mapper>

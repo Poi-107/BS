@@ -7,6 +7,9 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import java.util.Date;
 import java.util.Map;
 
+/**
+ * JWT
+ */
 public class Jwt {
     //密钥
     private static final String SECRET_KEY = "Intelligent inventory";

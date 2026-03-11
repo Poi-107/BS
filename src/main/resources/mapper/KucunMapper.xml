@@ -10,7 +10,7 @@
     </select>
 <!--    添加入库 没有该物品-->
     <insert id="addkucun">
-        insert into kucun(name, supplier, price, quantity, money) values(#{name},#{supplier},#{price},#{quantity},#{money})
+        insert into kucun(name,quantity) values(#{name},#{quantity})
     </insert>
 <!--    添加入库 有该物品,出库-->
     <insert id="upkucun">

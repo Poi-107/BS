@@ -8,11 +8,11 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 /**
+ * 日志表
  * 从 Token 中解析用户信息
  */
 @Component
 public class UserContext {
-
     //通过token解析id
     public static String getCurrentUserId() {
         String token = getToken();
@@ -28,7 +28,6 @@ public class UserContext {
         }
         return null;
     }
-
     //通过token解析username
     public static String getCurrentUserName() {
         String token = getToken();
@@ -42,7 +41,6 @@ public class UserContext {
         }
         return null;
     }
-
     //获取token
     private static String getToken() {
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();

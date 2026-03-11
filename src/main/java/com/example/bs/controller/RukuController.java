@@ -18,7 +18,7 @@ public class RukuController {
     @Autowired
     private RukuService rukuService;
 
-//    查询入库单
+    //    查询入库单
     @GetMapping("/selruku")
     public Result ruku(){
         log.info("请求查询入库单");
@@ -37,4 +37,3 @@ public class RukuController {
         return Result.success("添加成功！");
     }
 }
-            

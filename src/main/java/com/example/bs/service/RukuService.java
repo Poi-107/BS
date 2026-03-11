@@ -39,7 +39,6 @@ public class RukuService {
         }
         else {
             kucun.setQuantity(kucun.getQuantity()+ruku.getQuantity());
-            kucun.setMoney(kucun.getMoney()+ruku.getMoney());
             kucunMapper.upkucun(kucun);
         }
 

@@ -10,6 +10,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
 
+/**
+ * 登录验证类
+ */
 @Slf4j
 @Component
 public class Login implements HandlerInterceptor {

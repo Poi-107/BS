@@ -8,6 +8,9 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 
+/**
+ * 拦截器类
+ */
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
     @Autowired

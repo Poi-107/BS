@@ -8,6 +8,9 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * 异常处理类
+ */
 @RestControllerAdvice
 public class Excep {
 
@@ -19,7 +22,6 @@ public class Excep {
         response.put("msg", "服务器错误！"+ex.getMessage());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
     }
-
     // 处理请求方法不支持的异常
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public ResponseEntity<?> handleIllegalArgumentException(HttpRequestMethodNotSupportedException ex) {

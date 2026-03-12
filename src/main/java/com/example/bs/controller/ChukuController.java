@@ -1,5 +1,6 @@
 package com.example.bs.controller;
 
+import com.example.bs.aop.AopAnnotation;
 import com.example.bs.entity.Chuku;
 import com.example.bs.entity.Result;
 import com.example.bs.entity.Ruku;
@@ -30,6 +31,7 @@ public class ChukuController {
         return Result.success(chuku);
     }
     //出库
+    @AopAnnotation(target = "出库",action = "进行出库")
     @RequestMapping("/addchuku")
     public Result chuku(@RequestBody Chuku chuku){
         log.info("请求出库");

@@ -1,5 +1,6 @@
 package com.example.bs.controller;
 
+import com.example.bs.aop.AopAnnotation;
 import com.example.bs.entity.Audit;
 import com.example.bs.entity.Kucun;
 import com.example.bs.entity.Result;
@@ -42,6 +43,7 @@ public class AuditController {
         return Result.success(auditList);
     }
     //审批表单
+    @AopAnnotation(target = "审批",action = "进行审批")
     @PostMapping("/upaudit")
     public Result upaudit(@RequestBody Audit audit) {
         log.info("请求审批表单");

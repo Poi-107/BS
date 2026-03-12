@@ -28,7 +28,7 @@ public class RukuController {
     }
 
 //    添加入库
-    @AopAnnotation(target = "入库",action = "添加入库单")
+    @AopAnnotation(target = "入库",action = "进行入库")
     @PostMapping("/addruku")
     public Result addruku(@RequestBody Ruku ruku){
         log.info("请求添加入库单");

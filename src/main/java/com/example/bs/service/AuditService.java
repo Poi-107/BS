@@ -70,7 +70,7 @@ public class AuditService {
                 if (kucun == null) {
                     kucunMapper.addkucun(ruku);
                 } else {
-                    kucun.setQuantity(kucun.getQuantity() + audit.getQuantity());
+                    kucun.setQuantity(kucun.getQuantity() + dbAudit.getQuantity());
                     kucunMapper.upkucun(kucun);
                 }
             }

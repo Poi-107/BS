@@ -1,4 +1,4 @@
-:root {
+﻿:root {
   --bg: #f5f6f8;
   --panel: #ffffff;
   --panel-2: #f8f9fb;
@@ -53,7 +53,7 @@ html, body {
   top: 24px;
   align-self: stretch;
   height: calc(100vh - 48px);
-  overflow: auto;
+  overflow-y: auto;
 }
 
 .content {
@@ -71,8 +71,9 @@ html, body {
 }
 
 .table-wrap {
+  max-height: 520px;
   flex: 1 1 auto;
-  overflow: auto;
+  overflow-y: auto;
   border: 1px solid var(--line);
   border-radius: 12px;
 }
@@ -381,10 +382,13 @@ html, body {
     max-height: none;
   }
   .content {
-    height: auto;
-    overflow: visible;
+    height: calc(100vh - 48px);
+    overflow: hidden;
   }
   .content > .panel {
-    height: auto;
+    height: calc(100vh - 48px);
   }
 }
+
+
+

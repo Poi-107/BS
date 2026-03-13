@@ -1,31 +1,78 @@
 ﻿<template>
   <div v-if="!isLoggedIn" class="login-shell">
-    <div class="login-card">
+    <div class="login-card login-animate">
       <div class="login-brand">
         <div class="brand-logo">IM</div>
         <div>
           <h2>库存管理系统</h2>
-          <p>请登录后继续操作</p>
+          <p>欢迎回来，请登录或注册</p>
         </div>
       </div>
 
-      <div class="login-form">
-        <label class="input">
-          用户名
-          <input v-model="loginForm.username" placeholder="请输入用户名" />
-        </label>
-        <label class="input">
-          密码
-          <input v-model="loginForm.password" type="password" placeholder="请输入密码" />
-        </label>
-
-        <div v-if="loginError" class="login-error">{{ loginError }}</div>
-        <button class="btn primary" @click="handleLogin" :disabled="loginLoading">
-          {{ loginLoading ? "登录中..." : "登录" }}
-        </button>
+      <div class="login-subline">
+        <span class="pill">安全登录</span>
+        <span class="pill">审批流</span>
+        <span class="pill">日志追踪</span>
       </div>
 
-      <div class="login-tip">默认登录接口：/bs/login，token 写入 Header 的 token 字段</div>
+      <div class="login-main">
+        <div class="login-tabs">
+          <button class="tab-btn" :class="{ active: !isRegister }" @click="isRegister = false">登录</button>
+          <button class="tab-btn" :class="{ active: isRegister }" @click="isRegister = true">注册</button>
+        </div>
+
+        <Transition name="fade-slide" mode="out-in">
+          <div class="login-form" v-if="!isRegister" :key="loginKey">
+            <label class="input">
+              用户名
+              <input v-model="loginForm.username" placeholder="请输入用户名" name="login-username" autocomplete="username" />
+            </label>
+            <label class="input">
+              密码
+              <div class="password-row">
+                <input v-model="loginForm.password" :type="showPassword ? 'text' : 'password'" placeholder="请输入密码" name="login-password" autocomplete="current-password" />
+                <button class="ghost-link" type="button" @click="showPassword = !showPassword">
+                  {{ showPassword ? "隐藏" : "显示" }}
+                </button>
+              </div>
+            </label>
+            <div class="login-row">
+              <label class="check">
+                <input type="checkbox" v-model="rememberMe" />
+                记住账号
+              </label>
+              <span class="ghost-link">忘记密码</span>
+            </div>
+
+            <div v-if="loginError" class="login-error">{{ loginError }}</div>
+            <button class="btn primary" @click="handleLogin" :disabled="loginLoading">
+              {{ loginLoading ? "登录中..." : "登录" }}
+            </button>
+            <div class="login-tip">默认登录接口：/bs/login，token 写入 Header 的 token 字段</div>
+          </div>
+
+          <div class="login-form" v-else key="register">
+            <label class="input">
+              用户名
+              <input v-model="registerForm.username" placeholder="请输入用户名" name="register-username" autocomplete="off" />
+            </label>
+            <label class="input">
+              密码
+              <input v-model="registerForm.password" :type="showPassword ? 'text' : 'password'" placeholder="请输入密码" name="register-password" autocomplete="new-password" />
+            </label>
+            <label class="input">
+              确认密码
+              <input v-model="registerForm.confirm" :type="showPassword ? 'text' : 'password'" placeholder="请再次输入密码" name="register-confirm" autocomplete="new-password" />
+            </label>
+
+            <div v-if="registerError" class="login-error">{{ registerError }}</div>
+            <button class="btn primary" @click="handleRegister" :disabled="registerLoading">
+              {{ registerLoading ? "注册中..." : "注册" }}
+            </button>
+            <div class="login-tip">注册接口：/bs/res</div>
+          </div>
+        </Transition>
+      </div>
     </div>
   </div>
 
@@ -137,8 +184,15 @@ const logList = ref([]);
 const loginForm = ref({ username: "", password: "" });
 const loginError = ref("");
 const loginLoading = ref(false);
-const token = ref(getToken());
+const registerForm = ref({ username: "", password: "", confirm: "" });
+const registerError = ref("");
+const registerLoading = ref(false);
+const isRegister = ref(false);
+const showPassword = ref(false);
+const rememberMe = ref(true);
+const loginKey = ref(0);
 
+const token = ref(getToken());
 const isLoggedIn = computed(() => !!token.value);
 
 const SAFE_STOCK = 50;
@@ -358,6 +412,43 @@ async function handleLogin() {
   }
 }
 
+async function handleRegister() {
+  registerError.value = "";
+  registerLoading.value = true;
+  try {
+    if (!registerForm.value.username.trim()) {
+      registerError.value = "请输入用户名";
+      return;
+    }
+    if (!registerForm.value.password.trim()) {
+      registerError.value = "请输入密码";
+      return;
+    }
+    if (registerForm.value.password !== registerForm.value.confirm) {
+      registerError.value = "两次密码不一致";
+      return;
+    }
+    const res = await apiPost("/bs/res", {
+      username: registerForm.value.username.trim(),
+      password: registerForm.value.password
+    });
+    const ok = res.code === "1" || res.code === 1;
+    if (ok) {
+      notify("success", "注册成功，请登录");
+      isRegister.value = false;
+      registerForm.value = { username: "", password: "", confirm: "" };
+      loginForm.value = { username: "", password: "" };
+      loginKey.value += 1;
+    } else {
+      registerError.value = res.message || "注册失败";
+    }
+  } catch (err) {
+    registerError.value = "注册失败，请检查服务";
+  } finally {
+    registerLoading.value = false;
+  }
+}
+
 function logout() {
   clearToken();
   token.value = "";
@@ -382,4 +473,7 @@ onMounted(() => {
   }
 });
 </script>
+
+
+
 

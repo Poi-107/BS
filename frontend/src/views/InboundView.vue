@@ -1,50 +1,56 @@
-ï»¿<template>
+<template>
   <section class="panel">
     <div class="panel-header">
-      <h3>å…¥åº“ç®¡ç†</h3>
+      <h3>Èë¿â¹ÜÀí</h3>
       <div class="toolbar">
-        <button class="btn ghost" @click="resetForm">æ¸…ç©º</button>
-        <button class="btn" @click="$emit('refresh-all')">åˆ·æ–°</button>
-        <button class="btn primary" @click="submit" :disabled="!isValid">æäº¤å…¥åº“</button>
+        <button class="btn ghost" @click="resetForm">Çå¿Õ</button>
+        <button class="btn" @click="$emit('refresh-all')">Ë¢ĞÂ</button>
+        <button class="btn primary" @click="submit" :disabled="!isValid">Ìá½»Èë¿â</button>
       </div>
     </div>
     <div class="form-grid">
       <label class="input">
-        ç‰©æ–™åç§°
-        <input v-model="form.name" placeholder="è¾“å…¥ç‰©æ–™" />
+        ÎïÁÏÃû³Æ
+        <input v-model="form.name" placeholder="ÊäÈëÎïÁÏ" />
       </label>
       <label class="input">
-        ä¾›åº”å•†
-        <input v-model="form.supplier" placeholder="ä¾›åº”å•†" />
+        ¹©Ó¦ÉÌ
+        <input v-model="form.supplier" placeholder="¹©Ó¦ÉÌ" />
       </label>
       <label class="input">
-        æ•°é‡
+        ÊıÁ¿
         <input v-model.number="form.quantity" type="number" min="1" />
       </label>
       <label class="input">
-        å•ä»·
+        µ¥¼Û
         <input v-model.number="form.price" type="number" min="0" />
       </label>
     </div>
-    <div class="form-hint" v-if="!isValid">è¯·å¡«å†™å®Œæ•´ä¿¡æ¯ï¼Œæ•°é‡ > 0</div>
+    <div class="form-hint" v-if="!isValid">ÇëÌîĞ´ÍêÕûĞÅÏ¢£¬ÊıÁ¿ > 0</div>
     <div class="divider"></div>
     <div class="table-wrap">
       <table class="table">
         <thead>
           <tr>
-            <th>å•å·</th>
-            <th>ç‰©æ–™</th>
-            <th>æ•°é‡</th>
-            <th>ä¾›åº”å•†</th>
-            <th>æäº¤äºº</th>
+            <th>±àºÅ</th>
+            <th>ÎïÁÏ</th>
+            <th>¹©Ó¦ÉÌ</th>
+            <th>ÊıÁ¿</th>
+            <th>µ¥¼Û</th>
+            <th>½ğ¶î</th>
+            <th>Ê±¼ä</th>
+            <th>Ìá½»ÈË</th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="row in rukuList" :key="row.id">
             <td>{{ row.id }}</td>
             <td>{{ row.name }}</td>
-            <td>{{ row.quantity }}</td>
             <td>{{ row.supplier }}</td>
+            <td>{{ row.quantity }}</td>
+            <td>{{ row.price }}</td>
+            <td>{{ row.money }}</td>
+            <td>{{ formatTime(row.rktime) }}</td>
             <td>{{ row.user }}</td>
           </tr>
         </tbody>
@@ -92,5 +98,9 @@ function submit() {
   emit("submit-inbound", { ...form });
   resetForm();
 }
-</script>
 
+function formatTime(value) {
+  if (!value) return "";
+  return String(value).replace("T", " ").slice(0, 19);
+}
+</script>

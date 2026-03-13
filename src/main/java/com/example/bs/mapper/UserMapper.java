@@ -3,6 +3,8 @@ package com.example.bs.mapper;
 import com.example.bs.entity.User;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.List;
+
 @Mapper
 public interface UserMapper {
 
@@ -27,4 +29,42 @@ public interface UserMapper {
      * @param user
      */
     void res(User user);
+
+    /**
+     * 修改用户信息（管理员）
+     * @param user
+     */
+    void upuser(User user);
+
+    /**
+     * 修改用户信息（用户）
+     * @param user
+     */
+    void upuser2(User user);
+
+    /**
+     * 删除用户
+     * @param user
+     */
+    void deluser(User user);
+
+    /**
+     * 查询所有用户
+     * @return
+     */
+    List<User> seluser();
+
+    /**
+     * 修改用户头像
+     * @param id
+     * @param s
+     */
+    void updateAvatar(Integer id, String s);
+
+    /**
+     * 查询用户头像
+     * @param id
+     * @return
+     */
+    String selav(Integer id);
 }

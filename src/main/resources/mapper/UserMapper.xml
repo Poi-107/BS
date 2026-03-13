@@ -17,4 +17,50 @@
     <insert id="res">
         insert into user(username, password) values(#{username},#{password})
     </insert>
+<!--    修改用户权限（管理员）-->
+    <update id="upuser">
+        update user
+        <set>
+            <if test="username != null">
+                username = #{username},
+            </if>
+            <if test="password != null">
+                password = #{password},
+            </if>
+            <if test="per != null">
+                per = #{per},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+<!--    修改用户信息（用户）-->
+    <update id="upuser2">
+        update user
+        <set>
+            <if test="username != null">
+                username = #{username},
+            </if>
+            <if test="password != null">
+                password = #{password},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+<!--    删除用户-->
+    <delete id="deluser">
+        delete from user where id = #{id}
+    </delete>
+
+<!--    查询所有用户-->
+    <select id="seluser" resultType="com.example.bs.entity.User">
+        select * from user
+    </select>
+<!--    修改用户头像-->
+    <update id="updateAvatar">
+        update user set avatar = #{avatar_url} where id = #{id}
+    </update>
+<!--    查询用户头像-->
+    <select id="selav" resultType="string">
+        select avatar from user where id = #{id}
+    </select>
 </mapper>

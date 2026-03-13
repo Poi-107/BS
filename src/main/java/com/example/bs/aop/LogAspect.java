@@ -19,7 +19,6 @@ import java.time.LocalDateTime;
 public class LogAspect {
     @Autowired
     private LogService logService;
-
     @Pointcut("@annotation(com.example.bs.aop.AopAnnotation)")
     public void pt () {
     }
@@ -34,9 +33,6 @@ public class LogAspect {
         // 3. 获取当前用户信息（从 token 中解析）
         String username = UserContext.getCurrentUserName();
         String userIdStr = UserContext.getCurrentUserId();
-
-//        System.out.println(username);
-//        System.out.println(userIdStr);
 
         Integer userId = null;
         if (userIdStr != null) {

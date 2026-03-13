@@ -5,6 +5,8 @@ import com.example.bs.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class UserService {
     @Autowired
@@ -36,5 +38,55 @@ public class UserService {
      */
     public void res(User user) {
         userMapper.res(user);
+    }
+
+    /**
+     * 修改用户信息（管理员）
+     * @param user
+     */
+    public void upuser(User user) {
+        userMapper.upuser(user);
+    }
+
+    /**
+     * 修改用户信息（用户）
+     * @param user
+     */
+    public void upuser2(User user) {
+        userMapper.upuser2(user);
+    }
+
+    /**
+     * 删除用户
+     * @param user
+     */
+    public void deluser(User user) {
+        userMapper.deluser(user);
+    }
+
+    /**
+     * 查询所有用户
+     * @return
+     */
+    public List<User> seluser() {
+        return userMapper.seluser();
+    }
+
+    /**
+     * 修改头像
+     * @param id
+     * @param s
+     */
+    public void updateAvatar(Integer id, String s) {
+        userMapper.updateAvatar(id, s);
+    }
+
+    /**
+     * 获取头像
+     * @param id
+     * @return
+     */
+    public String selav(Integer id) {
+        return userMapper.selav(id);
     }
 }

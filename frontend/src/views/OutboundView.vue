@@ -32,10 +32,13 @@
       <table class="table">
         <thead>
           <tr>
-            <th>单号</th>
+            <th>编号</th>
             <th>物料</th>
-            <th>数量</th>
             <th>客户</th>
+            <th>单价</th>
+            <th>数量</th>
+            <th>金额</th>
+            <th>时间</th>
             <th>提交人</th>
           </tr>
         </thead>
@@ -43,8 +46,11 @@
           <tr v-for="row in chukuList" :key="row.id">
             <td>{{ row.id }}</td>
             <td>{{ row.name }}</td>
-            <td>{{ row.quantity }}</td>
             <td>{{ row.client }}</td>
+            <td>{{ row.price }}</td>
+            <td>{{ row.quantity }}</td>
+            <td>{{ row.money }}</td>
+            <td>{{ formatTime(row.cktime) }}</td>
             <td>{{ row.user }}</td>
           </tr>
         </tbody>
@@ -92,5 +98,9 @@ function submit() {
   emit("submit-outbound", { ...form });
   resetForm();
 }
-</script>
 
+function formatTime(value) {
+  if (!value) return "";
+  return String(value).replace("T", " ").slice(0, 19);
+}
+</script>

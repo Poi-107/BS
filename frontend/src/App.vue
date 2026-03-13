@@ -348,10 +348,11 @@ function validateOutbound(form) {
 async function approve(row) {
   if (row.status !== 0 && row.status !== "0") return;
   try {
+    const remark = row.remark && String(row.remark).trim() ? String(row.remark).trim() : "已通过";
     await apiPost("/bs/upaudit", {
       id: row.id,
       status: 1,
-      remark: "已通过"
+      remark
     });
     notify("success", "已通过审核");
     await loadAudit();
@@ -363,10 +364,11 @@ async function approve(row) {
 async function reject(row) {
   if (row.status !== 0 && row.status !== "0") return;
   try {
+    const remark = row.remark && String(row.remark).trim() ? String(row.remark).trim() : "已驳回";
     await apiPost("/bs/upaudit", {
       id: row.id,
       status: 2,
-      remark: "已驳回"
+      remark
     });
     notify("success", "已驳回申请");
     await loadAudit();
@@ -473,6 +475,7 @@ onMounted(() => {
   }
 });
 </script>
+
 
 
 

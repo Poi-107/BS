@@ -1,45 +1,45 @@
-<template>
+ï»¿<template>
   <section class="panel">
     <div class="panel-header">
-      <h3>Èë¿â¹ÜÀí</h3>
+      <h3>å…¥åº“ç®¡ç†</h3>
       <div class="toolbar">
-        <button class="btn ghost" @click="resetForm">Çå¿Õ</button>
-        <button class="btn" @click="$emit('refresh-all')">Ë¢ÐÂ</button>
-        <button class="btn primary" @click="submit" :disabled="!isValid">Ìá½»Èë¿â</button>
+        <button class="btn ghost" @click="resetForm">æ¸…ç©º</button>
+        <button class="btn" @click="$emit('refresh-all')">åˆ·æ–°</button>
+        <button class="btn primary" @click="submit" :disabled="!isValid">æäº¤å…¥åº“</button>
       </div>
     </div>
     <div class="form-grid">
       <label class="input">
-        ÎïÁÏÃû³Æ
-        <input v-model="form.name" placeholder="ÊäÈëÎïÁÏ" />
+        ç‰©æ–™åç§°
+        <input v-model="form.name" placeholder="è¾“å…¥ç‰©æ–™" />
       </label>
       <label class="input">
-        ¹©Ó¦ÉÌ
-        <input v-model="form.supplier" placeholder="¹©Ó¦ÉÌ" />
+        ä¾›åº”å•†
+        <input v-model="form.supplier" placeholder="ä¾›åº”å•†" />
       </label>
       <label class="input">
-        ÊýÁ¿
+        æ•°é‡
         <input v-model.number="form.quantity" type="number" min="1" />
       </label>
       <label class="input">
-        µ¥¼Û
+        å•ä»·
         <input v-model.number="form.price" type="number" min="0" />
       </label>
     </div>
-    <div class="form-hint" v-if="!isValid">ÇëÌîÐ´ÍêÕûÐÅÏ¢£¬ÊýÁ¿ > 0</div>
+    <div class="form-hint" v-if="!isValid">è¯·å¡«å†™å®Œæ•´ä¿¡æ¯ï¼Œæ•°é‡ > 0</div>
     <div class="divider"></div>
     <div class="table-wrap">
       <table class="table">
         <thead>
           <tr>
-            <th>±àºÅ</th>
-            <th>ÎïÁÏ</th>
-            <th>¹©Ó¦ÉÌ</th>
-            <th>ÊýÁ¿</th>
-            <th>µ¥¼Û</th>
-            <th>½ð¶î</th>
-            <th>Ê±¼ä</th>
-            <th>Ìá½»ÈË</th>
+            <th>ç¼–å·</th>
+            <th>ç‰©æ–™</th>
+            <th>ä¾›åº”å•†</th>
+            <th>å•ä»·</th>
+            <th>æ•°é‡</th>
+            <th>é‡‘é¢</th>
+            <th>æ—¶é—´</th>
+            <th>æäº¤äºº</th>
           </tr>
         </thead>
         <tbody>
@@ -47,8 +47,8 @@
             <td>{{ row.id }}</td>
             <td>{{ row.name }}</td>
             <td>{{ row.supplier }}</td>
-            <td>{{ row.quantity }}</td>
             <td>{{ row.price }}</td>
+            <td>{{ row.quantity }}</td>
             <td>{{ row.money }}</td>
             <td>{{ formatTime(row.rktime) }}</td>
             <td>{{ row.user }}</td>

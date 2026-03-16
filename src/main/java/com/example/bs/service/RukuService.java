@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
 
 @Service
@@ -52,15 +53,45 @@ public class RukuService {
         audit.setStatus(0); // 待审核
 
         auditMapper.addaudit(audit);
+    }
 
-//        Kucun kucun = kucunMapper.selname(ruku.getName());
-//        if(kucun==null){
-//            kucunMapper.addkucun(ruku);
-//        }
-//        else {
-//            kucun.setQuantity(kucun.getQuantity()+ruku.getQuantity());
-//            kucunMapper.upkucun(kucun);
-//        }
+    /**
+     * 查询今日入库
+     * @return
+     */
+    public int jinruku() {
+        return rukuMapper.jinruku();
+    }
 
+    /**
+     * 查询今日采购
+     * @return
+     */
+    public int jinpur() {
+        return rukuMapper.jinpur();
+    }
+
+    /**
+     * 查询本月入库
+     * @return
+     */
+    public int yueruku() {
+        return rukuMapper.yueruku();
+    }
+
+    /**
+     * 查询本月采购
+     * @return
+     */
+    public int yuecpur() {
+        return rukuMapper.yuepur();
+    }
+
+    /**
+     * 查询本年采购
+     * @return
+     */
+    public int yearpur() {
+        return rukuMapper.yearpur();
     }
 }

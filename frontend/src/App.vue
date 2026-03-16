@@ -241,6 +241,48 @@ function normalizeInventory(list) {
   }));
 }
 
+function toTime(value) {
+  if (!value) return 0;
+  const text = String(value).replace("T", " ");
+  const parsed = Date.parse(text);
+  if (!Number.isNaN(parsed)) return parsed;
+  if (typeof value === "number") return value;
+  return 0;
+}
+
+function pickNewestTime(row) {
+  return (
+    toTime(row.time) ||
+    toTime(row.rktime) ||
+    toTime(row.cktime) ||
+    toTime(row.reviewertime) ||
+    toTime(row.createtime) ||
+    toTime(row.addtime) ||
+    toTime(row.applytime) ||
+    toTime(row.updatetime) ||
+    0
+  );
+}
+
+function sortNewest(list) {
+  return [...(list || [])].sort((a, b) => {
+    const diff = pickNewestTime(b) - pickNewestTime(a);
+    if (diff !== 0) return diff;
+    return (Number(b.id) || 0) - (Number(a.id) || 0);
+  });
+}
+
+function sortAudit(list) {
+  return [...(list || [])].sort((a, b) => {
+    const aPending = a.status === 0 || a.status === "0";
+    const bPending = b.status === 0 || b.status === "0";
+    if (aPending !== bPending) return aPending ? -1 : 1;
+    const diff = pickNewestTime(b) - pickNewestTime(a);
+    if (diff !== 0) return diff;
+    return (Number(b.id) || 0) - (Number(a.id) || 0);
+  });
+}
+
 async function loadInventory() {
   const res = await apiGet("/bs/selkucun");
   inventory.value = normalizeInventory(res.data || []);
@@ -248,12 +290,12 @@ async function loadInventory() {
 
 async function loadRuku() {
   const res = await apiGet("/bs/selruku");
-  rukuList.value = res.data || [];
+  rukuList.value = sortNewest(res.data || []);
 }
 
 async function loadChuku() {
   const res = await apiGet("/bs/selchuku");
-  chukuList.value = res.data || [];
+  chukuList.value = sortNewest(res.data || []);
 }
 
 async function loadAudit() {
@@ -261,13 +303,13 @@ async function loadAudit() {
     apiGet("/bs/selaudit"),
     apiGet("/bs/sel0audit")
   ]);
-  auditAll.value = allRes.data || [];
-  auditPending.value = pendingRes.data || [];
+  auditAll.value = sortAudit(allRes.data || []);
+  auditPending.value = sortNewest(pendingRes.data || []);
 }
 
 async function loadLog() {
   const res = await apiGet("/bs/sellog");
-  logList.value = res.data || [];
+  logList.value = sortNewest(res.data || []);
 }
 
 async function loadAll() {
@@ -475,6 +517,8 @@ onMounted(() => {
   }
 });
 </script>
+
+
 
 
 

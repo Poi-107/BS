@@ -72,4 +72,44 @@ public class ChukuService {
     public List<Chuku> selchuku() {
         return chukuMapper.selchuku();
     }
+
+    /**
+     * 查询今日出库
+     * @return
+     */
+    public int jinchuku() {
+        return chukuMapper.jinchuku();
+    }
+
+    /**
+     * 查询今日销售
+     * @return
+     */
+    public int jinsale() {
+        return chukuMapper.jinsale();
+    }
+
+    /**
+     * 查询本月出库
+     * @return
+     */
+    public int yuechuku() {
+        return chukuMapper.yuechuku();
+    }
+
+    /**
+     * 查询本月销售
+     * @return
+     */
+    public int yuesale() {
+        return chukuMapper.yuesale();
+    }
+
+    /**
+     * 查询本年销售
+     * @return
+     */
+    public int yearsale() {
+        return chukuMapper.yearsale();
+    }
 }

@@ -19,4 +19,34 @@ public interface ChukuMapper {
      * @return
      */
     List<Chuku> selchuku();
+
+    /**
+     * 查询今日出库
+     * @return
+     */
+    int jinchuku();
+
+    /**
+     * 统计今日销售
+     * @return
+     */
+    int jinsale();
+
+    /**
+     * 查询本月出库
+     * @return
+     */
+    int yuechuku();
+
+    /**
+     * 统计本月销售
+     * @return
+     */
+    int yuesale();
+
+    /**
+     * 统计本年销售
+     * @return
+     */
+    int yearsale();
 }

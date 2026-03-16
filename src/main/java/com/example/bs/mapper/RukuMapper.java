@@ -18,4 +18,34 @@ public interface RukuMapper {
      * @param ruku
      */
     void addruku(Ruku ruku);
+
+    /**
+     * 查询今日入库
+     * @return
+     */
+    int jinruku();
+
+    /**
+     * 今日采购
+     * @return
+     */
+    int jinpur();
+
+    /**
+     * 查询本月入库
+     * @return
+     */
+    int yueruku();
+
+    /**
+     * 本月采购
+     * @return
+     */
+    int yuepur();
+
+    /**
+     * 查询本年采购
+     * @return
+     */
+    int yearpur();
 }

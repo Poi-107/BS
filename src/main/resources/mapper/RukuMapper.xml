@@ -11,4 +11,34 @@
     <insert id="addruku">
         insert into ruku(name, supplier, price, quantity, money, rktime, user) values(#{name},#{supplier},#{price},#{quantity},#{money},#{rktime},#{user})
     </insert>
+<!--    查询今日入库-->
+    <select id="jinruku" resultType="int">
+        SELECT COUNT(*)
+        FROM ruku
+        WHERE DATE(rktime) = CURDATE()
+    </select>
+<!--    查询今日采购，对money进行统计-->
+    <select id="jinpur" resultType="int">
+        SELECT SUM(money)
+        FROM ruku
+        WHERE DATE(rktime) = CURDATE()
+    </select>
+<!--    查询本月入库-->
+    <select id="yueruku" resultType="int">
+        SELECT COUNT(*)
+        FROM ruku
+        WHERE MONTH(rktime) = MONTH(CURDATE())
+    </select>
+<!--    查询本月采购-->
+    <select id="yuepur" resultType="int">
+        SELECT SUM(money)
+        FROM ruku
+        WHERE MONTH(rktime) = MONTH(CURDATE())
+    </select>
+<!--    查询本年采购-->
+    <select id="yearpur" resultType="int">
+        SELECT SUM(money)
+        FROM ruku
+        WHERE YEAR(rktime) = YEAR(CURDATE())
+    </select>
 </mapper>

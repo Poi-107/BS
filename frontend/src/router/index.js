@@ -6,6 +6,7 @@ import OutboundView from "../views/OutboundView.vue";
 import AuditView from "../views/AuditView.vue";
 import LogView from "../views/LogView.vue";
 import UsersView from "../views/UsersView.vue";
+import SuCliView from "../views/SuCliView.vue";
 import LoginView from "../views/LoginView.vue";
 
 const routes = [
@@ -17,7 +18,10 @@ const routes = [
   { path: "/outbound", component: OutboundView },
   { path: "/audit", component: AuditView },
   { path: "/log", component: LogView },
-  { path: "/users", component: UsersView }
+  { path: "/users", component: UsersView },
+  { path: "/sucli", redirect: "/suppliers" },
+  { path: "/suppliers", component: SuCliView },
+  { path: "/clients", component: SuCliView }
 ];
 
 const router = createRouter({
@@ -39,4 +43,6 @@ router.beforeEach((to, from, next) => {
 });
 
 export default router;
+
+
 

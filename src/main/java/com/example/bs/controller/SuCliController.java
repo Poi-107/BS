@@ -2,12 +2,13 @@ package com.example.bs.controller;
 
 import com.example.bs.entity.Client;
 import com.example.bs.entity.Result;
-import com.example.bs.entity.Suppiler;
+import com.example.bs.entity.Supplier;
 import com.example.bs.service.SuCliService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -24,8 +25,8 @@ public class SuCliController {
     @GetMapping("/selsu")
     public Result selsu(){
         log.info("请求查询供应商");
-        List<Suppiler> suppiler=suclService.selsu();
-        return Result.success(suppiler);
+        List<Supplier> supplier =suclService.selsu();
+        return Result.success(supplier);
     }
 //    获取供应商名称
     @GetMapping("/selsuname")
@@ -38,21 +39,29 @@ public class SuCliController {
     @GetMapping("/selsu2")
     public Result selsu2(String name){
         log.info("请求查询供应商");
-        List<Suppiler> suppiler=suclService.selsu2(name);
-        return Result.success(suppiler);
+        List<Supplier> supplier =suclService.selsu2(name);
+        return Result.success(supplier);
+    }
+//    添加供应商
+    @PostMapping("/addsu")
+    public Result addsu(@RequestBody Supplier supplier){
+        log.info("请求添加供应商");
+        supplier.setCrtime(LocalDateTime.now());
+        suclService.addsu(supplier);
+        return Result.success("添加成功！");
     }
 //    修改供应商信息
     @PostMapping("/upsu")
-    public Result upsu(@RequestBody Suppiler suppiler){
+    public Result upsu(@RequestBody Supplier supplier){
         log.info("请求修改供应商信息");
-        suclService.upsu(suppiler);
+        suclService.upsu(supplier);
         return Result.success("修改成功！");
     }
 //    删除供应商
     @PostMapping("/delsu")
-    public Result delsu(@RequestBody Suppiler suppiler){
+    public Result delsu(@RequestBody Supplier supplier){
         log.info("请求删除供应商");
-        suclService.delsu(suppiler);
+        suclService.delsu(supplier);
         return Result.success("删除成功！");
     }
 //                          客户接口
@@ -76,6 +85,14 @@ public class SuCliController {
         log.info("请求查询客户");
         List<Client> client=suclService.selcli2(name);
         return Result.success(client);
+    }
+//    添加客户
+    @PostMapping("/addcli")
+    public Result addcli(@RequestBody Client client){
+        log.info("请求添加客户");
+        client.setCrtime(LocalDateTime.now());
+        suclService.addcli(client);
+        return Result.success("添加成功！");
     }
 //    修改客户信息
     @PostMapping("/upcli")

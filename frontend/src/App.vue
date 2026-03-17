@@ -97,6 +97,27 @@
           <span>{{ item.label }}</span>
           <span style="color: var(--muted); font-size: 12px;">{{ item.badge }}</span>
         </RouterLink>
+
+        <div class="nav-parent" @click="sucliOpen = !sucliOpen">
+          <span>供应商 / 客户</span><span class="nav-caret">{{ sucliOpen ? "▾" : "▸" }}</span>
+          <span style="color: var(--muted); font-size: 12px;">{{ sucliBadge }}</span>
+        </div>
+        <div v-if="sucliOpen" class="nav-sub">
+          <RouterLink
+            class="nav-item nav-child"
+            :class="{ active: route.path === '/suppliers' }"
+            to="/suppliers"
+          >
+            <span>供应商管理</span>
+          </RouterLink>
+          <RouterLink
+            class="nav-item nav-child"
+            :class="{ active: route.path === '/clients' }"
+            to="/clients"
+          >
+            <span>客户管理</span>
+          </RouterLink>
+        </div>
       </div>
 
       <div class="panel" style="padding: 14px;">
@@ -117,6 +138,8 @@
         :audit-filter="auditFilter"
         :log-list="logList"
         :users="users"
+        :suppliers="suppliers"
+        :clients="clients"
         :stats="stats"
         :total-quantity="totalQuantity"
         :low-stock-count="lowStockCount"
@@ -131,6 +154,14 @@
         @load-users="loadUsers"
         @update-user="updateUser"
         @delete-user="deleteUser"
+        @search-supplier="loadSuppliers"
+        @search-client="loadClients"
+        @add-supplier="addSupplier"
+        @add-client="addClient"
+        @update-supplier="updateSupplier"
+        @delete-supplier="deleteSupplier"
+        @update-client="updateClient"
+        @delete-client="deleteClient"
       />
     </main>
   </div>
@@ -156,7 +187,10 @@ const nav = ref([
   { key: "audit", label: "审核中心", badge: "", path: "/audit" },
   { key: "log", label: "操作日志", badge: "", path: "/log" },
   { key: "users", label: "用户管理", badge: "", path: "/users" }
+
 ]);
+
+const sucliOpen = ref(true);
 
 const inventory = ref([]);
 const rukuList = ref([]);
@@ -166,6 +200,9 @@ const auditPending = ref([]);
 const auditFilter = ref("all");
 const logList = ref([]);
 const users = ref([]);
+const suppliers = ref([]);
+const clients = ref([]);
+const sucliBadge = computed(() => suppliers.value.length + clients.value.length);
 const stats = ref({
   jinruku: 0,
   jinchuku: 0,
@@ -324,6 +361,18 @@ async function loadUsers() {
   users.value = sortByIdAsc(res.data || []);
 }
 
+async function loadSuppliers(name) {
+  const path = name ? `/bs/selsu2?name=${encodeURIComponent(name)}` : "/bs/selsu";
+  const res = await apiGet(path);
+  suppliers.value = sortByIdAsc(res.data || []);
+}
+
+async function loadClients(name) {
+  const path = name ? `/bs/selcli2?name=${encodeURIComponent(name)}` : "/bs/selcli";
+  const res = await apiGet(path);
+  clients.value = sortByIdAsc(res.data || []);
+}
+
 async function loadStats() {
   const [
     jinruku,
@@ -364,7 +413,7 @@ async function loadStats() {
 
 async function loadAll() {
   try {
-    await Promise.all([loadInventory(), loadRuku(), loadChuku(), loadAudit(), loadLog(), loadUsers(), loadStats()]);
+    await Promise.all([loadInventory(), loadRuku(), loadChuku(), loadAudit(), loadLog(), loadUsers(), loadSuppliers(), loadClients(), loadStats()]);
     nav.value = [
       { key: "home", label: "首页", badge: "", path: "/home" },
       { key: "inventory", label: "库存台账", badge: String(inventory.value.length), path: "/inventory" },
@@ -373,7 +422,7 @@ async function loadAll() {
       { key: "audit", label: "审核中心", badge: String(auditPending.value.length), path: "/audit" },
       { key: "log", label: "操作日志", badge: String(logList.value.length), path: "/log" },
       { key: "users", label: "用户管理", badge: String(users.value.length), path: "/users" }
-    ];
+];
   } catch (err) {
     notify("error", "数据加载失败，请检查后端服务");
   }
@@ -494,6 +543,80 @@ async function deleteUser(user) {
   }
 }
 
+async function updateSupplier(row) {
+  try {
+    await apiPost("/bs/upsu", {
+      id: row.id,
+      name: row.name,
+      contact: row.contact,
+      phone: row.phone,
+      address: row.address,
+      email: row.email
+    });
+    notify("success", "供应商已更新");
+    await loadSuppliers();
+  } catch (err) {
+    notify("error", "供应商更新失败");
+  }
+}
+
+async function deleteSupplier(row) {
+  try {
+    await apiPost("/bs/delsu", { id: row.id });
+    notify("success", "供应商已删除");
+    await loadSuppliers();
+  } catch (err) {
+    notify("error", "删除失败");
+  }
+}
+
+async function addSupplier(payload) {
+  try {
+    await apiPost("/bs/addsu", payload);
+    notify("success", "供应商已新增");
+    await loadSuppliers();
+  } catch (err) {
+    notify("error", "新增失败");
+  }
+}
+
+async function updateClient(row) {
+  try {
+    await apiPost("/bs/upcli", {
+      id: row.id,
+      name: row.name,
+      contact: row.contact,
+      phone: row.phone,
+      address: row.address,
+      email: row.email
+    });
+    notify("success", "客户已更新");
+    await loadClients();
+  } catch (err) {
+    notify("error", "客户更新失败");
+  }
+}
+
+async function deleteClient(row) {
+  try {
+    await apiPost("/bs/delcli", { id: row.id });
+    notify("success", "客户已删除");
+    await loadClients();
+  } catch (err) {
+    notify("error", "删除失败");
+  }
+}
+
+async function addClient(payload) {
+  try {
+    await apiPost("/bs/addcli", payload);
+    notify("success", "客户已新增");
+    await loadClients();
+  } catch (err) {
+    notify("error", "新增失败");
+  }
+}
+
 async function handleLogin() {
   loginError.value = "";
   loginLoading.value = true;
@@ -592,6 +715,23 @@ onMounted(() => {
   }
 });
 </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

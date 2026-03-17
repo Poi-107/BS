@@ -1,7 +1,7 @@
 package com.example.bs.mapper;
 
 import com.example.bs.entity.Client;
-import com.example.bs.entity.Suppiler;
+import com.example.bs.entity.Supplier;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -13,7 +13,7 @@ public interface SuCliMapper {
      * 查询供应商
      * @return
      */
-    List<Suppiler> selsu();
+    List<Supplier> selsu();
 
     /**
      * 查询供应商名称
@@ -25,19 +25,19 @@ public interface SuCliMapper {
      * 根据name查询供应商
      * @return
      */
-    List<Suppiler> selsu2(String name);
+    List<Supplier> selsu2(String name);
 
     /**
      * 修改供应商信息
-     * @param suppiler
+     * @param supplier
      */
-    void upsu(Suppiler suppiler);
+    void upsu(Supplier supplier);
 
     /**
      * 删除供应商信息
-     * @param suppiler
+     * @param supplier
      */
-    void delsu(Suppiler suppiler);
+    void delsu(Supplier supplier);
 
     /**
      * 查询客户
@@ -68,4 +68,16 @@ public interface SuCliMapper {
      * @param client
      */
     void delcli(Client client);
+
+    /**
+     * 添加供应商信息
+     * @param supplier
+     */
+    void addsu(Supplier supplier);
+
+    /**
+     * 添加客户信息
+     * @param client
+     */
+    void addcli(Client client);
 }

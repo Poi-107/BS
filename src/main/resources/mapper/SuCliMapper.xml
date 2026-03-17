@@ -4,24 +4,37 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.bs.mapper.SuCliMapper">
 <!--    查询供应商-->
-    <select id="selsu" resultType="com.example.bs.entity.Suppiler">
-        select * from suppiler
+    <select id="selsu" resultType="com.example.bs.entity.Supplier">
+        select * from supplier
     </select>
 <!--    获取供应商名称-->
     <select id="selsuname" resultType="String">
-        select name from suppiler
+        select name from supplier
     </select>
 <!--    根据name查询供应商-->
-    <select id="selsu2" resultType="com.example.bs.entity.Suppiler">
-        select * from suppiler where name=#{name}
+    <select id="selsu2" resultType="com.example.bs.entity.Supplier">
+        select * from supplier where name=#{name}
     </select>
+<!--    添加供应商-->
+    <insert id="addsu">
+        insert into supplier(name,contact,phone,address,email,crtime) values (#{name},#{contact},#{phone},#{address},#{email},#{crtime})
+    </insert>
 <!--    修改供应商信息-->
     <update id="upsu">
-        update suppiler set name=#{name},contact=#{contact},phone=#{phone},address=#{address},email=#{email},crtime=#{crtime} where id=#{id}
+        update supplier
+        <set>
+            <if test="name != null">name = #{name},</if>
+            <if test="contact != null">contact = #{contact},</if>
+            <if test="phone != null">phone = #{phone},</if>
+            <if test="address != null">address = #{address},</if>
+            <if test="email != null">email = #{email},</if>
+            <if test="crtime != null">crtime = #{crtime},</if>
+        </set>
+        where id = #{id}
     </update>
 <!--    删除供应商-->
     <delete id="delsu">
-        delete from suppiler where id=#{id}
+        delete from supplier where id=#{id}
     </delete>
 <!--    查询客户-->
     <select id="selcli" resultType="com.example.bs.entity.Client">
@@ -35,9 +48,22 @@
     <select id="selcli2" resultType="com.example.bs.entity.Client">
         select * from client where name= #{name}
     </select>
+<!--    添加客户-->
+    <insert id="addcli">
+        insert into client(name,contact,phone,address,email,crtime) values (#{name},#{contact},#{phone},#{address},#{email},#{crtime})
+    </insert>
 <!--    修改客户信息-->
     <update id="upcli">
-        update client set name= #{name},contact= #{contact},phone= #{phone},address= #{address},email= #{email},crtime= #{crtime} where id= #{id}
+        update client
+        <set>
+            <if test="name != null">name = #{name},</if>
+            <if test="contact != null">contact = #{contact},</if>
+            <if test="phone != null">phone = #{phone},</if>
+            <if test="address != null">address = #{address},</if>
+            <if test="email != null">email = #{email},</if>
+            <if test="crtime != null">crtime = #{crtime},</if>
+        </set>
+        where id = #{id}
     </update>
 <!--    删除客户-->
     <delete id="delcli">

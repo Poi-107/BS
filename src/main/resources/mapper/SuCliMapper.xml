@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.bs.mapper.SuCliMapper">
+<!--    查询供应商-->
+    <select id="selsu" resultType="com.example.bs.entity.Suppiler">
+        select * from suppiler
+    </select>
+<!--    获取供应商名称-->
+    <select id="selsuname" resultType="String">
+        select name from suppiler
+    </select>
+<!--    根据name查询供应商-->
+    <select id="selsu2" resultType="com.example.bs.entity.Suppiler">
+        select * from suppiler where name=#{name}
+    </select>
+<!--    修改供应商信息-->
+    <update id="upsu">
+        update suppiler set name=#{name},contact=#{contact},phone=#{phone},address=#{address},email=#{email},crtime=#{crtime} where id=#{id}
+    </update>
+<!--    删除供应商-->
+    <delete id="delsu">
+        delete from suppiler where id=#{id}
+    </delete>
+<!--    查询客户-->
+    <select id="selcli" resultType="com.example.bs.entity.Client">
+        select * from client
+    </select>
+<!--    获取客户名称-->
+    <select id="selcliname" resultType="String">
+        select name from client
+    </select>
+<!--    根据name查询客户-->
+    <select id="selcli2" resultType="com.example.bs.entity.Client">
+        select * from client where name= #{name}
+    </select>
+<!--    修改客户信息-->
+    <update id="upcli">
+        update client set name= #{name},contact= #{contact},phone= #{phone},address= #{address},email= #{email},crtime= #{crtime} where id= #{id}
+    </update>
+<!--    删除客户-->
+    <delete id="delcli">
+        delete from client where id= #{id}
+    </delete>
+</mapper>

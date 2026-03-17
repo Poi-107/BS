@@ -3,7 +3,7 @@
     <div class="panel-header">
       <h3>操作日志</h3>
       <div class="toolbar">
-        <button class="btn" @click="$emit('load-log')">刷新</button>
+        <button class="btn" @click="reload">刷新</button>
       </div>
     </div>
     <div class="table-wrap">
@@ -40,5 +40,14 @@ function formatTime(value) {
   if (!value) return "";
   return String(value).replace("T", " ").slice(0, 19);
 }
+
+
+function reload() {
+  window.location.reload();
+}
 </script>
+
+
+
+
 

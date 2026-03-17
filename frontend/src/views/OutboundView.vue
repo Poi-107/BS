@@ -4,7 +4,7 @@
       <h3>出库管理</h3>
       <div class="toolbar">
         <button class="btn ghost" @click="resetForm">清空</button>
-        <button class="btn" @click="$emit('refresh-all')">刷新</button>
+        <button class="btn" @click="reload">刷新</button>
         <button class="btn primary" @click="submit" :disabled="!isValid">提交出库</button>
       </div>
     </div>
@@ -103,4 +103,13 @@ function formatTime(value) {
   if (!value) return "";
   return String(value).replace("T", " ").slice(0, 19);
 }
+
+
+function reload() {
+  window.location.reload();
+}
 </script>
+
+
+
+

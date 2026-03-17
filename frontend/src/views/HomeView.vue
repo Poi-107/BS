@@ -1,9 +1,14 @@
 ﻿<template>
   <section class="panel home-panel">
+    <section class="hero">
+      <h2>库存管理系统</h2>
+      <p>已对接后端接口，支持库存台账、出入库单据、审核与日志实时加载。</p>
+    </section>
+
     <div class="panel-header">
       <h3>数据统计</h3>
       <div class="toolbar">
-        <button class="btn" @click="$emit('refresh-all')">刷新</button>
+        <button class="btn" @click="reload">刷新</button>
       </div>
     </div>
 
@@ -59,7 +64,6 @@
         <div class="stat-unit">元</div>
       </div>
     </div>
-
   </section>
 </template>
 
@@ -83,6 +87,7 @@ const statsSafe = computed(() => ({
   yearpur: Number(props.stats.yearpur || 0)
 }));
 
-
+function reload() {
+  window.location.reload();
+}
 </script>
-

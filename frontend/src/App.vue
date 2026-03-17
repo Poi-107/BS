@@ -116,6 +116,7 @@
         :audit-view="auditView"
         :audit-filter="auditFilter"
         :log-list="logList"
+        :users="users"
         :stats="stats"
         :total-quantity="totalQuantity"
         :low-stock-count="lowStockCount"
@@ -127,6 +128,9 @@
         @reject-audit="reject"
         @load-audit="loadAudit"
         @load-log="loadLog"
+        @load-users="loadUsers"
+        @update-user="updateUser"
+        @delete-user="deleteUser"
       />
     </main>
   </div>
@@ -150,7 +154,8 @@ const nav = ref([
   { key: "inbound", label: "入库管理", badge: "", path: "/inbound" },
   { key: "outbound", label: "出库管理", badge: "", path: "/outbound" },
   { key: "audit", label: "审核中心", badge: "", path: "/audit" },
-  { key: "log", label: "操作日志", badge: "", path: "/log" }
+  { key: "log", label: "操作日志", badge: "", path: "/log" },
+  { key: "users", label: "用户管理", badge: "", path: "/users" }
 ]);
 
 const inventory = ref([]);
@@ -160,6 +165,7 @@ const auditAll = ref([]);
 const auditPending = ref([]);
 const auditFilter = ref("all");
 const logList = ref([]);
+const users = ref([]);
 const stats = ref({
   jinruku: 0,
   jinchuku: 0,
@@ -280,6 +286,10 @@ function sortAudit(list) {
   });
 }
 
+function sortByIdAsc(list) {
+  return [...(list || [])].sort((a, b) => (Number(a.id) || 0) - (Number(b.id) || 0));
+}
+
 async function loadInventory() {
   const res = await apiGet("/bs/selkucun");
   inventory.value = normalizeInventory(res.data || []);
@@ -307,6 +317,11 @@ async function loadAudit() {
 async function loadLog() {
   const res = await apiGet("/bs/sellog");
   logList.value = sortNewest(res.data || []);
+}
+
+async function loadUsers() {
+  const res = await apiGet("/bs/seluser");
+  users.value = sortByIdAsc(res.data || []);
 }
 
 async function loadStats() {
@@ -349,14 +364,15 @@ async function loadStats() {
 
 async function loadAll() {
   try {
-    await Promise.all([loadInventory(), loadRuku(), loadChuku(), loadAudit(), loadLog(), loadStats()]);
+    await Promise.all([loadInventory(), loadRuku(), loadChuku(), loadAudit(), loadLog(), loadUsers(), loadStats()]);
     nav.value = [
       { key: "home", label: "首页", badge: "", path: "/home" },
       { key: "inventory", label: "库存台账", badge: String(inventory.value.length), path: "/inventory" },
       { key: "inbound", label: "入库管理", badge: `单据 ${rukuList.value.length}`, path: "/inbound" },
       { key: "outbound", label: "出库管理", badge: `单据 ${chukuList.value.length}`, path: "/outbound" },
       { key: "audit", label: "审核中心", badge: String(auditPending.value.length), path: "/audit" },
-      { key: "log", label: "操作日志", badge: String(logList.value.length), path: "/log" }
+      { key: "log", label: "操作日志", badge: String(logList.value.length), path: "/log" },
+      { key: "users", label: "用户管理", badge: String(users.value.length), path: "/users" }
     ];
   } catch (err) {
     notify("error", "数据加载失败，请检查后端服务");
@@ -452,6 +468,29 @@ async function reject(row) {
     await loadAudit();
   } catch (err) {
     notify("error", "审核操作失败");
+  }
+}
+
+async function updateUser(user) {
+  try {
+    await apiPost("/bs/upuser", {
+      id: user.id,
+      per: user.per
+    });
+    notify("success", "用户权限已更新");
+    await loadUsers();
+  } catch (err) {
+    notify("error", "用户更新失败");
+  }
+}
+
+async function deleteUser(user) {
+  try {
+    await apiPost("/bs/deluser", { id: user.id });
+    notify("success", "用户已删除");
+    await loadUsers();
+  } catch (err) {
+    notify("error", "删除失败");
   }
 }
 
@@ -553,6 +592,16 @@ onMounted(() => {
   }
 });
 </script>
+
+
+
+
+
+
+
+
+
+
 
 
 

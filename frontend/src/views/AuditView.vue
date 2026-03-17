@@ -6,7 +6,7 @@
         <button class="btn" :class="{ primary: auditFilter === 'all' }" @click="$emit('set-audit-filter', 'all')">全部</button>
         <button class="btn" :class="{ primary: auditFilter === 'pending' }" @click="$emit('set-audit-filter', 'pending')">未审核</button>
         <button class="btn" :class="{ primary: auditFilter === 'done' }" @click="$emit('set-audit-filter', 'done')">已审核</button>
-        <button class="btn ghost" @click="$emit('load-audit')">刷新</button>
+        <button class="btn ghost" @click="reload">刷新</button>
       </div>
     </div>
     <div class="table-wrap">
@@ -86,5 +86,14 @@ function formatTime(value) {
   if (!value) return "";
   return String(value).replace("T", " ").slice(0, 19);
 }
+
+
+function reload() {
+  window.location.reload();
+}
 </script>
+
+
+
+
 

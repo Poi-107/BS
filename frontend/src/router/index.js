@@ -5,6 +5,7 @@ import InboundView from "../views/InboundView.vue";
 import OutboundView from "../views/OutboundView.vue";
 import AuditView from "../views/AuditView.vue";
 import LogView from "../views/LogView.vue";
+import UsersView from "../views/UsersView.vue";
 import LoginView from "../views/LoginView.vue";
 
 const routes = [
@@ -15,7 +16,8 @@ const routes = [
   { path: "/inbound", component: InboundView },
   { path: "/outbound", component: OutboundView },
   { path: "/audit", component: AuditView },
-  { path: "/log", component: LogView }
+  { path: "/log", component: LogView },
+  { path: "/users", component: UsersView }
 ];
 
 const router = createRouter({
@@ -37,3 +39,4 @@ router.beforeEach((to, from, next) => {
 });
 
 export default router;
+

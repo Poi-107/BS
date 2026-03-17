@@ -1,10 +1,5 @@
 ﻿<template>
   <section class="panel">
-    <section class="hero">
-      <h2>库存管理系统</h2>
-      <p>已对接后端接口，支持库存台账、出入库单据、审核与日志实时加载。</p>
-    </section>
-
     <section class="card-grid">
       <div class="stat-card">
         <h3>总库存</h3>
@@ -26,7 +21,7 @@
     <div class="panel-header">
       <h3>库存台账</h3>
       <div class="toolbar">
-        <button class="btn" @click="$emit('refresh-all')">刷新</button>
+        <button class="btn" @click="reload">刷新</button>
       </div>
     </div>
     <div class="table-wrap">
@@ -66,7 +61,18 @@ defineProps({
 });
 
 defineEmits(["refresh-all"]);
+
+
+function reload() {
+  window.location.reload();
+}
 </script>
+
+
+
+
+
+
 
 
 

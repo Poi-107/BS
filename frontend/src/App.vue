@@ -109,30 +109,6 @@
     </aside>
 
     <main class="content">
-      <section class="hero">
-        <h2>库存管理系统</h2>
-        <p>已对接后端接口，支持库存台账、出入库单据、审核与日志实时加载。</p>
-      </section>
-
-      <section class="card-grid">
-        <div class="stat-card">
-          <h3>总库存</h3>
-          <strong>{{ totalQuantity }}</strong>
-        </div>
-        <div class="stat-card">
-          <h3>低库存预警</h3>
-          <strong>{{ lowStockCount }}</strong>
-        </div>
-        <div class="stat-card">
-          <h3>入库单</h3>
-          <strong>{{ rukuList.length }}</strong>
-        </div>
-        <div class="stat-card">
-          <h3>出库单</h3>
-          <strong>{{ chukuList.length }}</strong>
-        </div>
-      </section>
-
       <RouterView
         :inventory="inventory"
         :ruku-list="rukuList"
@@ -140,6 +116,9 @@
         :audit-view="auditView"
         :audit-filter="auditFilter"
         :log-list="logList"
+        :stats="stats"
+        :total-quantity="totalQuantity"
+        :low-stock-count="lowStockCount"
         @refresh-all="loadAll"
         @set-audit-filter="setAuditFilter"
         @submit-inbound="submitInbound"
@@ -166,6 +145,7 @@ const router = useRouter();
 const route = useRoute();
 
 const nav = ref([
+  { key: "home", label: "首页", badge: "", path: "/home" },
   { key: "inventory", label: "库存台账", badge: "", path: "/inventory" },
   { key: "inbound", label: "入库管理", badge: "", path: "/inbound" },
   { key: "outbound", label: "出库管理", badge: "", path: "/outbound" },
@@ -180,6 +160,18 @@ const auditAll = ref([]);
 const auditPending = ref([]);
 const auditFilter = ref("all");
 const logList = ref([]);
+const stats = ref({
+  jinruku: 0,
+  jinchuku: 0,
+  jinsale: 0,
+  jinpur: 0,
+  yueruku: 0,
+  yuechuku: 0,
+  yuesale: 0,
+  yuecpur: 0,
+  yearsale: 0,
+  yearpur: 0
+});
 
 const loginForm = ref({ username: "", password: "" });
 const loginError = ref("");
@@ -239,6 +231,11 @@ function normalizeInventory(list) {
     quantity: item.quantity ?? 0,
     safe: SAFE_STOCK
   }));
+}
+
+function toNumber(value) {
+  const num = Number(value);
+  return Number.isFinite(num) ? num : 0;
 }
 
 function toTime(value) {
@@ -312,10 +309,49 @@ async function loadLog() {
   logList.value = sortNewest(res.data || []);
 }
 
+async function loadStats() {
+  const [
+    jinruku,
+    jinchuku,
+    jinsale,
+    jinpur,
+    yueruku,
+    yuechuku,
+    yuesale,
+    yuecpur,
+    yearsale,
+    yearpur
+  ] = await Promise.all([
+    apiGet("/bs/jinruku"),
+    apiGet("/bs/jinchuku"),
+    apiGet("/bs/jinsale"),
+    apiGet("/bs/jinpur"),
+    apiGet("/bs/yueruku"),
+    apiGet("/bs/yuechuku"),
+    apiGet("/bs/yuesale"),
+    apiGet("/bs/yuecpur"),
+    apiGet("/bs/yearsale"),
+    apiGet("/bs/yearpur")
+  ]);
+  stats.value = {
+    jinruku: toNumber(jinruku.data),
+    jinchuku: toNumber(jinchuku.data),
+    jinsale: toNumber(jinsale.data),
+    jinpur: toNumber(jinpur.data),
+    yueruku: toNumber(yueruku.data),
+    yuechuku: toNumber(yuechuku.data),
+    yuesale: toNumber(yuesale.data),
+    yuecpur: toNumber(yuecpur.data),
+    yearsale: toNumber(yearsale.data),
+    yearpur: toNumber(yearpur.data)
+  };
+}
+
 async function loadAll() {
   try {
-    await Promise.all([loadInventory(), loadRuku(), loadChuku(), loadAudit(), loadLog()]);
+    await Promise.all([loadInventory(), loadRuku(), loadChuku(), loadAudit(), loadLog(), loadStats()]);
     nav.value = [
+      { key: "home", label: "首页", badge: "", path: "/home" },
       { key: "inventory", label: "库存台账", badge: String(inventory.value.length), path: "/inventory" },
       { key: "inbound", label: "入库管理", badge: `单据 ${rukuList.value.length}`, path: "/inbound" },
       { key: "outbound", label: "出库管理", badge: `单据 ${chukuList.value.length}`, path: "/outbound" },
@@ -517,6 +553,15 @@ onMounted(() => {
   }
 });
 </script>
+
+
+
+
+
+
+
+
+
 
 
 

@@ -13,33 +13,39 @@
     <select id="selchuku" resultType="com.example.bs.entity.Chuku">
         select * from chuku
     </select>
-<!--    查询今日出库单-->
+    <!-- 查询今日出库单 -->
     <select id="jinchuku" resultType="int">
         SELECT COUNT(*)
         FROM chuku
         WHERE DATE(cktime) = CURDATE()
     </select>
-<!--    查询今日销售-->
+
+    <!-- 查询今日销售 -->
     <select id="jinsale" resultType="int">
-        SELECT SUM(money)
+        SELECT IFNULL(SUM(money),0)
         FROM chuku
         WHERE DATE(cktime) = CURDATE()
     </select>
-<!--    查询本月出库-->
+
+    <!-- 查询本月出库 -->
     <select id="yuechuku" resultType="int">
         SELECT COUNT(*)
         FROM chuku
-        WHERE MONTH(cktime) = MONTH(CURDATE())
+        WHERE YEAR(cktime)=YEAR(CURDATE())
+          AND MONTH(cktime)=MONTH(CURDATE())
     </select>
-<!--    查询本月销售-->
+
+    <!-- 查询本月销售 -->
     <select id="yuesale" resultType="int">
-        SELECT SUM(money)
+        SELECT IFNULL(SUM(money),0)
         FROM chuku
-        WHERE MONTH(cktime) = MONTH(CURDATE())
+        WHERE YEAR(cktime)=YEAR(CURDATE())
+          AND MONTH(cktime)=MONTH(CURDATE())
     </select>
-<!--    查询本年销售-->
+
+    <!-- 查询本年销售 -->
     <select id="yearsale" resultType="int">
-        SELECT SUM(money)
+        SELECT IFNULL(SUM(money),0)
         FROM chuku
         WHERE YEAR(cktime) = YEAR(CURDATE())
     </select>

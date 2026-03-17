@@ -1,4 +1,5 @@
 ﻿import { createRouter, createWebHistory } from "vue-router";
+import HomeView from "../views/HomeView.vue";
 import InventoryView from "../views/InventoryView.vue";
 import InboundView from "../views/InboundView.vue";
 import OutboundView from "../views/OutboundView.vue";
@@ -9,6 +10,7 @@ import LoginView from "../views/LoginView.vue";
 const routes = [
   { path: "/", redirect: "/login" },
   { path: "/login", component: LoginView },
+  { path: "/home", component: HomeView },
   { path: "/inventory", component: InventoryView },
   { path: "/inbound", component: InboundView },
   { path: "/outbound", component: OutboundView },
@@ -28,11 +30,10 @@ router.beforeEach((to, from, next) => {
     return;
   }
   if (token && to.path === "/login") {
-    next("/inventory");
+    next("/home");
     return;
   }
   next();
 });
 
 export default router;
-

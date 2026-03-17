@@ -12,7 +12,7 @@ import java.util.Map;
  */
 public class Jwt {
     //密钥
-    private static final String SECRET_KEY = "Intelligent inventory";
+    private static final String SECRET_KEY = "bsqwerdfvb";
     //一天时间
     private static final long EXPIRATION_TIME = 24 * 60 * 60 * 1000;//
 

@@ -36,6 +36,7 @@ public class UserController {
             Map<String, Object> claims = new HashMap<>();
             claims.put("id", u.getId());
             claims.put("username", u.getUsername());
+            claims.put("per", u.getPer());
             String jwt = Jwt.generateJwt(new HashMap<>(claims));
             //响应数据
             return Result.success(jwt);

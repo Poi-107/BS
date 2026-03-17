@@ -68,11 +68,12 @@ html, body {
   flex: 1 1 auto;
   display: flex;
   flex-direction: column;
+  min-height: 0;
 }
 
 .table-wrap {
-  max-height: 520px;
   flex: 1 1 auto;
+  min-height: 0;
   overflow-y: auto;
   border: 1px solid var(--line);
   border-radius: 12px;
@@ -633,3 +634,24 @@ html, body {
   0%, 100% { opacity: 0.6; transform: scale(1); }
   50% { opacity: 1; transform: scale(1.05); }
 }
+
+.home-panel .panel-header {
+  align-items: center;
+}
+
+.home-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 16px;
+  margin-bottom: 6px;
+}
+
+.stat-unit {
+  margin-top: 6px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+
+
+

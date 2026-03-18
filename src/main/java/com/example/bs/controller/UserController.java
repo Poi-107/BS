@@ -5,6 +5,7 @@ import com.example.bs.entity.Result;
 import com.example.bs.entity.User;
 import com.example.bs.service.UserService;
 import com.example.bs.tools.Jwt;
+import com.example.bs.tools.interceptor.Per;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -58,6 +59,7 @@ public class UserController {
     }
 
     // 修改用户权限（管理员）
+    @Per(1)
     @AopAnnotation(target = "用户表", action = "修改用户权限")
     @PostMapping("/upuser")
     public Result upuser(@RequestBody User user) {
@@ -85,6 +87,7 @@ public class UserController {
     }
 
     // 删除用户
+    @Per(1)
     @AopAnnotation(target = "用户表", action = "删除用户")
     @PostMapping("/deluser")
     public Result deluser(@RequestBody User user) {
@@ -94,6 +97,7 @@ public class UserController {
     }
 
     // 查询所有用户
+    @Per(1)
     @GetMapping("/seluser")
     public Result seluser() {
         log.info("请求查询所有用户");
@@ -102,7 +106,6 @@ public class UserController {
     }
 
     // 上传头像
-    @AopAnnotation(target = "用户表", action = "上传头像")
     @PostMapping("/uploadAvatar")
     public Result uploadAvatar(@RequestParam("file") MultipartFile file, HttpServletRequest request) {
         // 解析 token，获取用户 id

@@ -88,7 +88,7 @@
 
       <div class="nav-group">
         <RouterLink
-          v-for="item in nav"
+          v-for="item in navBeforeGroups"
           :key="item.key"
           class="nav-item"
           :class="{ active: route.path === item.path }"
@@ -98,26 +98,115 @@
           <span style="color: var(--muted); font-size: 12px;">{{ item.badge }}</span>
         </RouterLink>
 
-        <div class="nav-parent" @click="sucliOpen = !sucliOpen">
-          <span>供应商 / 客户</span><span class="nav-caret">{{ sucliOpen ? "▾" : "▸" }}</span>
-          <span style="color: var(--muted); font-size: 12px;">{{ sucliBadge }}</span>
-        </div>
-        <div v-if="sucliOpen" class="nav-sub">
+        <template v-if="currentPer > 0">
+          <div class="nav-parent" @click="inboundOpen = !inboundOpen">
+            <span>入库</span><span class="nav-caret">{{ inboundOpen ? "▾" : "▸" }}</span>
+            <span style="color: var(--muted); font-size: 12px;">{{ inboundBadge }}</span>
+          </div>
+          <div v-if="inboundOpen" class="nav-sub">
+            <RouterLink
+              class="nav-item nav-child"
+              :class="{ active: route.path === '/inbound-my' }"
+              to="/inbound-my"
+            >
+              <span>入库</span>
+            </RouterLink>
+            <RouterLink
+              class="nav-item nav-child"
+              :class="{ active: route.path === '/inbound' }"
+              to="/inbound"
+            >
+              <span>入库管理</span>
+            </RouterLink>
+          </div>
+
+          <div class="nav-parent" @click="outboundOpen = !outboundOpen">
+            <span>出库</span><span class="nav-caret">{{ outboundOpen ? "▾" : "▸" }}</span>
+            <span style="color: var(--muted); font-size: 12px;">{{ outboundBadge }}</span>
+          </div>
+          <div v-if="outboundOpen" class="nav-sub">
+            <RouterLink
+              class="nav-item nav-child"
+              :class="{ active: route.path === '/outbound-my' }"
+              to="/outbound-my"
+            >
+              <span>出库</span>
+            </RouterLink>
+            <RouterLink
+              class="nav-item nav-child"
+              :class="{ active: route.path === '/outbound' }"
+              to="/outbound"
+            >
+              <span>出库管理</span>
+            </RouterLink>
+          </div>
+
+          <div class="nav-parent" @click="sucliOpen = !sucliOpen">
+            <span>供应商 / 客户</span><span class="nav-caret">{{ sucliOpen ? "▾" : "▸" }}</span>
+            <span style="color: var(--muted); font-size: 12px;">{{ sucliBadge }}</span>
+          </div>
+          <div v-if="sucliOpen" class="nav-sub">
+            <RouterLink
+              class="nav-item nav-child"
+              :class="{ active: route.path === '/suppliers' }"
+              to="/suppliers"
+            >
+              <span>供应商管理</span>
+            </RouterLink>
+            <RouterLink
+              class="nav-item nav-child"
+              :class="{ active: route.path === '/clients' }"
+              to="/clients"
+            >
+              <span>客户管理</span>
+            </RouterLink>
+          </div>
+
           <RouterLink
-            class="nav-item nav-child"
-            :class="{ active: route.path === '/suppliers' }"
-            to="/suppliers"
+            v-for="item in navAfterGroups"
+            :key="item.key"
+            class="nav-item"
+            :class="{ active: route.path === item.path }"
+            :to="item.path"
           >
-            <span>供应商管理</span>
+            <span>{{ item.label }}</span>
+            <span style="color: var(--muted); font-size: 12px;">{{ item.badge }}</span>
           </RouterLink>
+        </template>
+
+        <template v-else>
           <RouterLink
-            class="nav-item nav-child"
-            :class="{ active: route.path === '/clients' }"
-            to="/clients"
+            v-for="item in sideNav"
+            :key="item.key"
+            class="nav-item"
+            :class="{ active: route.path === item.path }"
+            :to="item.path"
           >
-            <span>客户管理</span>
+            <span>{{ item.label }}</span>
+            <span style="color: var(--muted); font-size: 12px;">{{ item.badge }}</span>
           </RouterLink>
-        </div>
+
+          <div class="nav-parent" @click="sucliOpen = !sucliOpen">
+            <span>供应商 / 客户</span><span class="nav-caret">{{ sucliOpen ? "▾" : "▸" }}</span>
+            <span style="color: var(--muted); font-size: 12px;">{{ sucliBadge }}</span>
+          </div>
+          <div v-if="sucliOpen" class="nav-sub">
+            <RouterLink
+              class="nav-item nav-child"
+              :class="{ active: route.path === '/suppliers' }"
+              to="/suppliers"
+            >
+              <span>供应商管理</span>
+            </RouterLink>
+            <RouterLink
+              class="nav-item nav-child"
+              :class="{ active: route.path === '/clients' }"
+              to="/clients"
+            >
+              <span>客户管理</span>
+            </RouterLink>
+          </div>
+        </template>
       </div>
 
       <div class="panel" style="padding: 14px;">
@@ -133,7 +222,9 @@
       <RouterView
         :inventory="inventory"
         :ruku-list="rukuList"
+        :ruku-mine="rukuMine"
         :chuku-list="chukuList"
+        :chuku-mine="chukuMine"
         :audit-view="auditView"
         :audit-filter="auditFilter"
         :log-list="logList"
@@ -187,22 +278,20 @@ import { apiGet, apiPost, clearToken, getToken, setToken } from "./services/api"
 const router = useRouter();
 const route = useRoute();
 
-const nav = ref([
-  { key: "home", label: "首页", badge: "", path: "/home" },
-  { key: "inventory", label: "库存台账", badge: "", path: "/inventory" },
-  { key: "inbound", label: "入库管理", badge: "", path: "/inbound" },
-  { key: "outbound", label: "出库管理", badge: "", path: "/outbound" },
-  { key: "audit", label: "审核中心", badge: "", path: "/audit" },
-  { key: "log", label: "操作日志", badge: "", path: "/log" },
-  { key: "profile", label: "个人中心", badge: "", path: "/profile" },
-  { key: "users", label: "用户管理", badge: "", path: "/users" }
-]);
-
+const currentUser = ref({});
+const currentUsername = computed(() => currentUser.value.username || "");
+const currentPer = computed(() => Number(currentUser.value.per ?? 0));
+const nav = ref([]);
 const sucliOpen = ref(true);
+const inboundOpen = ref(true);
+const outboundOpen = ref(true);
+
 
 const inventory = ref([]);
 const rukuList = ref([]);
 const chukuList = ref([]);
+const rukuMine = computed(() => rukuList.value.filter((item) => item.user === currentUsername.value));
+const chukuMine = computed(() => chukuList.value.filter((item) => item.user === currentUsername.value));
 const auditAll = ref([]);
 const auditPending = ref([]);
 const auditFilter = ref("all");
@@ -215,6 +304,16 @@ const chukuCats = ref([]);
 const kucunCats = ref([]);
 const auditCats = ref([]);
 const sucliBadge = computed(() => suppliers.value.length + clients.value.length);
+const inboundBadge = computed(() => {
+  const name = currentUsername.value || "";
+  const count = name ? rukuMine.value.length : rukuList.value.length;
+  return `单据 ${count}`;
+});
+const outboundBadge = computed(() => {
+  const name = currentUsername.value || "";
+  const count = name ? chukuMine.value.length : chukuList.value.length;
+  return `单据 ${count}`;
+});
 const stats = ref({
   jinruku: 0,
   jinchuku: 0,
@@ -264,6 +363,65 @@ const totalQuantity = computed(() =>
 const lowStockCount = computed(() =>
   inventory.value.filter((item) => (item.quantity || 0) < (item.safe || SAFE_STOCK)).length
 );
+
+const sideNav = computed(() => {
+  if (currentPer.value <= 0) return nav.value;
+  return nav.value.filter(
+    (item) =>
+      item.key !== "inbound" &&
+      item.key !== "inbound-manage" &&
+      item.key !== "outbound" &&
+      item.key !== "outbound-manage"
+  );
+});
+
+const navBeforeGroups = computed(() => {
+  if (currentPer.value <= 0) return [];
+  return sideNav.value.filter((item) => item.key === "home" || item.key === "inventory");
+});
+
+const navAfterGroups = computed(() => {
+  if (currentPer.value <= 0) return [];
+  return sideNav.value.filter((item) => item.key !== "home" && item.key !== "inventory");
+});
+
+function buildNav(per) {
+  const name = currentUsername.value || "";
+  const rukuCount = name ? rukuMine.value.length : rukuList.value.length;
+  const chukuCount = name ? chukuMine.value.length : chukuList.value.length;
+  if (per === 0) {
+    return [
+      { key: "home", label: "首页", badge: "", path: "/home" },
+      { key: "inbound", label: "入库", badge: `单据 ${rukuCount}`, path: "/inbound-my" },
+      { key: "outbound", label: "出库", badge: `单据 ${chukuCount}`, path: "/outbound-my" },
+      { key: "profile", label: "个人中心", badge: "", path: "/profile" }
+    ];
+  }
+  if (per === 1) {
+    return [
+      { key: "home", label: "首页", badge: "", path: "/home" },
+      { key: "inventory", label: "库存", badge: String(inventory.value.length), path: "/inventory" },
+      { key: "inbound", label: "入库", badge: `单据 ${rukuCount}`, path: "/inbound-my" },
+      { key: "inbound-manage", label: "入库管理", badge: `单据 ${rukuList.value.length}`, path: "/inbound" },
+      { key: "outbound", label: "出库", badge: `单据 ${chukuCount}`, path: "/outbound-my" },
+      { key: "outbound-manage", label: "出库管理", badge: `单据 ${chukuList.value.length}`, path: "/outbound" },
+      { key: "audit", label: "审核", badge: String(auditPending.value.length), path: "/audit" },
+      { key: "profile", label: "个人中心", badge: "", path: "/profile" }
+    ];
+  }
+  return [
+    { key: "home", label: "首页", badge: "", path: "/home" },
+    { key: "inventory", label: "库存", badge: String(inventory.value.length), path: "/inventory" },
+    { key: "inbound", label: "入库", badge: `单据 ${rukuCount}`, path: "/inbound-my" },
+    { key: "inbound-manage", label: "入库管理", badge: `单据 ${rukuList.value.length}`, path: "/inbound" },
+    { key: "outbound", label: "出库", badge: `单据 ${chukuCount}`, path: "/outbound-my" },
+    { key: "outbound-manage", label: "出库管理", badge: `单据 ${chukuList.value.length}`, path: "/outbound" },
+    { key: "audit", label: "审核", badge: String(auditPending.value.length), path: "/audit" },
+    { key: "log", label: "操作日志", badge: String(logList.value.length), path: "/log" },
+    { key: "profile", label: "个人中心", badge: "", path: "/profile" },
+    { key: "users", label: "用户管理", badge: String(users.value.length), path: "/users" }
+  ];
+}
 
 const auditView = computed(() => {
   if (auditFilter.value === "pending") {
@@ -382,6 +540,11 @@ async function loadUsers() {
   users.value = sortByIdAsc(res.data || []);
 }
 
+async function loadCurrentUser() {
+  const res = await apiGet("/bs/seluser2");
+  currentUser.value = res.data || {};
+}
+
 async function loadRukuCats() {
   const res = await apiGet("/bs/selleibie3");
   rukuCats.value = res.data || [];
@@ -477,17 +640,8 @@ async function loadStats() {
 
 async function loadAll() {
   try {
-    await Promise.all([loadInventory(), loadRuku(), loadChuku(), loadAudit(), loadLog(), loadUsers(), loadSuppliers(), loadClients(), loadRukuCats(), loadChukuCats(), loadKucunCats(), loadAuditCats(), loadStats()]);
-    nav.value = [
-      { key: "home", label: "首页", badge: "", path: "/home" },
-      { key: "inventory", label: "库存台账", badge: String(inventory.value.length), path: "/inventory" },
-      { key: "inbound", label: "入库管理", badge: `单据 ${rukuList.value.length}`, path: "/inbound" },
-      { key: "outbound", label: "出库管理", badge: `单据 ${chukuList.value.length}`, path: "/outbound" },
-      { key: "audit", label: "审核中心", badge: String(auditPending.value.length), path: "/audit" },
-      { key: "log", label: "操作日志", badge: String(logList.value.length), path: "/log" },
-      { key: "profile", label: "个人中心", badge: "", path: "/profile" },
-      { key: "users", label: "用户管理", badge: String(users.value.length), path: "/users" }
-    ];
+    await Promise.all([loadInventory(), loadRuku(), loadChuku(), loadAudit(), loadLog(), loadUsers(), loadCurrentUser(), loadSuppliers(), loadClients(), loadRukuCats(), loadChukuCats(), loadKucunCats(), loadAuditCats(), loadStats()]);
+    nav.value = buildNav(currentPer.value);
   } catch (err) {
     notify("error", "数据加载失败，请检查后端服务");
   }
@@ -700,7 +854,7 @@ async function handleLogin() {
       notify("success", "登录成功");
       await loadAll();
       if (route.path === "/" || route.path === "/login") {
-        router.replace("/inventory");
+        router.replace("/home");
       }
     } else if (ok && !res.data) {
       loginError.value = "登录成功但未返回 token";
@@ -765,6 +919,14 @@ function logout() {
   router.replace("/login");
 }
 
+watch(currentUsername, () => {
+  nav.value = buildNav(currentPer.value);
+});
+
+watch(currentPer, () => {
+  nav.value = buildNav(currentPer.value);
+});
+
 watch(token, (value) => {
   if (!value) {
     router.replace("/login");
@@ -782,6 +944,26 @@ onMounted(() => {
   }
 });
 </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

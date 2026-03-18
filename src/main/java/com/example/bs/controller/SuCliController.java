@@ -1,9 +1,11 @@
 package com.example.bs.controller;
 
+import com.example.bs.aop.AopAnnotation;
 import com.example.bs.entity.Client;
 import com.example.bs.entity.Result;
 import com.example.bs.entity.Supplier;
 import com.example.bs.service.SuCliService;
+import com.example.bs.tools.interceptor.Per;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -43,6 +45,7 @@ public class SuCliController {
         return Result.success(supplier);
     }
 //    添加供应商
+    @AopAnnotation(target = "供应商",action = "添加供应商")
     @PostMapping("/addsu")
     public Result addsu(@RequestBody Supplier supplier){
         log.info("请求添加供应商");
@@ -51,6 +54,8 @@ public class SuCliController {
         return Result.success("添加成功！");
     }
 //    修改供应商信息
+    @Per(1)
+    @AopAnnotation(target = "供应商",action = "修改供应商")
     @PostMapping("/upsu")
     public Result upsu(@RequestBody Supplier supplier){
         log.info("请求修改供应商信息");
@@ -58,6 +63,8 @@ public class SuCliController {
         return Result.success("修改成功！");
     }
 //    删除供应商
+    @Per(1)
+    @AopAnnotation(target = "供应商",action = "删除供应商")
     @PostMapping("/delsu")
     public Result delsu(@RequestBody Supplier supplier){
         log.info("请求删除供应商");
@@ -87,6 +94,7 @@ public class SuCliController {
         return Result.success(client);
     }
 //    添加客户
+    @AopAnnotation(target = "客户",action = "添加客户")
     @PostMapping("/addcli")
     public Result addcli(@RequestBody Client client){
         log.info("请求添加客户");
@@ -95,6 +103,8 @@ public class SuCliController {
         return Result.success("添加成功！");
     }
 //    修改客户信息
+    @Per(1)
+    @AopAnnotation(target = "客户",action = "修改客户")
     @PostMapping("/upcli")
     public Result upcli(@RequestBody Client client){
         log.info("请求修改客户信息");
@@ -102,6 +112,8 @@ public class SuCliController {
         return Result.success("修改成功！");
     }
 //    删除客户
+    @Per(1)
+    @AopAnnotation(target = "客户",action = "删除客户")
     @PostMapping("/delcli")
     public Result delcli(@RequestBody Client client){
         log.info("请求删除客户");

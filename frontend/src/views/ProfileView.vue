@@ -28,7 +28,7 @@
       <section class="profile-section">
         <div class="profile-meta">
           <div>用户ID：{{ profile.id || '-' }}</div>
-          <div>权限：{{ profile.per === 1 ? '管理员' : '普通用户' }}</div>
+          <div>权限：{{ profile.per === 2 ? '经理' : profile.per === 1 ? '主管' : '普通用户' }}</div>
         </div>
       </section>
     </div>
@@ -253,4 +253,5 @@ async function savePwd() {
 
 onMounted(loadProfile);
 </script>
+
 

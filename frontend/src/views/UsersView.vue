@@ -34,7 +34,8 @@
             <td>
               <select v-model.number="row.per" class="table-input">
                 <option :value="0">普通用户</option>
-                <option :value="1">管理员</option>
+                <option :value="1">主管</option>
+                <option :value="2">经理</option>
               </select>
             </td>
             <td>
@@ -121,4 +122,5 @@ function reload() {
   window.location.reload();
 }
 </script>
+
 

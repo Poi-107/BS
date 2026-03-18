@@ -129,4 +129,13 @@ public class ChukuService {
     public List<String> selleibie1() {
         return chukuMapper.selleibie1();
     }
+
+    /**
+     * 查询当前用户的出库单
+     * @param user
+     * @return
+     */
+    public List<Chuku> selchuku2(String user) {
+        return chukuMapper.selchuku2(user);
+    }
 }

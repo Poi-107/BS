@@ -57,5 +57,9 @@
     <select id="selleibie1" resultType="string">
         select DISTINCT leibie from chuku
     </select>
+<!--    查询当前用户的出库单-->
+    <select id="seluserchuku" resultType="com.example.bs.entity.Chuku">
+        select * from chuku where user=#{user}
+    </select>
 </mapper>
 

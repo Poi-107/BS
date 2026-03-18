@@ -6,6 +6,7 @@ import com.example.bs.entity.Kucun;
 import com.example.bs.entity.Result;
 import com.example.bs.service.AuditService;
 import com.example.bs.tools.UserContext;
+import com.example.bs.tools.interceptor.Per;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +21,7 @@ public class AuditController {
     @Autowired
     private AuditService auditService;
 
+    @Per(1)
     //查询审核表
     @GetMapping("/selaudit")
     public Result selaudit() {
@@ -28,6 +30,7 @@ public class AuditController {
         return Result.success(auditList);
     }
     //根据id查询审核表
+    @Per(1)
     @GetMapping("/selid")
     public Result selidaudit(@RequestBody Audit a) {
         log.info("根据id查询审核表");
@@ -35,6 +38,7 @@ public class AuditController {
         return Result.success(audit);
     }
 //    获取所有类别
+    @Per(1)
     @GetMapping("/selleibie")
     public Result selleibie() {
         log.info("请求获取所有类别");
@@ -42,6 +46,7 @@ public class AuditController {
         return Result.success(auditList);
     }
 //    分类查询
+    @Per(1)
     @GetMapping("/selaudit1")
     public Result selaudit1(@RequestParam String leibie) {
         log.info("请求分类查询审核表");
@@ -50,6 +55,7 @@ public class AuditController {
     }
 
     //待审核
+    @Per(1)
     @GetMapping("/sel0audit")
     public Result pendingAudit() {
         log.info("请求查询待审核列表");
@@ -57,6 +63,7 @@ public class AuditController {
         return Result.success(auditList);
     }
     //审批表单
+    @Per(1)
     @AopAnnotation(target = "审批",action = "进行审批")
     @PostMapping("/upaudit")
     public Result upaudit(@RequestBody Audit audit) {

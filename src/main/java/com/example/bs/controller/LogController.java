@@ -3,6 +3,7 @@ package com.example.bs.controller;
 import com.example.bs.entity.Log;
 import com.example.bs.entity.Result;
 import com.example.bs.service.LogService;
+import com.example.bs.tools.interceptor.Per;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +18,7 @@ public class LogController {
     private LogService logService;
 
     //查询日志
+    @Per(2)
     @GetMapping("/sellog")
     public Result selLog(){
          log.info("查询日志请求");

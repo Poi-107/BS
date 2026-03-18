@@ -6,6 +6,7 @@ import com.example.bs.entity.Result;
 import com.example.bs.entity.Ruku;
 import com.example.bs.service.ChukuService;
 import com.example.bs.tools.UserContext;
+import com.example.bs.tools.interceptor.Per;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -21,10 +22,18 @@ public class ChukuController {
     private ChukuService chukuService;
 
     //查询出库单
+    @Per(1)
     @GetMapping("/selchuku")
     public Result selchuku(){
         log.info("请求查询出库单");
         List<Chuku> chuku=chukuService.selchuku();
+        return Result.success(chuku);
+    }
+//    根据user查询出库单
+    @GetMapping("/selchuku2")
+    public Result selchuku2(@RequestParam String user){
+        log.info("根据username查询出库单");
+        List<Chuku> chuku=chukuService.selchuku2(user);
         return Result.success(chuku);
     }
 //    获取所有类别
@@ -35,6 +44,7 @@ public class ChukuController {
         return Result.success(chuku);
     }
 //    分类查询
+    @Per(1)
     @GetMapping("/selchuku1")
     public Result selchuku1(@RequestParam String  leibie){
         log.info("请求分类查询出库单");
@@ -42,6 +52,7 @@ public class ChukuController {
         return Result.success(chuku);
     }
     //出库
+
     @AopAnnotation(target = "出库",action = "进行出库")
     @RequestMapping("/addchuku")
     public Result chuku(@RequestBody Chuku chuku){

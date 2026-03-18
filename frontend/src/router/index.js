@@ -2,7 +2,9 @@
 import HomeView from "../views/HomeView.vue";
 import InventoryView from "../views/InventoryView.vue";
 import InboundView from "../views/InboundView.vue";
+import InboundSelfView from "../views/InboundSelfView.vue";
 import OutboundView from "../views/OutboundView.vue";
+import OutboundSelfView from "../views/OutboundSelfView.vue";
 import AuditView from "../views/AuditView.vue";
 import LogView from "../views/LogView.vue";
 import UsersView from "../views/UsersView.vue";
@@ -17,6 +19,8 @@ const routes = [
   { path: "/inventory", component: InventoryView },
   { path: "/inbound", component: InboundView },
   { path: "/outbound", component: OutboundView },
+  { path: "/inbound-my", component: InboundSelfView },
+  { path: "/outbound-my", component: OutboundSelfView },
   { path: "/audit", component: AuditView },
   { path: "/log", component: LogView },
   { path: "/users", component: UsersView },
@@ -45,7 +49,3 @@ router.beforeEach((to, from, next) => {
 });
 
 export default router;
-
-
-
-

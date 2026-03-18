@@ -60,4 +60,11 @@ public interface RukuMapper {
      * @return
      */
     List<String> selleibie();
+
+    /**
+     * 根据username查询入库单
+     * @param user
+     * @return
+     */
+    List<Ruku> selruku2(String user);
 }

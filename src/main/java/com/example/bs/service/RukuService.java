@@ -112,4 +112,13 @@ public class RukuService {
     public List<String> selleibie() {
         return rukuMapper.selleibie();
     }
+
+    /**
+     * 根据username查询入库单
+     * @param user
+     * @return
+     */
+    public List<Ruku> selruku2(String user) {
+        return rukuMapper.selruku2(user);
+    }
 }

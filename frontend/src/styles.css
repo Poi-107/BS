@@ -604,31 +604,7 @@ html, body {
   overflow: hidden;
 }
 
-.login-shell::before {
-  content: "";
-  position: absolute;
-  width: 520px;
-  height: 520px;
-  left: -120px;
-  top: -120px;
-  background: radial-gradient(circle, rgba(37,99,235,0.18), transparent 60%);
-  filter: blur(10px);
-  animation: glowPulse 6s ease-in-out infinite;
-  pointer-events: none;
-}
 
-.login-shell::after {
-  content: "";
-  position: absolute;
-  width: 420px;
-  height: 420px;
-  right: -140px;
-  bottom: -140px;
-  background: radial-gradient(circle, rgba(14,165,233,0.16), transparent 60%);
-  filter: blur(8px);
-  animation: glowPulse 7s ease-in-out infinite;
-  pointer-events: none;
-}
 
 @keyframes glowPulse {
   0%, 100% { opacity: 0.6; transform: scale(1); }
@@ -805,14 +781,9 @@ html, body {
   font-size: 14px;
 }
 
+.profile-top {
+  margin-bottom: 6px;
 }
-
-}
-
-}
-
-
-}\r\n\n.profile-top {\r\n  margin-bottom: 6px;\r\n}
 
 
 .profile-panel {

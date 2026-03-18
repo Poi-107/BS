@@ -5,6 +5,7 @@ import com.example.bs.entity.Result;
 import com.example.bs.entity.Ruku;
 import com.example.bs.service.RukuService;
 import com.example.bs.tools.UserContext;
+import com.example.bs.tools.interceptor.Per;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -20,10 +21,18 @@ public class RukuController {
     private RukuService rukuService;
 
     //    查询入库单
+    @Per(1)
     @GetMapping("/selruku")
     public Result ruku(){
         log.info("请求查询入库单");
         List<Ruku> ruku=rukuService.selruku();
+        return Result.success(ruku);
+    }
+//    根据user查询入库单
+    @GetMapping("/selruku2")
+    public Result selruku2(@RequestParam String user){
+        log.info("根据username查询入库单");
+        List<Ruku> ruku=rukuService.selruku2(user);
         return Result.success(ruku);
     }
 //    分类查询

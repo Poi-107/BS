@@ -15,6 +15,10 @@
     <select id="selleibie" resultType="string">
         select distinct leibie from ruku
     </select>
+<!--    根据user查询入库单-->
+    <select id="selruku2" resultType="com.example.bs.entity.Ruku">
+        select * from ruku where user=#{user}
+    </select>
 <!--    添加入库单-->
     <insert id="addruku">
         insert into ruku(leibie,name, supplier, price, quantity, money, rktime, user)

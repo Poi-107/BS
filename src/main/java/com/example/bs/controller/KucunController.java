@@ -3,6 +3,7 @@ package com.example.bs.controller;
 import com.example.bs.entity.Kucun;
 import com.example.bs.entity.Result;
 import com.example.bs.service.KucunService;
+import com.example.bs.tools.interceptor.Per;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +18,7 @@ public class KucunController {
     private KucunService kucunService;
 
 //    查询库存
+    @Per(1)
     @GetMapping("/selkucun")
     public Result selkucun(){
         log.info("请求查询库存");
@@ -25,6 +27,7 @@ public class KucunController {
     }
 
     //根据name查询库存
+    @Per(1)
     @GetMapping("/selname")
     public Result selname(@RequestBody Kucun k){
         log.info("请求查询库存");
@@ -32,6 +35,7 @@ public class KucunController {
         return Result.success(kucun);
     }
 //    分类查询
+    @Per(1)
     @GetMapping("/selkucun1")
     public Result selleibie(@RequestParam String leibie){
         log.info("请求分类查询库存");
@@ -39,6 +43,7 @@ public class KucunController {
         return Result.success(kucun);
     }
 //    获取所有类别
+    @Per(1)
     @GetMapping("/selleibie2")
     public Result selleibie() {
         log.info("请求获取所有类别");

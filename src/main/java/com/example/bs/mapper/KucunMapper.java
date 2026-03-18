@@ -33,4 +33,17 @@ public interface KucunMapper {
      * @return
      */
     Kucun selname(String name);
+
+    /**
+     * 根据类别查询库存
+     * @param leibie
+     * @return
+     */
+    List<Kucun> selleibie(String leibie);
+
+    /**
+     * 获取所有类别
+     * @return
+     */
+    List<String> selleibie2();
 }

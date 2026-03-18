@@ -185,7 +185,7 @@ html, body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
 }
 
 .panel-header h3 {
@@ -698,7 +698,7 @@ html, body {
 .modal-body {
   color: var(--ink-2);
   font-size: 14px;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
 }
 
 .modal-actions {
@@ -739,3 +739,20 @@ html, body {
   font-size: 12px;
   color: var(--muted);
 }
+
+.home-panel .hero {
+  margin-bottom: 20px;
+}
+
+.home-panel .panel-header {
+  margin-top: 8px;
+}
+
+.card-grid {
+  margin-bottom: 20px;
+}
+
+.panel-header {
+  margin-top: 8px;
+}
+

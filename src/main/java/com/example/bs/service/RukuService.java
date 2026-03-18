@@ -94,4 +94,22 @@ public class RukuService {
     public int yearpur() {
         return rukuMapper.yearpur();
     }
+
+
+    /**
+     * 分类查询入库单
+     * @param leibie
+     * @return
+     */
+    public List<Ruku> selruku1(String leibie) {
+        return rukuMapper.selruku1(leibie);
+    }
+
+    /**
+     * 获取所有类别
+     * @return
+     */
+    public List<String> selleibie() {
+        return rukuMapper.selleibie();
+    }
 }

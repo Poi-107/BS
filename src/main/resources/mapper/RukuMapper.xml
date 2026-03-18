@@ -7,9 +7,18 @@
     <select id="selruku" resultType="com.example.bs.entity.Ruku">
         select * from ruku
     </select>
+<!--    分类查询-->
+    <select id="selruku1" resultType="com.example.bs.entity.Ruku">
+        select * from ruku where leibie=#{leibie}
+    </select>
+<!--    获取所有类别-->
+    <select id="selleibie" resultType="string">
+        select distinct leibie from ruku
+    </select>
 <!--    添加入库单-->
     <insert id="addruku">
-        insert into ruku(name, supplier, price, quantity, money, rktime, user) values(#{name},#{supplier},#{price},#{quantity},#{money},#{rktime},#{user})
+        insert into ruku(leibie,name, supplier, price, quantity, money, rktime, user)
+        values(#{leibie},#{name},#{supplier},#{price},#{quantity},#{money},#{rktime},#{user})
     </insert>
     <!-- 查询今日入库单数 -->
     <select id="jinruku" resultType="int">

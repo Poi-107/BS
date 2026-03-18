@@ -39,4 +39,17 @@ public interface AuditMapper {
      * @return
      */
     Audit selid(Integer id);
+
+    /**
+     * 分类查询
+     * @param leibie
+     * @return
+     */
+    List<Audit> selaudit1(String leibie);
+
+    /**
+     * 获取所有类别
+     * @return
+     */
+    List<String> selleibie();
 }

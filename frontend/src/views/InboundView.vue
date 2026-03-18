@@ -4,6 +4,10 @@
       <h3>入库管理</h3>
       <div class="toolbar">
         <button class="btn ghost" @click="resetForm">清空</button>
+        <select class="table-input" v-model="selectedLeibie" @change="applyFilter">
+          <option value="all">全部类别</option>
+          <option v-for="item in rukuCats" :key="item" :value="item">{{ item }}</option>
+        </select>
         <button class="btn" @click="reload">刷新</button>
         <button class="btn primary" @click="submit" :disabled="!isValid">提交入库</button>
       </div>
@@ -16,6 +20,13 @@
       <label class="input">
         供应商
         <input v-model="form.supplier" placeholder="供应商" />
+      </label>
+      <label class="input">
+        类别
+        <select v-model="form.leibie">
+          <option value="">请选择类别</option>
+          <option v-for="item in rukuCats" :key="item" :value="item">{{ item }}</option>
+        </select>
       </label>
       <label class="input">
         数量
@@ -60,17 +71,19 @@
 </template>
 
 <script setup>
-import { computed, reactive } from "vue";
+import { computed, reactive, ref } from "vue";
 
 defineProps({
-  rukuList: { type: Array, default: () => [] }
+  rukuList: { type: Array, default: () => [] },
+  rukuCats: { type: Array, default: () => [] }
 });
 
-const emit = defineEmits(["submit-inbound", "refresh-all"]);
+const emit = defineEmits(["submit-inbound", "refresh-all", "filter-ruku"]);
 
 const form = reactive({
   name: "",
   supplier: "",
+  leibie: "",
   quantity: 1,
   price: 0
 });
@@ -79,6 +92,7 @@ const isValid = computed(() => {
   return (
     form.name.trim().length > 0 &&
     form.supplier.trim().length > 0 &&
+    form.leibie.trim().length > 0 &&
     Number.isFinite(form.quantity) &&
     form.quantity > 0 &&
     Number.isFinite(form.price) &&
@@ -86,9 +100,17 @@ const isValid = computed(() => {
   );
 });
 
+const selectedLeibie = ref("all");
+
+function applyFilter() {
+  const value = selectedLeibie.value === "all" ? "" : selectedLeibie.value;
+  emit("filter-ruku", value);
+}
+
 function resetForm() {
   form.name = "";
   form.supplier = "";
+  form.leibie = "";
   form.quantity = 1;
   form.price = 0;
 }
@@ -104,12 +126,7 @@ function formatTime(value) {
   return String(value).replace("T", " ").slice(0, 19);
 }
 
-
 function reload() {
   window.location.reload();
 }
 </script>
-
-
-
-

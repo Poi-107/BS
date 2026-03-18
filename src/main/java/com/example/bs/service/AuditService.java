@@ -111,4 +111,21 @@ public class AuditService {
     public Audit selid(Integer id) {
         return auditMapper.selid(id);
     }
+
+    /**
+     * 分类查询
+     * @param leibie
+     * @return
+     */
+    public List<Audit> selaudit1(String leibie) {
+        return auditMapper.selaudit1(leibie);
+    }
+
+    /**
+     * 获取所有类别
+     * @return
+     */
+    public List<String> selleibie() {
+        return auditMapper.selleibie();
+    }
 }

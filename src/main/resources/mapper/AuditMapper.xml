@@ -14,8 +14,8 @@
     </select>
 <!--    添加审核单-->
     <insert id="addaudit">
-        insert into audit(type,name,parther,price,quantity,money,user,createtime,status)
-        values(#{type},#{name},#{parther},#{price},#{quantity},#{money},#{user},#{createtime},#{status})
+        insert into audit(type,leibie,name,parther,price,quantity,money,user,createtime,status)
+        values(#{type},#{leibie},#{name},#{parther},#{price},#{quantity},#{money},#{user},#{createtime},#{status})
     </insert>
 <!--    审批表单-->
     <update id="upaudit" parameterType="com.example.bs.entity.Audit">
@@ -24,5 +24,13 @@
 <!--    根据id查询审核表-->
     <select id="selid" resultType="com.example.bs.entity.Audit">
         select * from audit where id=#{id}
+    </select>
+<!--    获取所有类别-->
+    <select id="selleibie" resultType="string">
+        select distinct leibie from audit
+    </select>
+<!--    分类查询-->
+    <select id="selaudit1" resultType="com.example.bs.entity.Audit">
+        select * from audit where leibie=#{leibie}
     </select>
 </mapper>

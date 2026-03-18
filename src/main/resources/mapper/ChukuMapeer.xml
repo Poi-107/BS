@@ -6,8 +6,8 @@
 
 <!--    出库-->
     <insert id="addchuku">
-        insert into chuku(name,client,price,quantity,money,cktime,user)
-        values(#{name},#{client},#{price},#{quantity},#{money},#{cktime},#{user})
+        insert into chuku(leibie,name,client,price,quantity,money,cktime,user)
+        values(#{leibie},#{name},#{client},#{price},#{quantity},#{money},#{cktime},#{user})
     </insert>
 <!--    查询出库单-->
     <select id="selchuku" resultType="com.example.bs.entity.Chuku">
@@ -48,6 +48,14 @@
         SELECT IFNULL(SUM(money),0)
         FROM chuku
         WHERE YEAR(cktime) = YEAR(CURDATE())
+    </select>
+<!--    分类查询-->
+    <select id="selchuku1" resultType="com.example.bs.entity.Chuku">
+        select * from chuku where leibie=#{leibie}
+    </select>
+<!--    获取所有类别-->
+    <select id="selleibie1" resultType="string">
+        select DISTINCT leibie from chuku
     </select>
 </mapper>
 

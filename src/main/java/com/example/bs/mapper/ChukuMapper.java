@@ -49,4 +49,17 @@ public interface ChukuMapper {
      * @return
      */
     int yearsale();
+
+    /**
+     * 分类查询
+     * @param leibie
+     * @return
+     */
+    List<Chuku> selchuku1(String leibie);
+
+    /**
+     * 获取所有类别
+     * @return
+     */
+    List<String> selleibie1();
 }

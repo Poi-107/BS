@@ -8,10 +8,7 @@ import com.example.bs.service.ChukuService;
 import com.example.bs.tools.UserContext;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -28,6 +25,20 @@ public class ChukuController {
     public Result selchuku(){
         log.info("请求查询出库单");
         List<Chuku> chuku=chukuService.selchuku();
+        return Result.success(chuku);
+    }
+//    获取所有类别
+    @GetMapping("/selleibie1")
+    public Result selleibie(){
+        log.info("请求获取所有类别");
+        List<String> chuku=chukuService.selleibie1();
+        return Result.success(chuku);
+    }
+//    分类查询
+    @GetMapping("/selchuku1")
+    public Result selchuku1(@RequestParam String  leibie){
+        log.info("请求分类查询出库单");
+        List<Chuku> chuku=chukuService.selchuku1(leibie);
         return Result.success(chuku);
     }
     //出库

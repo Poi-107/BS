@@ -6,6 +6,10 @@
         <button class="btn" :class="{ primary: auditFilter === 'all' }" @click="$emit('set-audit-filter', 'all')">全部</button>
         <button class="btn" :class="{ primary: auditFilter === 'pending' }" @click="$emit('set-audit-filter', 'pending')">未审核</button>
         <button class="btn" :class="{ primary: auditFilter === 'done' }" @click="$emit('set-audit-filter', 'done')">已审核</button>
+        <select class="table-input" v-model="selectedLeibie" @change="applyFilter">
+          <option value="all">全部类别</option>
+          <option v-for="item in auditCats" :key="item" :value="item">{{ item }}</option>
+        </select>
         <button class="btn ghost" @click="reload">刷新</button>
       </div>
     </div>
@@ -59,10 +63,22 @@
 </template>
 
 <script setup>
+import { ref } from "vue";
+
+const emit = defineEmits(["filter-audit"]);
+
 defineProps({
   auditView: { type: Array, default: () => [] },
-  auditFilter: { type: String, default: "all" }
+  auditFilter: { type: String, default: "all" },
+  auditCats: { type: Array, default: () => [] }
 });
+
+const selectedLeibie = ref("all");
+
+function applyFilter() {
+  const value = selectedLeibie.value === "all" ? "" : selectedLeibie.value;
+  emit("filter-audit", value);
+}
 
 function statusLabel(status) {
   if (status === 0 || status === "0") return "未审核";
@@ -87,13 +103,7 @@ function formatTime(value) {
   return String(value).replace("T", " ").slice(0, 19);
 }
 
-
 function reload() {
   window.location.reload();
 }
 </script>
-
-
-
-
-

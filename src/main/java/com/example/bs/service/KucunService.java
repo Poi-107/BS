@@ -37,4 +37,21 @@ public class KucunService {
     public Kucun selname(String name) {
         return kucunMapper.selname(name);
     }
+
+    /**
+     * 根据类别查询库存
+     * @param leibie
+     * @return
+     */
+    public List<Kucun> selleibie(String leibie) {
+        return kucunMapper.selleibie(leibie);
+    }
+
+    /**
+     * 获取所有类别
+     * @return
+     */
+    public List<String> selleibie2() {
+        return kucunMapper.selleibie2();
+    }
 }

@@ -140,6 +140,10 @@
         :users="users"
         :suppliers="suppliers"
         :clients="clients"
+        :ruku-cats="rukuCats"
+        :chuku-cats="chukuCats"
+        :kucun-cats="kucunCats"
+        :audit-cats="auditCats"
         :stats="stats"
         :total-quantity="totalQuantity"
         :low-stock-count="lowStockCount"
@@ -162,6 +166,10 @@
         @delete-supplier="deleteSupplier"
         @update-client="updateClient"
         @delete-client="deleteClient"
+        @filter-ruku="filterRuku"
+        @filter-chuku="filterChuku"
+        @filter-kucun="filterKucun"
+        @filter-audit="filterAudit"
       />
     </main>
   </div>
@@ -202,6 +210,10 @@ const logList = ref([]);
 const users = ref([]);
 const suppliers = ref([]);
 const clients = ref([]);
+const rukuCats = ref([]);
+const chukuCats = ref([]);
+const kucunCats = ref([]);
+const auditCats = ref([]);
 const sucliBadge = computed(() => suppliers.value.length + clients.value.length);
 const stats = ref({
   jinruku: 0,
@@ -327,22 +339,31 @@ function sortByIdAsc(list) {
   return [...(list || [])].sort((a, b) => (Number(a.id) || 0) - (Number(b.id) || 0));
 }
 
-async function loadInventory() {
-  const res = await apiGet("/bs/selkucun");
+async function loadInventory(leibie) {
+  const path = leibie ? `/bs/selkucun1?leibie=${encodeURIComponent(leibie)}` : "/bs/selkucun";
+  const res = await apiGet(path);
   inventory.value = normalizeInventory(res.data || []);
 }
 
-async function loadRuku() {
-  const res = await apiGet("/bs/selruku");
+async function loadRuku(leibie) {
+  const path = leibie ? `/bs/selruku1?leibie=${encodeURIComponent(leibie)}` : "/bs/selruku";
+  const res = await apiGet(path);
   rukuList.value = sortNewest(res.data || []);
 }
 
-async function loadChuku() {
-  const res = await apiGet("/bs/selchuku");
+async function loadChuku(leibie) {
+  const path = leibie ? `/bs/selchuku1?leibie=${encodeURIComponent(leibie)}` : "/bs/selchuku";
+  const res = await apiGet(path);
   chukuList.value = sortNewest(res.data || []);
 }
 
-async function loadAudit() {
+async function loadAudit(leibie) {
+  if (leibie) {
+    const allRes = await apiGet(`/bs/selaudit1?leibie=${encodeURIComponent(leibie)}`);
+    auditAll.value = sortAudit(allRes.data || []);
+    auditPending.value = auditAll.value.filter((item) => item.status === 0 || item.status === "0");
+    return;
+  }
   const [allRes, pendingRes] = await Promise.all([
     apiGet("/bs/selaudit"),
     apiGet("/bs/sel0audit")
@@ -359,6 +380,49 @@ async function loadLog() {
 async function loadUsers() {
   const res = await apiGet("/bs/seluser");
   users.value = sortByIdAsc(res.data || []);
+}
+
+async function loadRukuCats() {
+  const res = await apiGet("/bs/selleibie3");
+  rukuCats.value = res.data || [];
+}
+
+async function loadChukuCats() {
+  const res = await apiGet("/bs/selleibie1");
+  chukuCats.value = res.data || [];
+}
+
+async function loadKucunCats() {
+  const res = await apiGet("/bs/selleibie2");
+  kucunCats.value = res.data || [];
+}
+
+async function loadAuditCats() {
+  const res = await apiGet("/bs/selleibie");
+  auditCats.value = res.data || [];
+}
+function filterRuku(leibie) {
+  loadRuku(leibie || "").catch(() => {
+    notify("error", "入库分类查询失败");
+  });
+}
+
+function filterChuku(leibie) {
+  loadChuku(leibie || "").catch(() => {
+    notify("error", "出库分类查询失败");
+  });
+}
+
+function filterKucun(leibie) {
+  loadInventory(leibie || "").catch(() => {
+    notify("error", "库存分类查询失败");
+  });
+}
+
+function filterAudit(leibie) {
+  loadAudit(leibie || "").catch(() => {
+    notify("error", "审核分类查询失败");
+  });
 }
 
 async function loadSuppliers(name) {
@@ -413,7 +477,7 @@ async function loadStats() {
 
 async function loadAll() {
   try {
-    await Promise.all([loadInventory(), loadRuku(), loadChuku(), loadAudit(), loadLog(), loadUsers(), loadSuppliers(), loadClients(), loadStats()]);
+    await Promise.all([loadInventory(), loadRuku(), loadChuku(), loadAudit(), loadLog(), loadUsers(), loadSuppliers(), loadClients(), loadRukuCats(), loadChukuCats(), loadKucunCats(), loadAuditCats(), loadStats()]);
     nav.value = [
       { key: "home", label: "首页", badge: "", path: "/home" },
       { key: "inventory", label: "库存台账", badge: String(inventory.value.length), path: "/inventory" },
@@ -475,6 +539,7 @@ async function submitOutbound(form) {
 function validateInbound(form) {
   if (!form || !form.name || !form.name.trim()) return "请输入物料名称";
   if (!form.supplier || !form.supplier.trim()) return "请输入供应商";
+  if (!form.leibie || !form.leibie.trim()) return "请选择类别";
   if (!Number.isFinite(form.quantity) || form.quantity <= 0) return "数量必须大于 0";
   if (!Number.isFinite(form.price) || form.price < 0) return "单价不能小于 0";
   return "";
@@ -483,6 +548,7 @@ function validateInbound(form) {
 function validateOutbound(form) {
   if (!form || !form.name || !form.name.trim()) return "请输入物料名称";
   if (!form.client || !form.client.trim()) return "请输入客户";
+  if (!form.leibie || !form.leibie.trim()) return "请选择类别";
   if (!Number.isFinite(form.quantity) || form.quantity <= 0) return "数量必须大于 0";
   if (!Number.isFinite(form.price) || form.price < 0) return "单价不能小于 0";
   return "";
@@ -715,6 +781,14 @@ onMounted(() => {
   }
 });
 </script>
+
+
+
+
+
+
+
+
 
 
 

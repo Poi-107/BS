@@ -21,6 +21,10 @@
     <div class="panel-header">
       <h3>库存台账</h3>
       <div class="toolbar">
+        <select class="table-input" v-model="selectedLeibie" @change="applyFilter">
+          <option value="all">全部类别</option>
+          <option v-for="item in kucunCats" :key="item" :value="item">{{ item }}</option>
+        </select>
         <button class="btn" @click="reload">刷新</button>
       </div>
     </div>
@@ -52,27 +56,27 @@
 </template>
 
 <script setup>
+import { ref } from "vue";
+
+const emit = defineEmits(["refresh-all", "filter-kucun"]);
+
 defineProps({
   inventory: { type: Array, default: () => [] },
+  kucunCats: { type: Array, default: () => [] },
   totalQuantity: { type: Number, default: 0 },
   lowStockCount: { type: Number, default: 0 },
   rukuList: { type: Array, default: () => [] },
   chukuList: { type: Array, default: () => [] }
 });
 
-defineEmits(["refresh-all"]);
+const selectedLeibie = ref("all");
 
+function applyFilter() {
+  const value = selectedLeibie.value === "all" ? "" : selectedLeibie.value;
+  emit("filter-kucun", value);
+}
 
 function reload() {
   window.location.reload();
 }
 </script>
-
-
-
-
-
-
-
-
-

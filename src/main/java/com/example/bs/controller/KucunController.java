@@ -31,6 +31,20 @@ public class KucunController {
         Kucun kucun=kucunService.selname(k.getName());
         return Result.success(kucun);
     }
+//    分类查询
+    @GetMapping("/selkucun1")
+    public Result selleibie(@RequestParam String leibie){
+        log.info("请求分类查询库存");
+        List<Kucun> kucun=kucunService.selleibie(leibie);
+        return Result.success(kucun);
+    }
+//    获取所有类别
+    @GetMapping("/selleibie2")
+    public Result selleibie() {
+        log.info("请求获取所有类别");
+        List<String> kucunList = kucunService.selleibie2();
+        return Result.success(kucunList);
+    }
 
 
 }

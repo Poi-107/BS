@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 public class Audit {
     private Integer id;
     private String type;
+    private String leibie;
     private String name;
     private String parther;
     private Integer price;

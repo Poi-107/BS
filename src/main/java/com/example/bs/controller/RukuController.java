@@ -26,7 +26,20 @@ public class RukuController {
         List<Ruku> ruku=rukuService.selruku();
         return Result.success(ruku);
     }
-
+//    分类查询
+    @GetMapping("/selruku1")
+    public Result selruku1(@RequestParam String leibie){
+        log.info("请求分类查询入库单");
+        List<Ruku> ruku=rukuService.selruku1(leibie);
+        return Result.success(ruku);
+    }
+//    获取所有类别
+    @GetMapping("/selleibie3")
+    public Result selleibie3() {
+        log.info("请求获取所有类别");
+        List<String> auditList = rukuService.selleibie();
+        return Result.success(auditList);
+    }
 //    添加入库
     @AopAnnotation(target = "入库",action = "进行入库")
     @PostMapping("/addruku")

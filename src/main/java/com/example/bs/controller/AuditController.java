@@ -34,6 +34,20 @@ public class AuditController {
         Audit audit=auditService.selid(a.getId());
         return Result.success(audit);
     }
+//    获取所有类别
+    @GetMapping("/selleibie")
+    public Result selleibie() {
+        log.info("请求获取所有类别");
+        List<String> auditList = auditService.selleibie();
+        return Result.success(auditList);
+    }
+//    分类查询
+    @GetMapping("/selaudit1")
+    public Result selaudit1(@RequestParam String leibie) {
+        log.info("请求分类查询审核表");
+        List<Audit> auditList = auditService.selaudit1(leibie);
+        return Result.success(auditList);
+    }
 
     //待审核
     @GetMapping("/sel0audit")

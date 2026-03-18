@@ -112,4 +112,21 @@ public class ChukuService {
     public int yearsale() {
         return chukuMapper.yearsale();
     }
+
+    /**
+     * 分类查询
+     * @param leibie
+     * @return
+     */
+    public List<Chuku> selchuku1(String leibie) {
+        return chukuMapper.selchuku1(leibie);
+    }
+
+    /**
+     * 获取所有类别
+     * @return
+     */
+    public List<String> selleibie1() {
+        return chukuMapper.selleibie1();
+    }
 }

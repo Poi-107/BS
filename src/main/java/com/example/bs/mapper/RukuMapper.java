@@ -48,4 +48,16 @@ public interface RukuMapper {
      * @return
      */
     int yearpur();
+    /**
+     * 分类查询
+     * @param ruku
+     * @return
+     */
+    List<Ruku> selruku1(String leibie);
+
+    /**
+     * 获取所有类别
+     * @return
+     */
+    List<String> selleibie();
 }

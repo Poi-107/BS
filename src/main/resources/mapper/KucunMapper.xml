@@ -10,16 +10,24 @@
     </select>
 <!--    添加入库 没有该物品-->
     <insert id="addkucun">
-        insert into kucun(name,quantity) values(#{name},#{quantity})
+        insert into kucun(leibie,name,quantity) values(#{leibie},#{name},#{quantity})
     </insert>
 <!--    添加入库 有该物品,入库-->
     <insert id="upkucun">
         update kucun set quantity=#{quantity} where name=#{name}
     </insert>
-
 <!--    根据name查询库存-->
     <select id="selname" resultType="com.example.bs.entity.Kucun">
         select * from kucun where name=#{name}
     </select>
+<!--    分类查询-->
+    <select id="selleibie" resultType="com.example.bs.entity.Kucun">
+        select * from kucun where leibie=#{leibie}
+    </select>
+<!--    获取所有类别-->
+    <select id="selleibie2" resultType="string">
+        select distinct leibie from kucun
+    </select>
+
 
 </mapper>

@@ -60,4 +60,17 @@
         FROM ruku
         WHERE YEAR(rktime) = YEAR(CURDATE())
     </select>
+<!--    按照物品名称查询-->
+    <select id="selruku3" resultType="com.example.bs.entity.Ruku">
+        select * from ruku where name =#{name}
+    </select>
+<!--    按照供应商名称查询-->
+    <select id="selruku4" resultType="com.example.bs.entity.Ruku">
+        select * from ruku where supplier =#{supplier}
+    </select>
+<!--    按照操作人名称查询-->
+    <select id="selruku5" resultType="com.example.bs.entity.Ruku">
+        select * from ruku where user =#{user}
+    </select>
+
 </mapper>

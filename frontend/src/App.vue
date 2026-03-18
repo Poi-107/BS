@@ -258,7 +258,15 @@
         @update-client="updateClient"
         @delete-client="deleteClient"
         @filter-ruku="filterRuku"
+        @query-ruku-name="queryRukuByName"
+        @query-ruku-supplier="queryRukuBySupplier"
+        @query-ruku-user="queryRukuByUser"
+        @reset-ruku-query="resetRukuQuery"
         @filter-chuku="filterChuku"
+        @query-chuku-name="queryChukuByName"
+        @query-chuku-client="queryChukuByClient"
+        @query-chuku-user="queryChukuByUser"
+        @reset-chuku-query="resetChukuQuery"
         @filter-kucun="filterKucun"
         @filter-audit="filterAudit"
       />
@@ -278,13 +286,23 @@ import { apiGet, apiPost, clearToken, getToken, setToken } from "./services/api"
 const router = useRouter();
 const route = useRoute();
 
+function readNavOpen(key, fallback = false) {
+  const raw = localStorage.getItem(key);
+  if (raw === null) return fallback;
+  return raw === "1";
+}
+
+function writeNavOpen(key, value) {
+  localStorage.setItem(key, value ? "1" : "0");
+}
+
 const currentUser = ref({});
 const currentUsername = computed(() => currentUser.value.username || "");
 const currentPer = computed(() => Number(currentUser.value.per ?? 0));
 const nav = ref([]);
-const sucliOpen = ref(true);
-const inboundOpen = ref(true);
-const outboundOpen = ref(true);
+const sucliOpen = ref(readNavOpen("bs_nav_sucli_open", false));
+const inboundOpen = ref(readNavOpen("bs_nav_inbound_open", false));
+const outboundOpen = ref(readNavOpen("bs_nav_outbound_open", false));
 
 
 const inventory = ref([]);
@@ -585,6 +603,78 @@ function filterKucun(leibie) {
 function filterAudit(leibie) {
   loadAudit(leibie || "").catch(() => {
     notify("error", "审核分类查询失败");
+  });
+}
+
+async function queryRukuByName(name) {
+  const keyword = String(name || "").trim();
+  if (!keyword) {
+    await loadRuku();
+    return;
+  }
+  const res = await apiGet(`/bs/selruku3?name=${encodeURIComponent(keyword)}`);
+  rukuList.value = sortNewest(res.data || []);
+}
+
+async function queryRukuBySupplier(supplier) {
+  const keyword = String(supplier || "").trim();
+  if (!keyword) {
+    await loadRuku();
+    return;
+  }
+  const res = await apiGet(`/bs/selruku4?supplier=${encodeURIComponent(keyword)}`);
+  rukuList.value = sortNewest(res.data || []);
+}
+
+async function queryRukuByUser(user) {
+  const keyword = String(user || "").trim();
+  if (!keyword) {
+    await loadRuku();
+    return;
+  }
+  const res = await apiGet(`/bs/selruku5?user=${encodeURIComponent(keyword)}`);
+  rukuList.value = sortNewest(res.data || []);
+}
+
+function resetRukuQuery() {
+  loadRuku().catch(() => {
+    notify("error", "重置入库查询失败");
+  });
+}
+
+async function queryChukuByName(name) {
+  const keyword = String(name || "").trim();
+  if (!keyword) {
+    await loadChuku();
+    return;
+  }
+  const res = await apiGet(`/bs/selchuku3?name=${encodeURIComponent(keyword)}`);
+  chukuList.value = sortNewest(res.data || []);
+}
+
+async function queryChukuByClient(client) {
+  const keyword = String(client || "").trim();
+  if (!keyword) {
+    await loadChuku();
+    return;
+  }
+  const res = await apiGet(`/bs/selchuku4?client=${encodeURIComponent(keyword)}`);
+  chukuList.value = sortNewest(res.data || []);
+}
+
+async function queryChukuByUser(user) {
+  const keyword = String(user || "").trim();
+  if (!keyword) {
+    await loadChuku();
+    return;
+  }
+  const res = await apiGet(`/bs/selchuku5?user=${encodeURIComponent(keyword)}`);
+  chukuList.value = sortNewest(res.data || []);
+}
+
+function resetChukuQuery() {
+  loadChuku().catch(() => {
+    notify("error", "重置出库查询失败");
   });
 }
 
@@ -933,6 +1023,18 @@ watch(token, (value) => {
   }
 });
 
+watch(sucliOpen, (value) => {
+  writeNavOpen("bs_nav_sucli_open", value);
+});
+
+watch(inboundOpen, (value) => {
+  writeNavOpen("bs_nav_inbound_open", value);
+});
+
+watch(outboundOpen, (value) => {
+  writeNavOpen("bs_nav_outbound_open", value);
+});
+
 onMounted(() => {
   if (token.value) {
     loadAll().catch(() => {
@@ -944,6 +1046,10 @@ onMounted(() => {
   }
 });
 </script>
+
+
+
+
 
 
 

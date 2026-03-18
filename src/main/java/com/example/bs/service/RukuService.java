@@ -121,4 +121,31 @@ public class RukuService {
     public List<Ruku> selruku2(String user) {
         return rukuMapper.selruku2(user);
     }
+
+    /**
+     * 按物品名称查询入库单
+     * @param name
+     * @return
+     */
+    public List<Ruku> selruku3(String name) {
+        return rukuMapper.selruku3(name);
+    }
+
+    /**
+     * 按供应商名称查询
+     * @param supplier
+     * @return
+     */
+    public List<Ruku> selruku4(String supplier) {
+        return rukuMapper.selruku4(supplier);
+    }
+
+    /**
+     * 按操作人查询
+     * @param user
+     * @return
+     */
+    public List<Ruku> selruku5(String user) {
+        return rukuMapper.selruku5(user);
+    }
 }

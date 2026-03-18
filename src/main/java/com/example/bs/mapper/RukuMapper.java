@@ -67,4 +67,25 @@ public interface RukuMapper {
      * @return
      */
     List<Ruku> selruku2(String user);
+
+    /**
+     * 按物品名称查询
+     * @param name
+     * @return
+     */
+    List<Ruku> selruku3(String name);
+
+    /**
+     * 按供应商名称查询
+     * @param supplier
+     * @return
+     */
+    List<Ruku> selruku4(String supplier);
+
+    /**
+     * 根据user查询入库单
+     * @param user
+     * @return
+     */
+    List<Ruku> selruku5(String user);
 }

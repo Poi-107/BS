@@ -63,5 +63,26 @@ public class ChukuController {
         chukuService.addchuku(chuku);
         return Result.error("出库成功！");
     }
-
+//    按物品名称查询
+    @GetMapping("/selchuku3")
+    public Result selchuku3(@RequestBody Chuku c){
+        log.info("按物品名称查询");
+        List<Chuku> chuku=chukuService.selchuku3(c.getName());
+        return Result.success(chuku);
+    }
+//    按客户名称查询
+    @GetMapping("/selchuku4")
+    public Result selchuku4(@RequestBody Chuku c){
+        log.info("按客户名称查询");
+        List<Chuku> chuku=chukuService.selchuku4(c.getClient());
+        return Result.success(chuku);
+    }
+//    按user操作人查询
+    @Per(1)
+    @GetMapping("/selchuku5")
+    public Result selchuku5(@RequestBody Chuku c){
+        log.info("按user操作人查询");
+        List<Chuku> chuku=chukuService.selchuku5(c.getUser());
+        return Result.success(chuku);
+    }
 }

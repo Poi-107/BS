@@ -138,4 +138,29 @@ public class ChukuService {
     public List<Chuku> selchuku2(String user) {
         return chukuMapper.selchuku2(user);
     }
+
+    /**
+     * 按物品名称查询
+     * @return
+     */
+    public List<Chuku> selchuku3(String name) {
+        return chukuMapper.selchuku3(name);
+    }
+
+    /**
+     * 按客户名称查询
+     * @return
+     */
+    public List<Chuku> selchuku4(String client) {
+        return chukuMapper.selchuku4(client);
+    }
+
+    /**
+     * 按照操作人查询
+     * @param user
+     * @return
+     */
+    public List<Chuku> selchuku5(String user) {
+        return chukuMapper.selchuku5(user);
+    }
 }

@@ -64,9 +64,27 @@ public interface ChukuMapper {
     List<String> selleibie1();
 
     /**
-     * 根据用户查询
+     * 查询当前用户出库单
      * @param user
      * @return
      */
     List<Chuku> selchuku2(String user);
+
+    /**
+     * 按照物品名称查询
+     * @return
+     */
+    List<Chuku> selchuku3(String name);
+
+    /**
+     * 按照客户名称查询
+     * @return
+     */
+    List<Chuku> selchuku4(String client);
+
+    /**
+     * 按照user查询出库单
+     * @return
+     */
+    List<Chuku> selchuku5(String user);
 }

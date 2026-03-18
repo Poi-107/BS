@@ -60,4 +60,26 @@ public class RukuController {
         rukuService.addruku(ruku);
         return Result.success("添加成功！");
     }
+//    按照物品名称查询
+    @GetMapping("/selruku3")
+    public Result selruku3(@RequestBody Ruku r){
+        log.info("按物品名称查询");
+        List<Ruku> ruku=rukuService.selruku3(r.getName());
+        return Result.success(ruku);
+    }
+//    按照供应商名称查询
+    @GetMapping("/selruku4")
+    public Result selruku4(@RequestBody Ruku r){
+        log.info("按供应商名称查询");
+        List<Ruku> ruku=rukuService.selruku4(r.getSupplier());
+        return Result.success(ruku);
+    }
+//    按照操作人查询
+    @Per(1)
+    @GetMapping("/selruku5")
+    public Result selruku5(@RequestBody Ruku r){
+        log.info("按操作人查询");
+        List<Ruku> ruku=rukuService.selruku5(r.getUser());
+        return Result.success(ruku);
+    }
 }

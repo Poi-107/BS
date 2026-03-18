@@ -17,6 +17,7 @@ async function request(path, options = {}) {
   const token = getToken();
   if (token) {
     headers.token = token;
+    headers["bs_token"] = token;
   }
   const res = await fetch(path, {
     credentials: "include",
@@ -43,3 +44,9 @@ export async function apiPost(path, data) {
   });
 }
 
+export async function apiUpload(path, formData) {
+  return request(path, {
+    method: "POST",
+    body: formData
+  });
+}

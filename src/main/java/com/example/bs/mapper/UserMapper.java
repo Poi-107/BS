@@ -2,6 +2,7 @@ package com.example.bs.mapper;
 
 import com.example.bs.entity.User;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -59,7 +60,8 @@ public interface UserMapper {
      * @param id
      * @param s
      */
-    void updateAvatar(Integer id, String s);
+    void updateAvatar(@Param("id") Integer id,
+                      @Param("avatar_url") String avatarUrl);
 
     /**
      * 查询用户头像
@@ -67,4 +69,11 @@ public interface UserMapper {
      * @return
      */
     String selav(Integer id);
+
+    /**
+     * 根据id查询用户
+     * @param id
+     * @return
+     */
+    Object seluser2(Integer id);
 }

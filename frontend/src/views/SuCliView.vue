@@ -17,7 +17,7 @@
     </div>
 
     <div class="table-wrap">
-      <table class="table" v-if="activeTab === 'supplier'">
+      <table class="table sucli-table" v-if="activeTab === 'supplier'">
         <thead>
           <tr>
             <th>编号</th>
@@ -33,21 +33,23 @@
         <tbody>
           <tr v-for="row in localSuppliers" :key="row.id">
             <td>{{ row.id }}</td>
-            <td><input class="table-input" v-model="row.name" /></td>
-            <td><input class="table-input" v-model="row.contact" /></td>
-            <td><input class="table-input" v-model="row.phone" /></td>
-            <td><input class="table-input" v-model="row.address" /></td>
-            <td><input class="table-input" v-model="row.email" /></td>
+            <td><template v-if="row._editing"><input class="table-input" v-model="row.name" /></template><template v-else>{{ row.name }}</template></td>
+            <td><template v-if="row._editing"><input class="table-input" v-model="row.contact" /></template><template v-else>{{ row.contact }}</template></td>
+            <td><template v-if="row._editing"><input class="table-input" v-model="row.phone" /></template><template v-else>{{ row.phone }}</template></td>
+            <td><template v-if="row._editing"><input class="table-input" v-model="row.address" /></template><template v-else>{{ row.address }}</template></td>
+            <td><template v-if="row._editing"><input class="table-input" v-model="row.email" /></template><template v-else>{{ row.email }}</template></td>
             <td>{{ formatTime(row.crtime) }}</td>
             <td>
-              <button class="btn primary" style="margin-right: 8px;" @click="saveSupplier(row)" :disabled="!isSupplierChanged(row)">保存</button>
-              <button class="btn ghost" @click="openDelete('supplier', row)">删除</button>
+              <button class="btn" v-if="!row._editing" @click="editRow(row)">修改</button>
+              <button class="btn primary" style="margin-right: 8px;" v-if="row._editing" @click="saveSupplier(row)" :disabled="!isSupplierChanged(row)">保存</button>
+              <button class="btn ghost" v-if="row._editing" @click="cancelEdit(row, 'supplier')">取消</button>
+              <button class="btn danger" v-else @click="openDelete('supplier', row)">删除</button>
             </td>
           </tr>
         </tbody>
       </table>
 
-      <table class="table" v-else>
+      <table class="table sucli-table" v-else>
         <thead>
           <tr>
             <th>编号</th>
@@ -63,15 +65,17 @@
         <tbody>
           <tr v-for="row in localClients" :key="row.id">
             <td>{{ row.id }}</td>
-            <td><input class="table-input" v-model="row.name" /></td>
-            <td><input class="table-input" v-model="row.contact" /></td>
-            <td><input class="table-input" v-model="row.phone" /></td>
-            <td><input class="table-input" v-model="row.address" /></td>
-            <td><input class="table-input" v-model="row.email" /></td>
+            <td><template v-if="row._editing"><input class="table-input" v-model="row.name" /></template><template v-else>{{ row.name }}</template></td>
+            <td><template v-if="row._editing"><input class="table-input" v-model="row.contact" /></template><template v-else>{{ row.contact }}</template></td>
+            <td><template v-if="row._editing"><input class="table-input" v-model="row.phone" /></template><template v-else>{{ row.phone }}</template></td>
+            <td><template v-if="row._editing"><input class="table-input" v-model="row.address" /></template><template v-else>{{ row.address }}</template></td>
+            <td><template v-if="row._editing"><input class="table-input" v-model="row.email" /></template><template v-else>{{ row.email }}</template></td>
             <td>{{ formatTime(row.crtime) }}</td>
             <td>
-              <button class="btn primary" style="margin-right: 8px;" @click="saveClient(row)" :disabled="!isClientChanged(row)">保存</button>
-              <button class="btn ghost" @click="openDelete('client', row)">删除</button>
+              <button class="btn" v-if="!row._editing" @click="editRow(row)">修改</button>
+              <button class="btn primary" style="margin-right: 8px;" v-if="row._editing" @click="saveClient(row)" :disabled="!isClientChanged(row)">保存</button>
+              <button class="btn ghost" v-if="row._editing" @click="cancelEdit(row, 'client')">取消</button>
+              <button class="btn danger" v-else @click="openDelete('client', row)">删除</button>
             </td>
           </tr>
         </tbody>
@@ -172,6 +176,7 @@ watch(
   (list) => {
     localSuppliers.value = (list || []).map((item) => ({
       ...item,
+      _editing: false,
       _origin: {
         name: item.name,
         contact: item.contact,
@@ -189,6 +194,7 @@ watch(
   (list) => {
     localClients.value = (list || []).map((item) => ({
       ...item,
+      _editing: false,
       _origin: {
         name: item.name,
         contact: item.contact,
@@ -245,12 +251,27 @@ function isClientChanged(row) {
   );
 }
 
+function editRow(row) {
+  row._editing = true;
+}
+
+function cancelEdit(row, type) {
+  row._editing = false;
+  row.name = row._origin.name;
+  row.contact = row._origin.contact;
+  row.phone = row._origin.phone;
+  row.address = row._origin.address;
+  row.email = row._origin.email;
+}
+
 function saveSupplier(row) {
   emit("update-supplier", { ...row });
+  row._editing = false;
 }
 
 function saveClient(row) {
   emit("update-client", { ...row });
+  row._editing = false;
 }
 
 function search() {
@@ -332,3 +353,5 @@ function formatTime(value) {
   return String(value).replace("T", " ").slice(0, 19);
 }
 </script>
+
+

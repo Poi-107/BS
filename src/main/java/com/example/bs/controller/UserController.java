@@ -26,26 +26,26 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    //    登录接口
+    // 登录接口
     @PostMapping("/login")
     public Result login(@RequestBody User user) {
         log.info("请求登录");
         User u = userService.login(user);
         if (u != null) {
-            //创建JwT令牌
+            // 创建 JWT 令牌
             Map<String, Object> claims = new HashMap<>();
             claims.put("id", u.getId());
             claims.put("username", u.getUsername());
             claims.put("per", u.getPer());
             String jwt = Jwt.generateJwt(new HashMap<>(claims));
-            //响应数据
+            // 响应数据
             return Result.success(jwt);
-//            return Result.success("登录成功！");
-        } else
+        } else {
             return Result.error("用户名不存在或密码错误！");
+        }
     }
 
-    //    注册接口
+    // 注册接口
     @PostMapping("/res")
     public Result res(@RequestBody User user) {
         log.info("请求注册");
@@ -57,25 +57,34 @@ public class UserController {
         return Result.error("用户已存在！");
     }
 
-    //    修改用户权限（管理）
+    // 修改用户权限（管理员）
     @AopAnnotation(target = "用户表", action = "修改用户权限")
     @PostMapping("/upuser")
     public Result upuser(@RequestBody User user) {
-        log.info("请求修改用户");
+        log.info("请求修改用户权限");
         userService.upuser(user);
         return Result.success();
     }
 
-    //    修改用户信息（用户）
+    // 根据 id 获取个人信息
+    @GetMapping("/seluser2")
+    public Result seluser2(HttpServletRequest request) {
+        String token = request.getHeader("bs_token");
+        Claims claims = Jwt.parseJwt(token);
+        Integer id = Integer.valueOf(claims.get("id").toString());
+        return Result.success(userService.seluser2(id));
+    }
+
+    // 修改用户信息（用户）
     @AopAnnotation(target = "用户表", action = "修改用户信息")
     @PostMapping("/upuser2")
     public Result upuser2(@RequestBody User user) {
-        log.info("请求修改用户");
+        log.info("请求修改用户信息");
         userService.upuser2(user);
         return Result.success();
     }
 
-    //    删除用户
+    // 删除用户
     @AopAnnotation(target = "用户表", action = "删除用户")
     @PostMapping("/deluser")
     public Result deluser(@RequestBody User user) {
@@ -84,7 +93,7 @@ public class UserController {
         return Result.success("删除成功！");
     }
 
-    //    查询所有用户
+    // 查询所有用户
     @GetMapping("/seluser")
     public Result seluser() {
         log.info("请求查询所有用户");
@@ -92,18 +101,22 @@ public class UserController {
         return Result.success(userList);
     }
 
-    //上传头像
+    // 上传头像
     @AopAnnotation(target = "用户表", action = "上传头像")
     @PostMapping("/uploadAvatar")
     public Result uploadAvatar(@RequestParam("file") MultipartFile file, HttpServletRequest request) {
-        //解析token，获取 用户id
+        // 解析 token，获取用户 id
         String token = request.getHeader("bs_token");
         Claims claims = Jwt.parseJwt(token);
         Integer id = Integer.valueOf(claims.get("id").toString());
+
+        // 读取旧头像
+        String oldAvatar = userService.selav(id);
+
         // 保存文件到本地
         String filename = UUID.randomUUID() + "_" + file.getOriginalFilename();
-        String path = "F:/Idea/touxiang/";
-        //检查目录
+        String path = "F:/Idea/bstouxiang/";
+        // 检查目录
         File directory = new File(path);
         if (!directory.exists()) {
             directory.mkdirs();
@@ -116,21 +129,31 @@ public class UserController {
             return Result.error("文件保存失败");
         }
 
-        // 更新数据库中用户的头像路径
+        // 更新数据库中的头像路径
         userService.updateAvatar(id, "/uploads/" + filename);
+
+        // 删除旧头像文件
+        if (oldAvatar != null && !oldAvatar.isEmpty()) {
+            String oldName = oldAvatar.startsWith("/uploads/")
+                    ? oldAvatar.substring("/uploads/".length())
+                    : oldAvatar;
+            File oldFile = new File(path + oldName);
+            if (oldFile.exists()) {
+                oldFile.delete();
+            }
+        }
 
         // 返回头像 URL
         return Result.success("/uploads/" + filename);
     }
 
-    //获取头像url
+    // 获取头像 url
     @GetMapping("/selav")
     public Result selav(HttpServletRequest request) {
-        String token = request.getHeader("token");
+        String token = request.getHeader("bs_token");
         Claims claims = Jwt.parseJwt(token);
         Integer id = Integer.valueOf(claims.get("id").toString());
         String av = userService.selav(id);
         return Result.success(av);
     }
-
 }

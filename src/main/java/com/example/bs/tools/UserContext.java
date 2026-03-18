@@ -46,6 +46,6 @@ public class UserContext {
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         if (attributes == null) return null;
         HttpServletRequest request = attributes.getRequest();
-        return request.getHeader("token");
+        return request.getHeader("bs_token");
     }
 }

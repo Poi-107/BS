@@ -89,4 +89,13 @@ public class UserService {
     public String selav(Integer id) {
         return userMapper.selav(id);
     }
+
+    /**
+     * 根据id获取用户信息
+     * @param id
+     * @return
+     */
+    public Object seluser2(Integer id) {
+        return userMapper.seluser2(id);
+    }
 }

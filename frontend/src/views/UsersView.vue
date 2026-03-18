@@ -11,16 +11,26 @@
         <thead>
           <tr>
             <th>编号</th>
-            <th>用户名</th>
-            <th>权限</th>
             <th>头像</th>
+            <th>用户名</th>
+            <th>号码</th>
+            <th>邮箱</th>
+            <th>地址</th>
+            <th>权限</th>
             <th>操作</th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="row in localUsers" :key="row.id">
             <td>{{ row.id }}</td>
+            <td>
+              <img v-if="row.avatar" :src="formatAvatar(row.avatar)" alt="avatar" class="avatar" />
+              <span v-else>-</span>
+            </td>
             <td>{{ row.username }}</td>
+            <td>{{ row.phone || '-' }}</td>
+            <td>{{ row.email || '-' }}</td>
+            <td>{{ row.address || '-' }}</td>
             <td>
               <select v-model.number="row.per" class="table-input">
                 <option :value="0">普通用户</option>
@@ -28,12 +38,8 @@
               </select>
             </td>
             <td>
-              <img v-if="row.avatar" :src="row.avatar" alt="avatar" class="avatar" />
-              <span v-else>-</span>
-            </td>
-            <td>
               <button class="btn primary" style="margin-right: 8px;" @click="save(row)" :disabled="row.per === row._originPer">保存</button>
-              <button class="btn ghost" @click="openDelete(row)">删除</button>
+              <button class="btn danger" @click="openDelete(row)">删除</button>
             </td>
           </tr>
         </tbody>
@@ -68,6 +74,15 @@ const localUsers = ref([]);
 const showDelete = ref(false);
 const deleteTarget = ref(null);
 
+const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:8080";
+
+function formatAvatar(url) {
+  if (!url) return "";
+  if (url.startsWith("http")) return url;
+  if (url.startsWith("/uploads")) return `${API_BASE}${url}`;
+  return url;
+}
+
 watch(
   () => props.users,
   (list) => {
@@ -80,7 +95,10 @@ watch(
 );
 
 function save(row) {
-  emit("update-user", { id: row.id, per: row.per });
+  emit("update-user", {
+    id: row.id,
+    per: row.per
+  });
 }
 
 function openDelete(row) {
@@ -99,15 +117,8 @@ function confirmDelete() {
   closeDelete();
 }
 
-
 function reload() {
   window.location.reload();
 }
 </script>
-
-
-
-
-
-
 

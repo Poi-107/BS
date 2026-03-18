@@ -21,12 +21,6 @@
     <update id="upuser">
         update user
         <set>
-            <if test="username != null">
-                username = #{username},
-            </if>
-            <if test="password != null">
-                password = #{password},
-            </if>
             <if test="per != null">
                 per = #{per},
             </if>
@@ -42,6 +36,15 @@
             </if>
             <if test="password != null">
                 password = #{password},
+            </if>
+            <if test="phone != null">
+                phone =#{phone},
+            </if>
+            <if test="email != null">
+                email =#{email},
+            </if>
+            <if test="address != null">
+                address =#{address},
             </if>
         </set>
         where id = #{id}
@@ -63,4 +66,9 @@
     <select id="selav" resultType="string">
         select avatar from user where id = #{id}
     </select>
+<!--    根据id查询用户信息-->
+    <select id="seluser2" resultType="com.example.bs.entity.User">
+        select * from user where id = #{id}
+    </select>
+
 </mapper>

@@ -194,8 +194,8 @@ const nav = ref([
   { key: "outbound", label: "出库管理", badge: "", path: "/outbound" },
   { key: "audit", label: "审核中心", badge: "", path: "/audit" },
   { key: "log", label: "操作日志", badge: "", path: "/log" },
+  { key: "profile", label: "个人中心", badge: "", path: "/profile" },
   { key: "users", label: "用户管理", badge: "", path: "/users" }
-
 ]);
 
 const sucliOpen = ref(true);
@@ -485,8 +485,9 @@ async function loadAll() {
       { key: "outbound", label: "出库管理", badge: `单据 ${chukuList.value.length}`, path: "/outbound" },
       { key: "audit", label: "审核中心", badge: String(auditPending.value.length), path: "/audit" },
       { key: "log", label: "操作日志", badge: String(logList.value.length), path: "/log" },
+      { key: "profile", label: "个人中心", badge: "", path: "/profile" },
       { key: "users", label: "用户管理", badge: String(users.value.length), path: "/users" }
-];
+    ];
   } catch (err) {
     notify("error", "数据加载失败，请检查后端服务");
   }
@@ -781,6 +782,10 @@ onMounted(() => {
   }
 });
 </script>
+
+
+
+
 
 
 

@@ -58,6 +58,7 @@ public class AuditService {
             if ("IN".equals(dbAudit.getType())) {
                 Ruku ruku = new Ruku();
                 ruku.setName(dbAudit.getName());
+                ruku.setLeibie(dbAudit.getLeibie());
                 ruku.setSupplier(dbAudit.getParther());
                 ruku.setPrice(dbAudit.getPrice());
                 ruku.setQuantity(dbAudit.getQuantity());
@@ -87,6 +88,7 @@ public class AuditService {
                 // 写入出库表
                 Chuku chuku = new Chuku();
                 chuku.setName(dbAudit.getName());
+                chuku.setLeibie(dbAudit.getLeibie());
                 chuku.setClient(dbAudit.getParther());
                 chuku.setPrice(dbAudit.getPrice());
                 chuku.setQuantity(dbAudit.getQuantity());

@@ -36,6 +36,7 @@ public class ChukuService {
         Audit audit = new Audit();
 
         audit.setType("OUT");
+        audit.setLeibie(chuku.getLeibie());
         audit.setName(chuku.getName());
         audit.setParther(chuku.getClient());
         audit.setPrice(chuku.getPrice());

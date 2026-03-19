@@ -39,10 +39,11 @@ public class RukuService {
      */
     @Transactional
     public void addruku(Ruku ruku) {
-//        rukuMapper.addruku(ruku);
+
         Audit audit = new Audit();
 
         audit.setType("IN");
+        audit.setLeibie(ruku.getLeibie());
         audit.setName(ruku.getName());
         audit.setParther(ruku.getSupplier());
         audit.setPrice(ruku.getPrice());

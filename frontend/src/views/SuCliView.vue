@@ -1,5 +1,5 @@
 ﻿<template>
-  <section class="panel">
+  <section class="panel" :class="{ 'readonly-mode': !canOperate }">
     <div class="panel-header">
       <h3>供应商 / 客户</h3>
       <div class="toolbar">
@@ -137,7 +137,8 @@ import { useRoute, useRouter } from "vue-router";
 
 const props = defineProps({
   suppliers: { type: Array, default: () => [] },
-  clients: { type: Array, default: () => [] }
+  clients: { type: Array, default: () => [] },
+  currentPer: { type: Number, default: 0 }
 });
 
 const route = useRoute();
@@ -170,6 +171,7 @@ const addForm = ref({
 
 const localSuppliers = ref([]);
 const localClients = ref([]);
+const canOperate = computed(() => Number(props.currentPer) > 0);
 
 watch(
   () => props.suppliers,
@@ -252,6 +254,7 @@ function isClientChanged(row) {
 }
 
 function editRow(row) {
+  if (!canOperate.value) return;
   row._editing = true;
 }
 
@@ -265,11 +268,13 @@ function cancelEdit(row, type) {
 }
 
 function saveSupplier(row) {
+  if (!canOperate.value) return;
   emit("update-supplier", { ...row });
   row._editing = false;
 }
 
 function saveClient(row) {
+  if (!canOperate.value) return;
   emit("update-client", { ...row });
   row._editing = false;
 }
@@ -328,6 +333,7 @@ function reload() {
 }
 
 function openDelete(type, row) {
+  if (!canOperate.value) return;
   deleteType.value = type;
   deleteTarget.value = row;
   showDelete.value = true;
@@ -339,6 +345,7 @@ function closeDelete() {
 }
 
 function confirmDelete() {
+  if (!canOperate.value) return;
   if (!deleteTarget.value) return;
   if (deleteType.value === "supplier") {
     emit("delete-supplier", { id: deleteTarget.value.id });
@@ -353,5 +360,14 @@ function formatTime(value) {
   return String(value).replace("T", " ").slice(0, 19);
 }
 </script>
+
+
+
+<style scoped>
+.readonly-mode .sucli-table th:last-child,
+.readonly-mode .sucli-table td:last-child {
+  display: none;
+}
+</style>
 
 

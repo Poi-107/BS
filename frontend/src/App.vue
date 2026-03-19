@@ -231,6 +231,7 @@
         :users="users"
         :suppliers="suppliers"
         :clients="clients"
+        :current-per="currentPer"
         :ruku-cats="rukuCats"
         :chuku-cats="chukuCats"
         :kucun-cats="kucunCats"
@@ -372,6 +373,15 @@ function notify(type, text) {
   noticeTimer = setTimeout(() => {
     notice.value = null;
   }, 2600);
+}
+
+function isForbiddenError(err) {
+  return !!(err && (err.status === 403 || err.isForbidden || err.message === "Forbidden" || err.message === "HTTP_403"));
+}
+
+function notifyQueryError(err, fallbackText) {
+  if (isForbiddenError(err)) return;
+  notify("error", fallbackText);
 }
 
 const totalQuantity = computed(() =>
@@ -583,26 +593,26 @@ async function loadAuditCats() {
   auditCats.value = res.data || [];
 }
 function filterRuku(leibie) {
-  loadRuku(leibie || "").catch(() => {
-    notify("error", "入库分类查询失败");
+  loadRuku(leibie || "").catch((err) => {
+    notifyQueryError(err, "入库分类查询失败");
   });
 }
 
 function filterChuku(leibie) {
-  loadChuku(leibie || "").catch(() => {
-    notify("error", "出库分类查询失败");
+  loadChuku(leibie || "").catch((err) => {
+    notifyQueryError(err, "出库分类查询失败");
   });
 }
 
 function filterKucun(leibie) {
-  loadInventory(leibie || "").catch(() => {
-    notify("error", "库存分类查询失败");
+  loadInventory(leibie || "").catch((err) => {
+    notifyQueryError(err, "库存分类查询失败");
   });
 }
 
 function filterAudit(leibie) {
-  loadAudit(leibie || "").catch(() => {
-    notify("error", "审核分类查询失败");
+  loadAudit(leibie || "").catch((err) => {
+    notifyQueryError(err, "审核分类查询失败");
   });
 }
 
@@ -637,8 +647,8 @@ async function queryRukuByUser(user) {
 }
 
 function resetRukuQuery() {
-  loadRuku().catch(() => {
-    notify("error", "重置入库查询失败");
+  loadRuku().catch((err) => {
+    notifyQueryError(err, "重置入库查询失败");
   });
 }
 
@@ -673,8 +683,8 @@ async function queryChukuByUser(user) {
 }
 
 function resetChukuQuery() {
-  loadChuku().catch(() => {
-    notify("error", "重置出库查询失败");
+  loadChuku().catch((err) => {
+    notifyQueryError(err, "重置出库查询失败");
   });
 }
 
@@ -733,7 +743,7 @@ async function loadAll() {
     await Promise.all([loadInventory(), loadRuku(), loadChuku(), loadAudit(), loadLog(), loadUsers(), loadCurrentUser(), loadSuppliers(), loadClients(), loadRukuCats(), loadChukuCats(), loadKucunCats(), loadAuditCats(), loadStats()]);
     nav.value = buildNav(currentPer.value);
   } catch (err) {
-    notify("error", "数据加载失败，请检查后端服务");
+    notifyQueryError(err, "数据加载失败，请检查后端服务");
   }
 }
 
@@ -747,6 +757,7 @@ async function submitInbound(form) {
     const payload = {
       name: form.name.trim(),
       supplier: form.supplier.trim(),
+      leibie: form.leibie.trim(),
       quantity: Number(form.quantity),
       price: Number(form.price),
       money: (form.quantity || 0) * (form.price || 0)
@@ -769,6 +780,7 @@ async function submitOutbound(form) {
     const payload = {
       name: form.name.trim(),
       client: form.client.trim(),
+      leibie: form.leibie.trim(),
       quantity: Number(form.quantity),
       price: Number(form.price),
       money: (form.quantity || 0) * (form.price || 0)

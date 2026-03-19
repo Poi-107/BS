@@ -24,11 +24,27 @@ async function request(path, options = {}) {
     ...options,
     headers
   });
+
   const json = await res.json().catch(() => ({ code: "0", message: "Invalid_JSON" }));
+
+  if (!res.ok) {
+    const err = new Error((json && json.message) || `HTTP_${res.status}`);
+    err.status = res.status;
+    err.code = json && json.code;
+    err.payload = json;
+    err.isForbidden = res.status === 403;
+    if (res.status === 401) {
+      clearToken();
+      err.message = "Not_Login";
+    }
+    throw err;
+  }
+
   if (json && json.code === "0" && json.message === "Not_Login") {
     clearToken();
     throw new Error("Not_Login");
   }
+
   return json;
 }
 

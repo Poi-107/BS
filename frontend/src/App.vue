@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div v-if="!isLoggedIn" class="login-shell">
     <div class="login-card login-animate">
       <div class="login-brand">
@@ -270,8 +270,49 @@
         @reset-chuku-query="resetChukuQuery"
         @filter-kucun="filterKucun"
         @filter-audit="filterAudit"
+        @import-inbound-excel="importInboundExcel"
       />
     </main>
+  </div>
+
+  <div v-if="importModalOpen" class="modal-mask" @click="closeImportModal">
+    <div class="modal-card" style="width: min(820px, 92vw);" @click.stop>
+      <div class="modal-title">Excel 导入失败明细</div>
+      <div class="modal-body">
+        <div style="display:flex; gap: 12px; flex-wrap: wrap; color: var(--muted); font-size: 12px;">
+          <div>成功 {{ importSummary.success }} 条</div>
+          <div>失败 {{ importSummary.failed }} 条</div>
+        </div>
+
+        <div v-if="importErrors.length === 0" class="form-hint" style="margin-top: 10px;">
+          暂无错误明细
+        </div>
+
+        <div v-else class="table-wrap" style="margin-top: 12px; max-height: min(52vh, 520px); overflow:auto;">
+          <table class="table">
+            <thead>
+              <tr>
+                <th style="width: 90px;">行号</th>
+                <th>原因</th>
+                <th style="width: 140px;">填写金额</th>
+                <th style="width: 140px;">应为金额</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(e, idx) in importErrors" :key="`imp-err-${idx}`">
+                <td>{{ e.row }}</td>
+                <td style="white-space: normal; word-break: break-all;">{{ e.message }}</td>
+                <td>{{ e.givenMoney ?? "-" }}</td>
+                <td>{{ e.expectedMoney ?? "-" }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn ghost" @click="closeImportModal">关闭</button>
+      </div>
+    </div>
   </div>
 
   <div v-if="notice" class="toast" :class="notice.type">
@@ -283,6 +324,7 @@
 import { computed, onMounted, ref, watch } from "vue";
 import { useRoute, useRouter, RouterLink, RouterView } from "vue-router";
 import { apiGet, apiPost, clearToken, getToken, setToken } from "./services/api";
+import { apiUpload } from "./services/api";
 
 const router = useRouter();
 const route = useRoute();
@@ -365,6 +407,10 @@ const SAFE_STOCK = 50;
 const notice = ref(null);
 let noticeTimer = null;
 
+const importModalOpen = ref(false);
+const importErrors = ref([]);
+const importSummary = ref({ success: 0, failed: 0 });
+
 function notify(type, text) {
   notice.value = { type, text };
   if (noticeTimer) {
@@ -373,6 +419,10 @@ function notify(type, text) {
   noticeTimer = setTimeout(() => {
     notice.value = null;
   }, 2600);
+}
+
+function closeImportModal() {
+  importModalOpen.value = false;
 }
 
 function isForbiddenError(err) {
@@ -767,6 +817,31 @@ async function submitInbound(form) {
     await loadAll();
   } catch (err) {
     notify("error", "入库提交失败");
+  }
+}
+
+async function importInboundExcel(file) {
+  if (!file) return;
+  try {
+    const formData = new FormData();
+    formData.append("file", file);
+    const res = await apiUpload("/bs/ruku/import", formData);
+    const data = res?.data || {};
+    const success = Number(data.success || 0);
+    const failed = Number(data.failed || 0);
+    if (failed > 0) {
+      notify("error", `导入完成：成功 ${success}，失败 ${failed}`);
+      importSummary.value = { success, failed };
+      importErrors.value = Array.isArray(data.errors) ? data.errors : [];
+      importModalOpen.value = true;
+    } else {
+      notify("success", `导入成功：共 ${success} 条`);
+      importSummary.value = { success, failed: 0 };
+      importErrors.value = [];
+    }
+    await loadAll();
+  } catch (err) {
+    notify("error", "Excel 导入失败");
   }
 }
 

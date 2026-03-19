@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <section class="panel">
     <div class="panel-header">
       <h3>入库管理</h3>
@@ -7,7 +7,15 @@
           <option value="all">全部类别</option>
           <option v-for="item in rukuCats" :key="item" :value="item">{{ item }}</option>
         </select>
+        <input
+          ref="fileInput"
+          type="file"
+          accept=".xlsx"
+          style="display:none"
+          @change="onFileChange"
+        />
         <button class="btn" @click="reload">刷新</button>
+        <button class="btn" @click="chooseFile">导入Excel</button>
         <button class="btn primary" @click="openAddModal">添加</button>
       </div>
     </div>
@@ -146,7 +154,8 @@ const emit = defineEmits([
   "query-ruku-name",
   "query-ruku-supplier",
   "query-ruku-user",
-  "reset-ruku-query"
+  "reset-ruku-query",
+  "import-inbound-excel"
 ]);
 
 const form = reactive({
@@ -172,6 +181,7 @@ const extraSupplierNames = ref([]);
 const showAddModal = ref(false);
 const showSupplierModal = ref(false);
 const selectedLeibie = ref("all");
+const fileInput = ref(null);
 
 const supplierOptions = computed(() => {
   const fromProps = (props.suppliers || [])
@@ -284,5 +294,17 @@ function formatTime(value) {
 
 function reload() {
   window.location.reload();
+}
+
+function chooseFile() {
+  if (fileInput.value) fileInput.value.click();
+}
+
+function onFileChange(e) {
+  const file = e?.target?.files?.[0];
+  if (!file) return;
+  emit("import-inbound-excel", file);
+  // allow selecting same file again
+  e.target.value = "";
 }
 </script>

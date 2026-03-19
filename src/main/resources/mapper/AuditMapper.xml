@@ -15,7 +15,7 @@
 <!--    添加审核单-->
     <insert id="addaudit">
         insert into audit(type,code,leibie,name,parther,price,quantity,money,user,createtime,status)
-        values(#{type},#{code},{leibie},#{name},#{parther},#{price},#{quantity},#{money},#{user},#{createtime},#{status})
+        values(#{type},#{code},#{leibie},#{name},#{parther},#{price},#{quantity},#{money},#{user},#{createtime},#{status})
     </insert>
 <!--    审批表单-->
     <update id="upaudit" parameterType="com.example.bs.entity.Audit">

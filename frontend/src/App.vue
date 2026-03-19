@@ -805,6 +805,7 @@ async function submitInbound(form) {
   }
   try {
     const payload = {
+        code: (form.code || "").trim(),
       name: form.name.trim(),
       supplier: form.supplier.trim(),
       leibie: form.leibie.trim(),
@@ -853,6 +854,7 @@ async function submitOutbound(form) {
   }
   try {
     const payload = {
+      code: (form.code || "").trim(),
       name: form.name.trim(),
       client: form.client.trim(),
       leibie: form.leibie.trim(),

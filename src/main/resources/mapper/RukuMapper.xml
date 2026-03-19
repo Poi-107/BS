@@ -21,8 +21,8 @@
     </select>
 <!--    添加入库单-->
     <insert id="addruku">
-        insert into ruku(leibie,name, supplier, price, quantity, money, rktime, user)
-        values(#{leibie},#{name},#{supplier},#{price},#{quantity},#{money},#{rktime},#{user})
+        insert into ruku(code,leibie,name, supplier, price, quantity, money, rktime, user)
+        values(#{code},#{leibie},#{name},#{supplier},#{price},#{quantity},#{money},#{rktime},#{user})
     </insert>
     <!-- 查询今日入库单数 -->
     <select id="jinruku" resultType="int">

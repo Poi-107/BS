@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <section class="panel">
     <div class="panel-header">
       <h3>出库管理</h3>
@@ -56,6 +56,13 @@
         <div class="modal-title">新增出库单</div>
         <div class="modal-body">
           <div class="form-grid" style="margin-top: 6px;">
+            <label class="input">
+              条码
+              <div style="display:flex; gap:6px; align-items:center;">
+                <input v-model="form.code" placeholder="扫描或输入条码" @keyup.enter="scanByCode" />
+                <button class="btn" type="button" @click="scanByCode">扫码录入</button>
+              </div>
+            </label>
             <label class="input">
               物料名称
               <input v-model="form.name" placeholder="输入物料" />
@@ -131,6 +138,7 @@
 
 <script setup>
 import { computed, reactive, ref } from "vue";
+import { apiGet } from "../services/api";
 
 const props = defineProps({
   chukuList: { type: Array, default: () => [] },
@@ -150,6 +158,7 @@ const emit = defineEmits([
 ]);
 
 const form = reactive({
+  code: "",
   name: "",
   client: "",
   leibie: "",
@@ -217,6 +226,7 @@ function resetQuery() {
 }
 
 function resetForm() {
+  form.code = "";
   form.name = "";
   form.client = "";
   form.leibie = "";
@@ -284,5 +294,22 @@ function formatTime(value) {
 
 function reload() {
   window.location.reload();
+}
+async function scanByCode() {
+  const code = String(form.code || "").trim();
+  if (!code) return;
+  try {
+    const res = await apiGet(`/bs/selcode?code=${encodeURIComponent(code)}`);
+    const data = res?.data;
+    if (!data) {
+      alert("未找到该条码对应的物品，请确认条码是否正确或先维护条码。");
+      return;
+    }
+    const item = Array.isArray(data) ? (data[0] || {}) : data;
+    form.name = item.name || form.name;
+    form.leibie = item.leibie || form.leibie;
+  } catch (e) {
+    alert("按条码查询物品失败，请稍后重试。");
+  }
 }
 </script>

@@ -6,8 +6,8 @@
 
 <!--    出库-->
     <insert id="addchuku">
-        insert into chuku(leibie,name,client,price,quantity,money,cktime,user)
-        values(#{leibie},#{name},#{client},#{price},#{quantity},#{money},#{cktime},#{user})
+        insert into chuku(code,leibie,name,client,price,quantity,money,cktime,user)
+        values(#{code},#{leibie},#{name},#{client},#{price},#{quantity},#{money},#{cktime},#{user})
     </insert>
 <!--    查询出库单-->
     <select id="selchuku" resultType="com.example.bs.entity.Chuku">

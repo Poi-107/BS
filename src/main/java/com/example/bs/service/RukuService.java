@@ -43,6 +43,7 @@ public class RukuService {
         Audit audit = new Audit();
 
         audit.setType("IN");
+        audit.setCode(ruku.getCode());
         audit.setLeibie(ruku.getLeibie());
         audit.setName(ruku.getName());
         audit.setParther(ruku.getSupplier());

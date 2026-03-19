@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
  */
 public class Ruku {
     private Integer id;
+    private String code;
     private String leibie;
     private String name;
     private String supplier;

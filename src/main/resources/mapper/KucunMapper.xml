@@ -10,7 +10,7 @@
     </select>
 <!--    添加入库 没有该物品-->
     <insert id="addkucun">
-        insert into kucun(leibie,name,quantity) values(#{leibie},#{name},#{quantity})
+        insert into kucun(code,leibie,name,quantity) values(#{code},#{leibie},#{name},#{quantity})
     </insert>
 <!--    添加入库 有该物品,入库-->
     <insert id="upkucun">
@@ -27,6 +27,10 @@
 <!--    获取所有类别-->
     <select id="selleibie2" resultType="string">
         select distinct leibie from kucun
+    </select>
+<!--    根据code查询物品，获取leibie和name-->
+    <select id="selcode" resultType="com.example.bs.entity.Kucun">
+        select leibie, name from kucun where code=#{code}
     </select>
 
 

@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
  */
 public class Kucun {
     private Integer id;
+    private String code;
     private String leibie;
     private String name;
     private Integer quantity;

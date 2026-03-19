@@ -54,4 +54,13 @@ public class KucunService {
     public List<String> selleibie2() {
         return kucunMapper.selleibie2();
     }
+
+    /**
+     * 根据code查询库存
+     * @param code
+     * @return
+     */
+    public Kucun selcode(String code) {
+        return kucunMapper.selcode(code);
+    }
 }

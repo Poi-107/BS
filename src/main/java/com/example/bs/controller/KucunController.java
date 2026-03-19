@@ -34,6 +34,13 @@ public class KucunController {
         Kucun kucun=kucunService.selname(k.getName());
         return Result.success(kucun);
     }
+//    根据code查询物品，得到leibie和name
+    @GetMapping("/selcode")
+    public Result selcode(@RequestParam String code){
+        log.info("请求查询库存");
+        Kucun kucun=kucunService.selcode(code);
+        return Result.success(kucun);
+    }
 //    分类查询
     @Per(1)
     @GetMapping("/selkucun1")

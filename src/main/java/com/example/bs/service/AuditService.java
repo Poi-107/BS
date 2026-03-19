@@ -57,8 +57,9 @@ public class AuditService {
             Audit dbAudit = auditMapper.selid(audit.getId());
             if ("IN".equals(dbAudit.getType())) {
                 Ruku ruku = new Ruku();
-                ruku.setName(dbAudit.getName());
+                ruku.setCode(dbAudit.getCode());
                 ruku.setLeibie(dbAudit.getLeibie());
+                ruku.setName(dbAudit.getName());
                 ruku.setSupplier(dbAudit.getParther());
                 ruku.setPrice(dbAudit.getPrice());
                 ruku.setQuantity(dbAudit.getQuantity());
@@ -87,8 +88,9 @@ public class AuditService {
                 }
                 // 写入出库表
                 Chuku chuku = new Chuku();
-                chuku.setName(dbAudit.getName());
+                chuku.setCode(dbAudit.getCode());
                 chuku.setLeibie(dbAudit.getLeibie());
+                chuku.setName(dbAudit.getName());
                 chuku.setClient(dbAudit.getParther());
                 chuku.setPrice(dbAudit.getPrice());
                 chuku.setQuantity(dbAudit.getQuantity());

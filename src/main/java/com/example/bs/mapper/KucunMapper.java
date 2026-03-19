@@ -46,4 +46,11 @@ public interface KucunMapper {
      * @return
      */
     List<String> selleibie2();
+
+    /**
+     * 根据code查询库存
+     * @param code
+     * @return
+     */
+    Kucun selcode(String code);
 }

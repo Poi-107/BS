@@ -130,15 +130,17 @@ public class RukuController {
                 if (row == null) continue;
 
                 // 列顺序：类别、物品名称、供应商、单价、数量、金额
-                String leibie = readText(row.getCell(0));
-                String material = readText(row.getCell(1));
-                String supplier = readText(row.getCell(2));
-                Integer price = readInt(row.getCell(3));
-                Integer quantity = readInt(row.getCell(4));
-                Integer moneyCell = readInt(row.getCell(5));
+                String code = readText(row.getCell(0));
+                String leibie = readText(row.getCell(1));
+                String material = readText(row.getCell(2));
+                String supplier = readText(row.getCell(3));
+                Integer price = readInt(row.getCell(4));
+                Integer quantity = readInt(row.getCell(5));
+                Integer moneyCell = readInt(row.getCell(6));
 
                 // 空行跳过（前 3 列都为空 & 数量/单价为空）
-                boolean empty = (leibie == null || leibie.isBlank())
+                boolean empty = (code == null || code.isBlank())
+                        && (leibie == null || leibie.isBlank())
                         && (material == null || material.isBlank())
                         && (supplier == null || supplier.isBlank())
                         && quantity == null
@@ -171,6 +173,7 @@ public class RukuController {
                 int money = (moneyCell != null) ? moneyCell : expectedMoney;
 
                 Ruku ruku = new Ruku();
+                ruku.setCode(code.trim());
                 ruku.setName(material.trim());
                 ruku.setSupplier(supplier.trim());
                 ruku.setLeibie(leibie.trim());

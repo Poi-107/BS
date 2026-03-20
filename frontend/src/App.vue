@@ -470,6 +470,7 @@ function buildNav(per) {
   if (per === 0) {
     return [
       { key: "home", label: "首页", badge: "", path: "/home" },
+      { key: "inventory", label: "库存", badge: String(inventory.value.length), path: "/inventory" },
       { key: "inbound", label: "入库", badge: `单据 ${rukuCount}`, path: "/inbound-my" },
       { key: "outbound", label: "出库", badge: `单据 ${chukuCount}`, path: "/outbound-my" },
       { key: "profile", label: "个人中心", badge: "", path: "/profile" }
@@ -517,6 +518,8 @@ function setAuditFilter(value) {
 
 function normalizeInventory(list) {
   return (list || []).map((item) => ({
+    code: item.code,
+    leibie: item.leibie,
     id: item.id,
     name: item.name,
     quantity: item.quantity ?? 0,
@@ -578,7 +581,9 @@ function sortByIdAsc(list) {
 async function loadInventory(leibie) {
   const path = leibie ? `/bs/selkucun1?leibie=${encodeURIComponent(leibie)}` : "/bs/selkucun";
   const res = await apiGet(path);
+
   inventory.value = normalizeInventory(res.data || []);
+
 }
 
 async function loadRuku(leibie) {
@@ -609,8 +614,12 @@ async function loadAudit(leibie) {
 }
 
 async function loadLog() {
-  const res = await apiGet("/bs/sellog");
-  logList.value = sortNewest(res.data || []);
+  try {
+    const res = await apiGet("/bs/sellog");
+    logList.value = sortNewest(res.data || []);
+  } catch {
+    // 权限不足，静默忽略
+  }
 }
 
 async function loadUsers() {
@@ -790,8 +799,12 @@ async function loadStats() {
 
 async function loadAll() {
   try {
-    await Promise.all([loadInventory(), loadRuku(), loadChuku(), loadAudit(), loadLog(), loadUsers(), loadCurrentUser(), loadSuppliers(), loadClients(), loadRukuCats(), loadChukuCats(), loadKucunCats(), loadAuditCats(), loadStats()]);
+    await Promise.all([loadInventory(), loadRuku(), loadChuku(), loadAudit(), loadUsers(), loadCurrentUser(), loadSuppliers(), loadClients(), loadRukuCats(), loadChukuCats(), loadKucunCats(), loadAuditCats(), loadStats()]);
     nav.value = buildNav(currentPer.value);
+    // 只有权限足够才加载日志
+    if (currentPer.value >= 2) {
+      await loadLog();
+    }
   } catch (err) {
     notifyQueryError(err, "数据加载失败，请检查后端服务");
   }

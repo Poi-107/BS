@@ -71,19 +71,16 @@ public class Login implements HandlerInterceptor {
         if (url.contains("/login")) {
             return true;
         }
-
         // ⭐ 放行静态资源（很重要）
         if (!(handler instanceof HandlerMethod)) {
             return true;
         }
-
         // 获取token
         String jwt = req.getHeader("token");
 
         if (!StringUtils.hasLength(jwt)) {
             return writeError(resp, "Not_Login", 401);
         }
-
         Claims claims;
         try {
             claims = Jwt.parseJwt(jwt);
@@ -91,7 +88,6 @@ public class Login implements HandlerInterceptor {
             log.info("token解析失败");
             return writeError(resp, "Not_Login", 401);
         }
-
         //  获取权限
         Integer per = Integer.valueOf(claims.get("per").toString());
         //  获取当前方法

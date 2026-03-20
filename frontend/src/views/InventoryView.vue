@@ -32,6 +32,8 @@
       <table class="table">
         <thead>
           <tr>
+            <th>条形码</th>
+            <th>类别</th>
             <th>物料</th>
             <th>库存</th>
             <th>安全库存</th>
@@ -40,6 +42,8 @@
         </thead>
         <tbody>
           <tr v-for="row in inventory" :key="row.id">
+            <td>{{ row.code }}</td>
+            <td>{{ row.leibie }}</td>
             <td>{{ row.name }}</td>
             <td>{{ row.quantity }}</td>
             <td>{{ row.safe }}</td>
@@ -56,11 +60,12 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import {ref} from "vue";
+
 
 const emit = defineEmits(["refresh-all", "filter-kucun"]);
 
-defineProps({
+const props = defineProps({
   inventory: { type: Array, default: () => [] },
   kucunCats: { type: Array, default: () => [] },
   totalQuantity: { type: Number, default: 0 },
@@ -68,6 +73,7 @@ defineProps({
   rukuList: { type: Array, default: () => [] },
   chukuList: { type: Array, default: () => [] }
 });
+
 
 const selectedLeibie = ref("all");
 

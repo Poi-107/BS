@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div v-if="!isLoggedIn" class="login-shell">
     <div class="login-grid">
       <div class="login-side login-animate">
@@ -278,6 +278,7 @@
         :chuku-cats="chukuCats"
         :kucun-cats="kucunCats"
         :audit-cats="auditCats"
+        :xinxi-list="xinxiList"
         :stats="stats"
         :total-quantity="totalQuantity"
         :low-stock-count="lowStockCount"
@@ -314,6 +315,9 @@
         @update-inventory="updateInventory"
         @filter-audit="filterAudit"
         @import-inbound-excel="importInboundExcel"
+        @add-xinxi="addXinxi"
+        @update-xinxi="updateXinxi"
+        @delete-xinxi="deleteXinxi"
       />
     </main>
   </div>
@@ -407,7 +411,9 @@ const rukuCats = ref([]);
 const chukuCats = ref([]);
 const kucunCats = ref([]);
 const auditCats = ref([]);
+const xinxiList = ref([]);
 const sucliBadge = computed(() => suppliers.value.length + clients.value.length);
+const xinxiBadge = computed(() => String(xinxiList.value.length));
 const inboundBadge = computed(() => {
   const name = currentUsername.value || "";
   const count = name ? rukuMine.value.length : rukuList.value.length;
@@ -516,6 +522,7 @@ function buildNav(per) {
       { key: "inventory", label: "库存", badge: String(inventory.value.length), path: "/inventory" },
       { key: "inbound", label: "入库", badge: `单据 ${rukuCount}`, path: "/inbound-my" },
       { key: "outbound", label: "出库", badge: `单据 ${chukuCount}`, path: "/outbound-my" },
+      { key: "xinxi", label: "消息通知", badge: xinxiBadge.value, path: "/xinxi" },
       { key: "profile", label: "个人中心", badge: "", path: "/profile" }
     ];
   }
@@ -528,6 +535,7 @@ function buildNav(per) {
       { key: "outbound", label: "出库", badge: `单据 ${chukuCount}`, path: "/outbound-my" },
       { key: "outbound-manage", label: "出库管理", badge: `单据 ${chukuList.value.length}`, path: "/outbound" },
       { key: "audit", label: "审核", badge: String(auditPending.value.length), path: "/audit" },
+      { key: "xinxi", label: "消息通知", badge: xinxiBadge.value, path: "/xinxi" },
       { key: "profile", label: "个人中心", badge: "", path: "/profile" }
     ];
   }
@@ -539,6 +547,7 @@ function buildNav(per) {
     { key: "outbound", label: "出库", badge: `单据 ${chukuCount}`, path: "/outbound-my" },
     { key: "outbound-manage", label: "出库管理", badge: `单据 ${chukuList.value.length}`, path: "/outbound" },
     { key: "audit", label: "审核", badge: String(auditPending.value.length), path: "/audit" },
+    { key: "xinxi", label: "消息通知", badge: xinxiBadge.value, path: "/xinxi" },
     { key: "log", label: "操作日志", badge: String(logList.value.length), path: "/log" },
     { key: "profile", label: "个人中心", badge: "", path: "/profile" },
     { key: "users", label: "用户管理", badge: String(users.value.length), path: "/users" }
@@ -694,6 +703,11 @@ async function loadAuditCats() {
   const res = await apiGet("/bs/selleibie");
   auditCats.value = res.data || [];
 }
+
+async function loadXinxi() {
+  const res = await apiGet("/bs/selxinxi");
+  xinxiList.value = sortNewest(res.data || []);
+}
 function filterRuku(leibie) {
   loadRuku(leibie || "").catch((err) => {
     notifyQueryError(err, "入库分类查询失败");
@@ -842,7 +856,7 @@ async function loadStats() {
 
 async function loadAll() {
   try {
-    await Promise.all([loadInventory(), loadRuku(), loadChuku(), loadAudit(), loadUsers(), loadCurrentUser(), loadSuppliers(), loadClients(), loadRukuCats(), loadChukuCats(), loadKucunCats(), loadAuditCats(), loadStats()]);
+    await Promise.all([loadInventory(), loadRuku(), loadChuku(), loadAudit(), loadUsers(), loadCurrentUser(), loadSuppliers(), loadClients(), loadRukuCats(), loadChukuCats(), loadKucunCats(), loadAuditCats(), loadXinxi(), loadStats()]);
     nav.value = buildNav(currentPer.value);
     // 只有权限足够才加载日志
     if (currentPer.value >= 2) {
@@ -1089,6 +1103,36 @@ async function addClient(payload) {
   }
 }
 
+async function addXinxi(payload) {
+  try {
+    await apiPost("/bs/addxinxi", payload);
+    notify("success", "通知发布成功");
+    await loadXinxi();
+  } catch (err) {
+    notify("error", "通知发布失败");
+  }
+}
+
+async function updateXinxi(payload) {
+  try {
+    await apiPost("/bs/upxinxi", payload);
+    notify("success", "通知更新成功");
+    await loadXinxi();
+  } catch (err) {
+    notify("error", "通知更新失败");
+  }
+}
+
+async function deleteXinxi(id) {
+  try {
+    await apiPost("/bs/delxinxi", Number(id));
+    notify("success", "通知删除成功");
+    await loadXinxi();
+  } catch (err) {
+    notify("error", "通知删除失败");
+  }
+}
+
 async function handleLogin() {
   loginError.value = "";
   loginLoading.value = true;
@@ -1207,6 +1251,8 @@ onMounted(() => {
   }
 });
 </script>
+
+
 
 
 

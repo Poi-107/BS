@@ -11,6 +11,7 @@ import UsersView from "../views/UsersView.vue";
 import ProfileView from "../views/ProfileView.vue";
 import SuCliView from "../views/SuCliView.vue";
 import LoginView from "../views/LoginView.vue";
+import XinxiView from "../views/XinxiView.vue";
 
 const routes = [
   { path: "/", redirect: "/login" },
@@ -25,6 +26,7 @@ const routes = [
   { path: "/log", component: LogView },
   { path: "/users", component: UsersView },
   { path: "/profile", component: ProfileView },
+  { path: "/xinxi", component: XinxiView },
   { path: "/sucli", redirect: "/suppliers" },
   { path: "/suppliers", component: SuCliView },
   { path: "/clients", component: SuCliView }

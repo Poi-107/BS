@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.bs.mapper.XinxiMapper">
+<!--    查询通知信息-->
+    z<select id="selxinxi" resultType="com.example.bs.entity.Xinxi">
+        select * from xinxi
+    </select>
+<!--    添加通知信息-->
+    <insert id="addxinxi">
+        insert into xinxi(title,text,priority,crtime) values(#{title},#{text},#{priority},#{crtime})
+    </insert>
+<!--    删除通知信息-->
+    <delete id="delxinxi">
+        delete from xinxi where id = #{id}
+    </delete>
+<!--    修改信息优先级-->
+    <update id="upxinxi">
+        update xinxi set priority = #{priority} where id = #{id}
+    </update>
+</mapper>

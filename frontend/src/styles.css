@@ -365,7 +365,7 @@ html, body {
   right: 28px;
   top: 24px;
   padding: 12px 16px;
-  border-radius: 14px;
+  border-radius: 20px;
   font-weight: 600;
   box-shadow: var(--soft-shadow);
   background: var(--panel);
@@ -453,6 +453,47 @@ html, body {
   flex-direction: column;
   gap: 12px;
 }
+
+.login-orbit {
+  position: relative;
+  height: 300px;
+  border-radius: 14px;
+  background: radial-gradient(circle at 30% 30%, rgba(37,99,235,0.18), rgba(37,99,235,0.02));
+  overflow: hidden;
+}
+
+.orb {
+  position: absolute;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: rgba(37,99,235,0.35);
+  filter: blur(0.2px);
+  animation: orbit 6s linear infinite;
+}
+
+.orb-a { top: 34px; left: 40px; animation-duration: 7s; }
+.orb-b { top: 156px; left: 190px; animation-duration: 8s; background: rgba(14,165,233,0.35); }
+.orb-c { top: 72px; left: 320px; animation-duration: 9s; background: rgba(59,130,246,0.25); }
+
+@keyframes orbit {
+  0% { transform: translateX(0) translateY(0); }
+  50% { transform: translateX(32px) translateY(-22px) scale(1.08); }
+  100% { transform: translateX(0) translateY(0); }
+}
+
+.login-wave {
+  height: 12px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(37,99,235,0.35), rgba(14,165,233,0.2), rgba(37,99,235,0.35));
+  animation: wave 2.6s ease-in-out infinite;
+}
+
+@keyframes wave {
+  0%, 100% { transform: scaleX(0.8); opacity: 0.7; }
+  50% { transform: scaleX(1); opacity: 1; }
+}
+
 
 .login-hero h3 {
   margin: 0 0 6px 0;
@@ -879,3 +920,237 @@ html, body {
 
 
 
+
+/* Login two-panel emphasis */
+.login-shell {
+  min-height: 100vh;
+  padding: 0;
+}
+
+.login-grid {
+  width: 100vw;
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: minmax(0, 1.9fr) minmax(360px, 0.7fr);
+  gap: 0;
+  align-items: stretch;
+}
+
+.login-side {
+  border-radius: 0;
+  padding: 48px 56px;
+  justify-content: center;
+  background:
+    radial-gradient(circle at 15% 20%, rgba(37,99,235,0.2), transparent 45%),
+    radial-gradient(circle at 80% 70%, rgba(14,165,233,0.18), transparent 40%),
+    linear-gradient(140deg, rgba(15,23,42,0.04), rgba(37,99,235,0.06));
+  border-right: 1px solid var(--line);
+}
+
+.login-card {
+  width: min(420px, 92%);
+  max-width: 420px;
+  margin: auto 40px auto auto;
+}
+
+
+@media (max-width: 1100px) {
+  .login-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .login-side {
+    min-height: 44vh;
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .login-card {
+    margin: 24px auto 32px;
+    width: min(460px, 92vw);
+    max-width: none;
+  }
+}
+
+
+.brand-headline {
+  margin: 0;
+  font-size: clamp(34px, 4vw, 56px);
+  line-height: 1.1;
+  letter-spacing: 0.02em;
+  color: #0f172a;
+}
+
+.brand-sub {
+  margin: 10px 0 0;
+  font-size: 15px;
+  color: #334155;
+  max-width: 540px;
+}
+
+.brand-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.brand-strip span {
+  padding: 7px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #1d4ed8;
+  background: rgba(37,99,235,0.12);
+  border: 1px solid rgba(37,99,235,0.22);
+}
+
+.brand-vision {
+  display: grid;
+  gap: 6px;
+}
+
+.vision-line {
+  font-size: 22px;
+  font-weight: 700;
+  color: #0f172a;
+  letter-spacing: 0.01em;
+}
+
+/* Flashy login hero animation */
+.login-orbit {
+  position: relative;
+  height: 360px;
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at 30% 30%, rgba(59,130,246,0.24), rgba(59,130,246,0.03) 45%),
+    radial-gradient(circle at 78% 70%, rgba(14,165,233,0.2), rgba(14,165,233,0.02) 46%),
+    linear-gradient(145deg, rgba(15,23,42,0.14), rgba(30,64,175,0.08));
+  border: 1px solid rgba(59,130,246,0.28);
+  box-shadow: inset 0 0 40px rgba(37,99,235,0.2), 0 18px 44px rgba(15,23,42,0.15);
+  overflow: hidden;
+}
+
+.login-orbit::before {
+  content: "";
+  position: absolute;
+  inset: -30%;
+  background: conic-gradient(from 90deg, rgba(59,130,246,0), rgba(59,130,246,0.24), rgba(14,165,233,0.08), rgba(59,130,246,0));
+  animation: rotateAura 10s linear infinite;
+}
+
+.login-orbit::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(rgba(148,163,184,0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(148,163,184,0.08) 1px, transparent 1px);
+  background-size: 28px 28px;
+  mask-image: radial-gradient(circle at 50% 50%, #000 35%, transparent 85%);
+  pointer-events: none;
+}
+
+.orbit-ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid rgba(148,163,184,0.35);
+  animation: spinRing 16s linear infinite;
+}
+
+.ring-1 { inset: 32px; }
+.ring-2 { inset: 68px; animation-direction: reverse; animation-duration: 12s; border-color: rgba(59,130,246,0.38); }
+.ring-3 { inset: 106px; animation-duration: 9s; border-color: rgba(14,165,233,0.42); }
+
+.scan-line {
+  position: absolute;
+  left: 14px;
+  right: 14px;
+  height: 4px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(59,130,246,0), rgba(59,130,246,0.75), rgba(14,165,233,0.65), rgba(59,130,246,0));
+  box-shadow: 0 0 18px rgba(14,165,233,0.65);
+  animation: scanMove 3.8s ease-in-out infinite;
+}
+
+.orb {
+  position: absolute;
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.8), rgba(37,99,235,0.45));
+  filter: blur(0.2px);
+  animation: orbitFloat 7s ease-in-out infinite;
+  box-shadow: 0 0 22px rgba(59,130,246,0.5);
+}
+
+.orb-a { top: 36px; left: 36px; animation-duration: 8s; }
+.orb-b { top: 168px; left: 200px; animation-duration: 9s; background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.8), rgba(14,165,233,0.45)); }
+.orb-c { top: 84px; left: 350px; animation-duration: 10s; background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.7), rgba(99,102,241,0.4)); }
+
+.orbit-core {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 112px;
+  height: 112px;
+  margin-left: -56px;
+  margin-top: -56px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(14,165,233,0.5), rgba(37,99,235,0.12) 60%, transparent 70%);
+  border: 1px solid rgba(125,211,252,0.6);
+  box-shadow: 0 0 34px rgba(14,165,233,0.55);
+  animation: pulseCore 2.8s ease-in-out infinite;
+}
+
+.spark {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #bae6fd;
+  box-shadow: 0 0 12px rgba(186,230,253,0.9);
+  animation: sparkle 2.2s ease-in-out infinite;
+}
+
+.spark-a { top: 66px; right: 110px; }
+.spark-b { bottom: 72px; left: 100px; animation-delay: 0.5s; }
+.spark-c { bottom: 118px; right: 200px; animation-delay: 0.9s; }
+
+@keyframes rotateAura {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes spinRing {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes scanMove {
+  0% { top: 30px; opacity: 0.35; }
+  45% { opacity: 1; }
+  100% { top: calc(100% - 34px); opacity: 0.35; }
+}
+
+@keyframes orbitFloat {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(34px, -20px, 0) scale(1.08); }
+}
+
+@keyframes pulseCore {
+  0%, 100% { transform: scale(1); opacity: 0.88; }
+  50% { transform: scale(1.15); opacity: 1; }
+}
+
+@keyframes sparkle {
+  0%, 100% { transform: scale(0.7); opacity: 0.4; }
+  50% { transform: scale(1.3); opacity: 1; }
+}
+
+@media (max-width: 1100px) {
+  .login-orbit {
+    height: 280px;
+  }
+
+  .orb-c {
+    left: 260px;
+  }
+}

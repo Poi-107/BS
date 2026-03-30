@@ -32,6 +32,18 @@
     <select id="selcode" resultType="com.example.bs.entity.Kucun">
         select leibie, name from kucun where code=#{code}
     </select>
+<!--    根据id对库存表进行动态修改（修改code，leibie，name，quantity）-->
+    <update id="upkucun2">
+        update kucun
+        <set>
+            <if test="code != null">code=#{code},</if>
+            <if test="leibie != null">leibie=#{leibie},</if>
+            <if test="name != null">name=#{name},</if>
+            <if test="quantity != null">quantity=#{quantity},</if>
+        </set>
+        where id=#{id}
+    </update>
+
 
 
 </mapper>

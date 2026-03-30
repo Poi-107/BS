@@ -63,4 +63,13 @@ public class KucunService {
     public Kucun selcode(String code) {
         return kucunMapper.selcode(code);
     }
+
+
+    /**
+     * 修改库存
+     * @param kucun
+     */
+    public void upkucun2(Kucun kucun) {
+        kucunMapper.upkucun2(kucun);
+    }
 }

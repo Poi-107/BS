@@ -53,4 +53,10 @@ public interface KucunMapper {
      * @return
      */
     Kucun selcode(String code);
+
+    /**
+     * 修改库存
+     * @param kucun
+     */
+    void upkucun2(Kucun kucun);
 }

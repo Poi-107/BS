@@ -1,6 +1,47 @@
 <template>
   <div v-if="!isLoggedIn" class="login-shell">
-    <div class="login-card login-animate">
+    <div class="login-grid">
+      <div class="login-side login-animate">
+        <div class="login-orbit">
+          <span class="orbit-ring ring-1"></span>
+          <span class="orbit-ring ring-2"></span>
+          <span class="orbit-ring ring-3"></span>
+          <span class="scan-line"></span>
+          <span class="spark spark-a"></span>
+          <span class="spark spark-b"></span>
+          <span class="spark spark-c"></span>
+          <span class="orb orb-a"></span>
+          <span class="orb orb-b"></span>
+          <span class="orb orb-c"></span>
+          <span class="orbit-core"></span>
+        </div>
+        <div class="login-wave"></div>
+        <div class="login-hero">
+          <h3 class="brand-headline">库存智能管理平台</h3>
+          <p class="brand-sub">一体化覆盖入库、出库、审核与全链路追溯。</p>
+        </div>
+        <div class="brand-strip">
+          <span>企业级稳定</span>
+          <span>流程化审批</span>
+          <span>分级权限</span>
+        </div>
+        <div class="brand-vision">
+          <div class="vision-line">实时库存可视化</div>
+          <div class="vision-line">操作链路透明可追踪</div>
+          <div class="vision-line">数据驱动高效决策</div>
+        </div>
+        <div class="login-micro">
+          <div>
+            <div class="micro-title">数据状态</div>
+            <div class="micro-value">实时同步</div>
+          </div>
+          <div>
+            <div class="micro-title">响应体验</div>
+            <div class="micro-value">低延迟</div>
+          </div>
+        </div>
+      </div>
+      <div class="login-card login-animate">
       <div class="login-brand">
         <div class="brand-logo">IM</div>
         <div>
@@ -73,6 +114,7 @@
           </div>
         </Transition>
       </div>
+    </div>
     </div>
   </div>
 
@@ -269,6 +311,7 @@
         @query-chuku-user="queryChukuByUser"
         @reset-chuku-query="resetChukuQuery"
         @filter-kucun="filterKucun"
+        @update-inventory="updateInventory"
         @filter-audit="filterAudit"
         @import-inbound-excel="importInboundExcel"
       />
@@ -930,6 +973,22 @@ async function reject(row) {
     await loadAudit();
   } catch (err) {
     notify("error", "审核操作失败");
+  }
+}
+
+async function updateInventory(row) {
+  try {
+    await apiPost("/bs/upkucun", {
+      id: row.id,
+      code: row.code,
+      leibie: row.leibie,
+      name: row.name,
+      quantity: Number(row.quantity)
+    });
+    notify("success", "库存信息已更新");
+    await Promise.all([loadInventory(), loadKucunCats()]);
+  } catch (err) {
+    notify("error", "库存更新失败");
   }
 }
 

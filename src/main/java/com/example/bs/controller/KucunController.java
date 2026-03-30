@@ -56,6 +56,14 @@ public class KucunController {
         List<String> kucunList = kucunService.selleibie2();
         return Result.success(kucunList);
     }
+//    根据id修改库存表内容
+    @Per(1)
+    @PostMapping("/upkucun")
+    public Result upkucun(@RequestBody Kucun kucun){
+        log.info("请求修改库存表内容");
+        kucunService.upkucun2(kucun);
+        return Result.success();
+    }
 
 
 }

@@ -65,24 +65,25 @@ public class ChukuController {
     }
 //    按物品名称查询
     @GetMapping("/selchuku3")
-    public Result selchuku3(@RequestBody Chuku c){
+    public Result selchuku3(@RequestParam String name){
         log.info("按物品名称查询");
-        List<Chuku> chuku=chukuService.selchuku3(c.getName());
+        List<Chuku> chuku=chukuService.selchuku3(name);
         return Result.success(chuku);
     }
 //    按客户名称查询
     @GetMapping("/selchuku4")
-    public Result selchuku4(@RequestBody Chuku c){
+    public Result selchuku4(@RequestParam String client){
         log.info("按客户名称查询");
-        List<Chuku> chuku=chukuService.selchuku4(c.getClient());
+        List<Chuku> chuku=chukuService.selchuku4(client);
         return Result.success(chuku);
     }
 //    按user操作人查询
     @Per(1)
     @GetMapping("/selchuku5")
-    public Result selchuku5(@RequestBody Chuku c){
+    public Result selchuku5(@RequestParam String user){
         log.info("按user操作人查询");
-        List<Chuku> chuku=chukuService.selchuku5(c.getUser());
+        List<Chuku> chuku=chukuService.selchuku5(user);
         return Result.success(chuku);
     }
 }
+

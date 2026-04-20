@@ -72,24 +72,24 @@ public class RukuController {
     }
 //    按照物品名称查询
     @GetMapping("/selruku3")
-    public Result selruku3(@RequestBody Ruku r){
+    public Result selruku3(@RequestParam String name){
         log.info("按物品名称查询");
-        List<Ruku> ruku=rukuService.selruku3(r.getName());
+        List<Ruku> ruku=rukuService.selruku3(name);
         return Result.success(ruku);
     }
 //    按照供应商名称查询
     @GetMapping("/selruku4")
-    public Result selruku4(@RequestBody Ruku r){
+    public Result selruku4(@RequestParam String supplier){
         log.info("按供应商名称查询");
-        List<Ruku> ruku=rukuService.selruku4(r.getSupplier());
+        List<Ruku> ruku=rukuService.selruku4(supplier);
         return Result.success(ruku);
     }
 //    按照操作人查询
     @Per(1)
     @GetMapping("/selruku5")
-    public Result selruku5(@RequestBody Ruku r){
+    public Result selruku5(@RequestParam String user){
         log.info("按操作人查询");
-        List<Ruku> ruku=rukuService.selruku5(r.getUser());
+        List<Ruku> ruku=rukuService.selruku5(user);
         return Result.success(ruku);
     }
 

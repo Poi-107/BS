@@ -11,6 +11,7 @@ import com.example.bs.mapper.RukuMapper;
 import com.example.bs.tools.yujing.InventoryWarningService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,6 +28,8 @@ public class AuditService {
     private KucunMapper kucunMapper;
     @Autowired
     private ChukuMapper chukuMapper;
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
     @Autowired
     private InventoryWarningService inventoryWarningService;
 
@@ -107,6 +110,9 @@ public class AuditService {
                 kucunMapper.upkucun(kucun);
             }
         }
+        stringRedisTemplate.delete("cache:ruku:all");
+        stringRedisTemplate.delete("cache:chuku:all");
+        stringRedisTemplate.delete("cache:kucun:all");
         inventoryWarningService.recomputeSafeStock();
     }
 

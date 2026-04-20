@@ -1,21 +1,28 @@
 package com.example.bs.service;
 
+import com.alibaba.fastjson.JSON;
 import com.example.bs.entity.Audit;
 import com.example.bs.entity.Kucun;
 import com.example.bs.mapper.AuditMapper;
 import com.example.bs.mapper.KucunMapper;
 import com.example.bs.mapper.RukuMapper;
 import com.example.bs.entity.Ruku;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class RukuService {
+    private static final String CACHE_KEY_RUKU = "cache:ruku:all";
+    private static final Logger log = LoggerFactory.getLogger(RukuService.class);
+
     @Autowired
     private RukuMapper rukuMapper;
 
@@ -24,13 +31,30 @@ public class RukuService {
 
     @Autowired
     private AuditMapper auditMapper;
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
 
     /**
      *查询入库单
      * @return
      */
     public List<Ruku> selruku() {
-        return rukuMapper.selruku();
+        try {
+            String cached = stringRedisTemplate.opsForValue().get(CACHE_KEY_RUKU);
+            if (cached != null && !cached.isEmpty()) {
+                return JSON.parseArray(cached, Ruku.class);
+            }
+        } catch (Exception e) {
+            log.warn("Redis读取入库缓存失败，回退数据库: {}", e.getMessage());
+        }
+
+        List<Ruku> list = rukuMapper.selruku();
+        try {
+            stringRedisTemplate.opsForValue().set(CACHE_KEY_RUKU, JSON.toJSONString(list), 5, TimeUnit.MINUTES);
+        } catch (Exception e) {
+            log.warn("Redis写入入库缓存失败: {}", e.getMessage());
+        }
+        return list;
     }
 
     /**

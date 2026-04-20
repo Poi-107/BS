@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div v-if="!isLoggedIn" class="login-shell">
     <div class="login-grid">
       <div class="login-side login-animate">
@@ -488,7 +488,7 @@ const totalQuantity = computed(() =>
 );
 
 const lowStockCount = computed(() =>
-  inventory.value.filter((item) => (item.quantity || 0) < (item.safe || SAFE_STOCK)).length
+  inventory.value.filter((item) => (item.quantity || 0) <= (item.safe || SAFE_STOCK)).length
 );
 
 const sideNav = computed(() => {
@@ -575,7 +575,8 @@ function normalizeInventory(list) {
     id: item.id,
     name: item.name,
     quantity: item.quantity ?? 0,
-    safe: SAFE_STOCK
+    safe: item.safe ?? SAFE_STOCK,
+    warning: !!item.warning
   }));
 }
 
@@ -1251,6 +1252,7 @@ onMounted(() => {
   }
 });
 </script>
+
 
 
 

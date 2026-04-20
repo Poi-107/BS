@@ -33,4 +33,15 @@
     <select id="selaudit1" resultType="com.example.bs.entity.Audit">
         select * from audit where leibie=#{leibie}
     </select>
+
+    <select id="selInboundLeadTime" resultType="com.example.bs.entity.InboundLeadTime">
+        select
+            name,
+            avg(greatest(timestampdiff(day, createtime, coalesce(reviewertime, createtime)), 1)) as lt
+        from audit
+        where type = 'IN'
+          and status = 1
+          and createtime is not null
+        group by name
+    </select>
 </mapper>

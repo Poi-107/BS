@@ -1,6 +1,7 @@
 package com.example.bs.mapper;
 
 import com.example.bs.entity.Chuku;
+import com.example.bs.entity.ChukuDailyDemand;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -87,4 +88,10 @@ public interface ChukuMapper {
      * @return
      */
     List<Chuku> selchuku5(String user);
+
+    /**
+     * 查询近30天按日聚合的出库量
+     * @return
+     */
+    List<ChukuDailyDemand> selDailyDemand30();
 }

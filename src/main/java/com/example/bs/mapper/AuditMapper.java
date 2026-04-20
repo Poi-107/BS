@@ -1,6 +1,7 @@
 package com.example.bs.mapper;
 
 import com.example.bs.entity.Audit;
+import com.example.bs.entity.InboundLeadTime;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -52,4 +53,10 @@ public interface AuditMapper {
      * @return
      */
     List<String> selleibie();
+
+    /**
+     * 查询历史平均采购提前期（按物料）
+     * @return
+     */
+    List<InboundLeadTime> selInboundLeadTime();
 }

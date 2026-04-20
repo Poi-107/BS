@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <section class="panel">
     <section class="card-grid">
       <div class="stat-card">
@@ -63,8 +63,8 @@
             </td>
             <td>{{ row.safe }}</td>
             <td>
-              <span class="badge" :class="row.quantity < row.safe ? 'warn' : 'ok'">
-                {{ row.quantity < row.safe ? '低库存' : '正常' }}
+              <span class="badge" :class="row.quantity <= row.safe ? 'warn' : 'ok'">
+                {{ row.quantity <= row.safe ? '低库存' : '正常' }}
               </span>
             </td>
             <td>
@@ -145,3 +145,4 @@ function reload() {
   window.location.reload();
 }
 </script>
+

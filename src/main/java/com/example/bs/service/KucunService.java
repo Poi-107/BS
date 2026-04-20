@@ -2,6 +2,7 @@ package com.example.bs.service;
 
 import com.example.bs.entity.Kucun;
 import com.example.bs.entity.Ruku;
+import com.example.bs.tools.yujing.InventoryWarningService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.example.bs.mapper.KucunMapper;
@@ -12,13 +13,15 @@ import java.util.List;
 public class KucunService {
     @Autowired
     private KucunMapper kucunMapper;
+    @Autowired
+    private InventoryWarningService inventoryWarningService;
 
     /**
      * 查询库存
      * @return
      */
     public List<Kucun> selkucun() {
-        return kucunMapper.selkucun();
+        return inventoryWarningService.enrichWithWarning(kucunMapper.selkucun());
     }
 
     /**
@@ -44,7 +47,7 @@ public class KucunService {
      * @return
      */
     public List<Kucun> selleibie(String leibie) {
-        return kucunMapper.selleibie(leibie);
+        return inventoryWarningService.enrichWithWarning(kucunMapper.selleibie(leibie));
     }
 
     /**

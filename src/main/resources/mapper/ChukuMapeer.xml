@@ -74,5 +74,15 @@
         select * from chuku where user = #{user}
     </select>
 
+    <select id="selDailyDemand30" resultType="com.example.bs.entity.ChukuDailyDemand">
+        select
+            name,
+            date(cktime) as day,
+            ifnull(sum(quantity), 0) as quantity
+        from chuku
+        where cktime >= date_sub(curdate(), interval 29 day)
+        group by name, date(cktime)
+    </select>
+
 </mapper>
 

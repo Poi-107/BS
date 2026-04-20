@@ -8,6 +8,7 @@ import com.example.bs.mapper.AuditMapper;
 import com.example.bs.mapper.ChukuMapper;
 import com.example.bs.mapper.KucunMapper;
 import com.example.bs.mapper.RukuMapper;
+import com.example.bs.tools.yujing.InventoryWarningService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,8 @@ public class AuditService {
     private KucunMapper kucunMapper;
     @Autowired
     private ChukuMapper chukuMapper;
+    @Autowired
+    private InventoryWarningService inventoryWarningService;
 
 
     /**
@@ -104,6 +107,7 @@ public class AuditService {
                 kucunMapper.upkucun(kucun);
             }
         }
+        inventoryWarningService.recomputeSafeStock();
     }
 
 

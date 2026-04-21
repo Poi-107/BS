@@ -39,7 +39,7 @@
             <th>库存</th>
             <th>安全库存</th>
             <th>状态</th>
-            <th>操作</th>
+            <th v-if="canEdit">操作</th>
           </tr>
         </thead>
         <tbody>
@@ -67,7 +67,7 @@
                 {{ row.quantity <= row.safe ? '低库存' : '正常' }}
               </span>
             </td>
-            <td>
+            <td v-if="canEdit">
               <template v-if="editingId === row.id">
                 <button class="btn" @click="saveRow(row)">保存</button>
                 <button class="btn ghost" @click="cancelEdit">取消</button>
@@ -82,7 +82,7 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { computed, ref } from "vue";
 
 
 const emit = defineEmits(["refresh-all", "filter-kucun", "update-inventory"]);
@@ -93,8 +93,11 @@ const props = defineProps({
   totalQuantity: { type: Number, default: 0 },
   lowStockCount: { type: Number, default: 0 },
   rukuList: { type: Array, default: () => [] },
-  chukuList: { type: Array, default: () => [] }
+  chukuList: { type: Array, default: () => [] },
+  currentPer: { type: Number, default: 0 }
 });
+
+const canEdit = computed(() => Number(props.currentPer || 0) > 0);
 
 
 const selectedLeibie = ref("all");

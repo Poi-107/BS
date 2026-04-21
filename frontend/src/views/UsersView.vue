@@ -3,6 +3,7 @@
     <div class="panel-header">
       <h3>用户管理</h3>
       <div class="toolbar">
+        <button class="btn" @click="openAdd">添加用户</button>
         <button class="btn" @click="reload">刷新</button>
       </div>
     </div>
@@ -59,6 +60,33 @@
         </div>
       </div>
     </div>
+
+    <div v-if="showAdd" class="modal-mask" @click="closeAdd">
+      <div class="modal-card" style="width: min(520px, 92vw);" @click.stop>
+        <div class="modal-title">添加用户</div>
+        <div class="modal-body">
+          <label class="input">
+            用户名
+            <input v-model.trim="addForm.username" class="table-input" placeholder="请输入用户名" autocomplete="off" />
+          </label>
+          <label class="input" style="margin-top: 12px;">
+            密码
+            <input v-model="addForm.password" class="table-input" type="password" placeholder="请输入密码" autocomplete="new-password" />
+          </label>
+          <label class="input" style="margin-top: 12px;">
+            确认密码
+            <input v-model="addForm.confirm" class="table-input" type="password" placeholder="请再次输入密码" autocomplete="new-password" />
+          </label>
+
+          <div v-if="addError" class="login-error" style="margin-top: 10px;">{{ addError }}</div>
+          <div class="form-hint" style="margin-top: 10px;">新增用户默认权限为普通用户</div>
+        </div>
+        <div class="modal-actions">
+          <button class="btn ghost" @click="closeAdd">取消</button>
+          <button class="btn primary" @click="confirmAdd">添加</button>
+        </div>
+      </div>
+    </div>
   </section>
 </template>
 
@@ -69,11 +97,14 @@ const props = defineProps({
   users: { type: Array, default: () => [] }
 });
 
-const emit = defineEmits(["load-users", "update-user", "delete-user"]);
+const emit = defineEmits(["load-users", "update-user", "delete-user", "add-user"]);
 
 const localUsers = ref([]);
 const showDelete = ref(false);
 const deleteTarget = ref(null);
+const showAdd = ref(false);
+const addForm = ref({ username: "", password: "", confirm: "" });
+const addError = ref("");
 
 const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:8080";
 
@@ -116,6 +147,37 @@ function confirmDelete() {
   if (!deleteTarget.value) return;
   emit("delete-user", { id: deleteTarget.value.id });
   closeDelete();
+}
+
+function openAdd() {
+  addError.value = "";
+  addForm.value = { username: "", password: "", confirm: "" };
+  showAdd.value = true;
+}
+
+function closeAdd() {
+  showAdd.value = false;
+}
+
+function confirmAdd() {
+  addError.value = "";
+  const username = String(addForm.value.username || "").trim();
+  const password = String(addForm.value.password || "");
+  const confirm = String(addForm.value.confirm || "");
+  if (!username) {
+    addError.value = "请输入用户名";
+    return;
+  }
+  if (!password) {
+    addError.value = "请输入密码";
+    return;
+  }
+  if (password !== confirm) {
+    addError.value = "两次输入的密码不一致";
+    return;
+  }
+  emit("add-user", { username, password });
+  closeAdd();
 }
 
 function reload() {

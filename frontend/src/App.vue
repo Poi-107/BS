@@ -293,6 +293,7 @@
         @load-users="loadUsers"
         @update-user="updateUser"
         @delete-user="deleteUser"
+        @add-user="addUser"
         @search-supplier="loadSuppliers"
         @search-client="loadClients"
         @add-supplier="addSupplier"
@@ -1027,6 +1028,24 @@ async function deleteUser(user) {
     await loadUsers();
   } catch (err) {
     notify("error", "删除失败");
+  }
+}
+
+async function addUser(payload) {
+  try {
+    const res = await apiPost("/bs/res", {
+      username: payload.username,
+      password: payload.password
+    });
+    const ok = res.code === "1" || res.code === 1;
+    if (ok) {
+      notify("success", "用户添加成功");
+      await loadUsers();
+    } else {
+      notify("error", res.message || "添加用户失败");
+    }
+  } catch (err) {
+    notify("error", "添加用户失败，请检查服务");
   }
 }
 

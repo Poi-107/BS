@@ -67,6 +67,7 @@ public class KucunController {
         return Result.success();
     }
 
+    //安全库存预警功能模块
     @GetMapping("/warning/config")
     public Result warningConfig() {
         Map<String, Object> data = new HashMap<>();

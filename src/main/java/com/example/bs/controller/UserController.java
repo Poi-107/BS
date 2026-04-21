@@ -131,7 +131,6 @@ public class UserController {
         } catch (IOException e) {
             return Result.error("文件保存失败");
         }
-
         // 更新数据库中的头像路径
         userService.updateAvatar(id, "/uploads/" + filename);
 

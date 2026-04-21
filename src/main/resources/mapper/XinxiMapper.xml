@@ -9,7 +9,7 @@
     </select>
 <!--添加通知-->
     <insert id="addxinxi">
-        insert into xinxi(title,text,priority,crtime) values(#{title},#{text},#{priority},#{crtime})
+        insert into xinxi(title,text,priority,crtime,crname,jieshou) values(#{title},#{text},#{priority},#{crtime},#{crname},#{jieshou})
     </insert>
 <!--删除通知-->
     <delete id="delxinxi">
@@ -27,6 +27,9 @@
             </if>
             <if test="priority != null">
                 priority = #{priority},
+            </if>
+            <if test="jieshou != null and jieshou != ''">
+                jieshou = #{jieshou},
             </if>
         </set>
         where id = #{id}

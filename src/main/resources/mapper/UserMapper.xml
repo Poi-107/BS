@@ -67,8 +67,12 @@
         select avatar from user where id = #{id}
     </select>
 <!--    根据id查询用户信息-->
-    <select id="seluser2" resultType="com.example.bs.entity.User">
+     <select id="seluser2" resultType="com.example.bs.entity.User">
         select * from user where id = #{id}
+    </select>
+<!--    根据用户名查询id-->
+    <select id="seluser1" resultType="com.example.bs.entity.User">
+        select * from user where username = #{username}
     </select>
 
 </mapper>

@@ -2,7 +2,6 @@
   <section class="panel home-panel">
     <section class="hero">
       <h2>库存管理系统</h2>
-      <p>已对接后端接口，支持库存台账、出入库单据、审核与日志实时加载。</p>
     </section>
 
     <div class="panel-header">
@@ -139,17 +138,17 @@
           </div>
         </section>
 
-        <section class="category-card" :class="{ 'is-open': activeChart === 'amount' }" @click="openChart('amount')">
+        <section class="category-card" :class="{ 'is-open': activeChart === 'warning' }" @click="openChart('warning')">
           <div class="chart-head">
-            <div class="chart-title">物品金额占比图</div>
-            <div class="legend">总额 {{ amountTotal }}</div>
+            <div class="chart-title">库存预警分布图</div>
+            <div class="legend">总数 {{ warningTotal }}</div>
           </div>
           <div class="category-wrap">
-            <div class="donut" :style="{ background: amountGradient }">
-              <div class="donut-center">金额占比</div>
+            <div class="donut" :style="{ background: warningGradient }">
+              <div class="donut-center">预警分布</div>
             </div>
             <div class="category-list">
-              <div class="category-item" v-for="row in amountRows" :key="'amount-' + row.name">
+              <div class="category-item" v-for="row in warningRows" :key="'warning-' + row.name">
                 <span class="dot" :style="{ background: row.color }"></span>
                 <span class="category-name">{{ row.name }}</span>
                 <span class="category-percent">{{ row.percent }}%</span>
@@ -164,7 +163,7 @@
       <div class="chart-modal" @click.stop>
         <div class="chart-head">
           <div class="chart-title">
-            {{ activeChart === 'io' ? '七日入库出库折线图' : activeChart === 'money' ? '七日采购销售折线图' : activeChart === 'amount' ? '物品金额占比图' : '物品类别占比图' }}
+            {{ activeChart === 'io' ? '七日入库出库折线图' : activeChart === 'money' ? '七日采购销售折线图' : activeChart === 'warning' ? '库存预警分布图' : '物品类别占比图' }}
           </div>
           <button class="btn ghost" @click="closeChart">关闭</button>
         </div>
@@ -183,12 +182,12 @@
           </div>
         </div>
 
-        <div v-else-if="activeChart === 'amount'" class="category-wrap">
-          <div class="donut" :style="{ background: amountGradient }">
-            <div class="donut-center">金额占比</div>
+        <div v-else-if="activeChart === 'warning'" class="category-wrap">
+          <div class="donut" :style="{ background: warningGradient }">
+            <div class="donut-center">预警分布</div>
           </div>
           <div class="category-list">
-            <div class="category-item" v-for="row in amountRows" :key="'pop-amount-' + row.name">
+            <div class="category-item" v-for="row in warningRows" :key="'pop-warning-' + row.name">
               <span class="dot" :style="{ background: row.color }"></span>
               <span class="category-name">{{ row.name }}</span>
               <span class="category-percent">{{ row.percent }}%</span>
@@ -423,48 +422,42 @@ const categoryGradient = computed(() => {
   return `conic-gradient(${parts.join(", ")})`;
 });
 
-const amountSource = computed(() => {
-  const map = {};
+const warningSource = computed(() => {
+  const map = { "库存充足": 0, "库存告警": 0 };
   (props.inventory || []).forEach((row) => {
-    const key = String(row.leibie || row.category || "未分类").trim() || "未分类";
-    const quantity = Number(row.quantity ?? row.num ?? 0);
-    const money = Number(row.money ?? (Number(row.price || 0) * quantity));
-    map[key] = (map[key] || 0) + (Number.isFinite(money) ? money : 0);
+    const quantity = Number(row.quantity ?? 0);
+    const safe = Number(row.safe ?? 50);
+    if (quantity <= safe) {
+      map["库存告警"] += 1;
+    } else {
+      map["库存充足"] += 1;
+    }
   });
-  if (Object.keys(map).length === 0) {
-    (props.rukuList || []).forEach((row) => {
-      const key = String(row.leibie || "未分类").trim() || "未分类";
-      const quantity = Number(row.quantity ?? 0);
-      const money = Number(row.money ?? (Number(row.price || 0) * quantity));
-      map[key] = (map[key] || 0) + (Number.isFinite(money) ? money : 0);
-    });
-  }
   return map;
 });
 
-const amountRows = computed(() => {
-  const entries = Object.entries(amountSource.value)
+const warningRows = computed(() => {
+  const entries = Object.entries(warningSource.value)
     .map(([name, value]) => ({ name, value: Number(value || 0) }))
     .filter((row) => row.value > 0)
-    .sort((a, b) => b.value - a.value)
-    .slice(0, 8);
+    .sort((a, b) => b.value - a.value);
   const total = entries.reduce((sum, row) => sum + row.value, 0) || 1;
-  return entries.map((row, idx) => ({
+  return entries.map((row) => ({
     ...row,
-    color: palette[idx % palette.length],
+    color: row.name === "库存告警" ? "#e76f51" : "#2a9d8f",
     percent: ((row.value / total) * 100).toFixed(1)
   }));
 });
 
-const amountTotal = computed(() => amountRows.value.reduce((sum, row) => sum + row.value, 0));
+const warningTotal = computed(() => warningRows.value.reduce((sum, row) => sum + row.value, 0));
 
-const amountGradient = computed(() => {
-  if (amountRows.value.length === 0) {
+const warningGradient = computed(() => {
+  if (warningRows.value.length === 0) {
     return "conic-gradient(#d9e2ec 0 100%)";
   }
   let start = 0;
-  const parts = amountRows.value.map((row) => {
-    const size = (row.value / amountTotal.value) * 100;
+  const parts = warningRows.value.map((row) => {
+    const size = (row.value / warningTotal.value) * 100;
     const end = start + size;
     const seg = row.color + " " + start.toFixed(2) + "% " + end.toFixed(2) + "%";
     start = end;

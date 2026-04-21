@@ -74,7 +74,8 @@ public class UserController {
         String token = request.getHeader("bs_token");
         Claims claims = Jwt.parseJwt(token);
         Integer id = Integer.valueOf(claims.get("id").toString());
-        return Result.success(userService.seluser2(id));
+        User user = userService.seluser2(id);
+        return Result.success(user);
     }
 
     // 修改用户信息（用户）

@@ -8,26 +8,35 @@
       </div>
     </div>
 
-    <div class="notice-list">
-      <button
-        v-for="row in sortedList"
-        :key="row.id"
-        class="notice-item"
-        :class="priorityClass(row.priority)"
-        @click="openDetail(row)"
-      >
-        <div class="notice-title">{{ row.title }}</div>
-        <div class="notice-meta">
-          <span class="notice-priority">{{ priorityText(row.priority) }}</span>
-          <span>{{ formatTime(row.crtime) }}</span>
-        </div>
-        <div v-if="canManage" class="notice-actions" @click.stop>
-          <button class="btn" @click="openEdit(row)">修改</button>
-          <button class="btn danger" @click="removeRow(row)">删除</button>
-        </div>
-      </button>
+    <div class="sub-nav">
+      <button class="btn" :class="{ primary: activeTab === 'system' }" @click="activeTab = 'system'">系统通知</button>
+      <button class="btn" :class="{ primary: activeTab === 'personal' }" @click="activeTab = 'personal'">个人通知</button>
+    </div>
 
-      <div v-if="sortedList.length === 0" class="empty-tip">暂无通知</div>
+    <div class="table-wrap">
+      <div class="notice-list">
+        <button
+          v-for="row in sortedList"
+          :key="row.id"
+          class="notice-item"
+          :class="priorityClass(row.priority)"
+          @click="openDetail(row)"
+        >
+          <div class="notice-title">{{ row.title }}</div>
+          <div class="notice-meta">
+            <span class="notice-priority">{{ priorityText(row.priority) }}</span>
+            <span>{{ formatTime(row.crtime) }}</span>
+            <span v-if="row.crname">发布人：{{ row.crname }}</span>
+            <span v-if="row.jieshou && activeTab === 'personal'">接收对象：{{ formatJieshou(row.jieshou) }}</span>
+          </div>
+          <div v-if="canManage && row.crname === currentUser.username" class="notice-actions" @click.stop>
+            <button class="btn" @click="openEdit(row)">修改</button>
+            <button class="btn danger" @click="openDelete(row)">删除</button>
+          </div>
+        </button>
+
+        <div v-if="sortedList.length === 0" class="empty-tip">暂无通知</div>
+      </div>
     </div>
 
     <div v-if="detailOpen" class="modal-mask" @click="closeDetail">
@@ -41,6 +50,7 @@
         <div class="detail-foot">
           <span>发布人：{{ publisherText(activeRow) }}</span>
           <span>发布时间：{{ formatTime(activeRow.crtime) }}</span>
+          <span v-if="activeRow.jieshou">接收对象：{{ formatJieshou(activeRow.jieshou) }}</span>
         </div>
         <div class="modal-actions">
           <button class="btn ghost" @click="closeDetail">关闭</button>
@@ -67,10 +77,32 @@
               <option :value="1">紧急</option>
             </select>
           </label>
+          <label class="input">
+            接收对象
+            <select v-model="form.jieshou">
+              <option value="0">系统全体</option>
+              <option v-for="u in users" :key="u.id" :value="String(u.id)">
+                {{ u.username }}
+              </option>
+            </select>
+          </label>
         </div>
         <div class="modal-actions">
           <button class="btn ghost" @click="closeForm">取消</button>
           <button class="btn" @click="saveForm">保存</button>
+        </div>
+      </div>
+    </div>
+
+    <div v-if="showDelete" class="modal-mask">
+      <div class="modal-card">
+        <div class="modal-title">确认删除</div>
+        <div class="modal-body">
+          确定删除通知 <strong>{{ deleteTarget?.title }}</strong> 吗？
+        </div>
+        <div class="modal-actions">
+          <button class="btn ghost" @click="closeDelete">取消</button>
+          <button class="btn primary" @click="confirmDelete">确定</button>
         </div>
       </div>
     </div>
@@ -82,15 +114,30 @@ import { computed, ref } from "vue";
 
 const props = defineProps({
   xinxiList: { type: Array, default: () => [] },
+  users: { type: Array, default: () => [] },
+  currentUser: { type: Object, default: () => ({}) },
   currentPer: { type: Number, default: 0 }
 });
 
 const emit = defineEmits(["refresh-all", "add-xinxi", "update-xinxi", "delete-xinxi"]);
 
+const activeTab = ref('system');
 const canManage = computed(() => Number(props.currentPer || 0) >= 1);
 
 const sortedList = computed(() => {
-  return [...(props.xinxiList || [])].sort((a, b) => {
+  const userId = String(props.currentUser.id || "");
+  const username = props.currentUser.username || "";
+
+  let filtered = [];
+  if (activeTab.value === 'system') {
+    filtered = (props.xinxiList || []).filter(row => row.jieshou === '0');
+  } else {
+    filtered = (props.xinxiList || []).filter(row => {
+      return row.jieshou !== '0' && (row.crname === username || String(row.jieshou) === userId);
+    });
+  }
+
+  return [...filtered].sort((a, b) => {
     const pa = Number(a.priority || 0);
     const pb = Number(b.priority || 0);
     if (pa !== pb) return pb - pa;
@@ -103,7 +150,10 @@ const activeRow = ref({});
 
 const formOpen = ref(false);
 const editingId = ref(0);
-const form = ref({ title: "", text: "", priority: 0 });
+const form = ref({ title: "", text: "", priority: 0, jieshou: "0" });
+
+const showDelete = ref(false);
+const deleteTarget = ref(null);
 
 function toTime(v) {
   if (!v) return 0;
@@ -125,7 +175,14 @@ function priorityClass(priority) {
 }
 
 function publisherText(row) {
+  if (row.crname) return row.crname;
   return row.publisher || row.user || row.username || "系统";
+}
+
+function formatJieshou(jieshou) {
+  if (!jieshou || jieshou === "0") return "系统全体";
+  const user = props.users.find(u => String(u.id) === String(jieshou));
+  return user ? user.username : `用户ID:${jieshou}`;
 }
 
 function reload() {
@@ -143,7 +200,7 @@ function closeDetail() {
 
 function openCreate() {
   editingId.value = 0;
-  form.value = { title: "", text: "", priority: 0 };
+  form.value = { title: "", text: "", priority: 0, jieshou: "0" };
   formOpen.value = true;
 }
 
@@ -152,7 +209,8 @@ function openEdit(row) {
   form.value = {
     title: String(row.title || ""),
     text: String(row.text || ""),
-    priority: Number(row.priority || 0)
+    priority: Number(row.priority || 0),
+    jieshou: String(row.jieshou || "0")
   };
   formOpen.value = true;
 }
@@ -169,7 +227,8 @@ function saveForm() {
   const payload = {
     title: form.value.title,
     text: form.value.text,
-    priority: Number(form.value.priority || 0)
+    priority: Number(form.value.priority || 0),
+    jieshou: form.value.jieshou
   };
   if (editingId.value) {
     emit("update-xinxi", { ...payload, id: editingId.value });
@@ -179,16 +238,38 @@ function saveForm() {
   formOpen.value = false;
 }
 
-function removeRow(row) {
-  if (!confirm("确认删除这条通知吗？")) return;
-  emit("delete-xinxi", Number(row.id));
+function openDelete(row) {
+  deleteTarget.value = row;
+  showDelete.value = true;
+}
+
+function closeDelete() {
+  showDelete.value = false;
+  deleteTarget.value = null;
+}
+
+function confirmDelete() {
+  if (!deleteTarget.value) return;
+  emit("delete-xinxi", Number(deleteTarget.value.id));
+  closeDelete();
 }
 </script>
 
 <style scoped>
+.sub-nav {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
 .notice-list {
   display: grid;
   gap: 10px;
+}
+
+.table-wrap {
+  max-height: calc(100vh - 260px);
+  overflow-y: auto;
 }
 
 .notice-item {
@@ -277,7 +358,8 @@ function removeRow(row) {
 }
 
 textarea,
-select {
+select,
+input {
   width: 100%;
   padding: 10px 12px;
   border-radius: 12px;

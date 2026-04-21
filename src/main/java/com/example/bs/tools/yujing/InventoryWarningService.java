@@ -3,21 +3,28 @@ package com.example.bs.tools.yujing;
 import com.example.bs.entity.ChukuDailyDemand;
 import com.example.bs.entity.InboundLeadTime;
 import com.example.bs.entity.Kucun;
+import com.example.bs.entity.Xinxi;
 import com.example.bs.mapper.AuditMapper;
 import com.example.bs.mapper.ChukuMapper;
 import com.example.bs.mapper.KucunMapper;
+import com.example.bs.mapper.XinxiMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * 库存预警
+ */
 @Slf4j
 @Component
 public class InventoryWarningService {
@@ -31,9 +38,12 @@ public class InventoryWarningService {
     private ChukuMapper chukuMapper;
     @Autowired
     private AuditMapper auditMapper;
+    @Autowired
+    private XinxiMapper xinxiMapper;
 
     private volatile double z = DEFAULT_Z;
     private final Map<String, Integer> safeStockMap = new ConcurrentHashMap<>();
+    private final Set<String> alreadyWarnedItems = ConcurrentHashMap.newKeySet();
     private volatile LocalDate lastCalcDate = null;
 
     @Scheduled(cron = "0 0 2 * * ?")
@@ -63,6 +73,31 @@ public class InventoryWarningService {
             int safe = (int) Math.ceil(z * sigma * Math.sqrt(lt));
             if (safe < 0) safe = 0;
             nextSafeMap.put(name, safe);
+
+            int quantity = item.getQuantity() != null ? item.getQuantity() : 0;
+            boolean isWarning = quantity <= safe;
+
+            if (isWarning) {
+                // 如果当前处于预警状态，但之前没有发过通知
+                if (!alreadyWarnedItems.contains(name)) {
+                    Xinxi notification = new Xinxi();
+                    notification.setTitle("库存预警");
+                    notification.setText("物料 '" + name + "' 当前库存为 " + quantity + "，已低于或等于安全库存 " + safe + "，请及时处理。");
+                    notification.setPriority(1); // 紧急
+                    notification.setCrtime(LocalDateTime.now());
+                    notification.setCrname("系统");
+                    notification.setJieshou("0"); // 系统全体
+                    xinxiMapper.addxinxi(notification);
+                    alreadyWarnedItems.add(name); // 标记为已发送
+                    log.info("库存预警通知已发送: {}", notification.getText());
+                }
+            } else {
+                // 如果当前库存充足，但之前发送过预警，则移除标记
+                if (alreadyWarnedItems.contains(name)) {
+                    alreadyWarnedItems.remove(name);
+                    log.info("物料 '{}' 库存已恢复，已从预警列表中移除。", name);
+                }
+            }
         }
 
         safeStockMap.clear();
@@ -146,4 +181,3 @@ public class InventoryWarningService {
         return Math.sqrt(sq / values.length);
     }
 }
-

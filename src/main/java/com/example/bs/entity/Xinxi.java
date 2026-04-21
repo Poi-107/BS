@@ -15,4 +15,6 @@ public class Xinxi {
     private String text;
     private int priority;
     private LocalDateTime crtime;
+    private String crname;
+    private String jieshou;
 }

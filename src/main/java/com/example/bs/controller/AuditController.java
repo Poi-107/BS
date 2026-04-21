@@ -2,8 +2,11 @@ package com.example.bs.controller;
 
 import com.example.bs.aop.AopAnnotation;
 import com.example.bs.entity.Audit;
-import com.example.bs.entity.Kucun;
 import com.example.bs.entity.Result;
+import com.example.bs.entity.User;
+import com.example.bs.entity.Xinxi;
+import com.example.bs.mapper.UserMapper;
+import com.example.bs.mapper.XinxiMapper;
 import com.example.bs.service.AuditService;
 import com.example.bs.tools.UserContext;
 import com.example.bs.tools.interceptor.Per;
@@ -20,6 +23,12 @@ import java.util.List;
 public class AuditController {
     @Autowired
     private AuditService auditService;
+
+    @Autowired
+    private XinxiMapper xinxiMapper;
+
+    @Autowired
+    private UserMapper userMapper;
 
     @Per(1)
     //查询审核表
@@ -72,6 +81,26 @@ public class AuditController {
         audit.setReviewer(reviewer);
         audit.setReviewertime(LocalDateTime.now());
         auditService.upaudit(audit);
+
+        // 如果是驳回操作，则发送通知
+        if (audit.getStatus() == 2) {
+            Audit originalAudit = auditService.selid(audit.getId());
+            if (originalAudit != null && originalAudit.getUser() != null) {
+                User targetUser = userMapper.seluser1(originalAudit.getUser());
+                if (targetUser != null) {
+                    Xinxi notification = new Xinxi();
+                    notification.setTitle("驳回通知");
+                    notification.setText("您提交的单据 " + originalAudit.getId() + " 已被驳回，驳回意见：" + audit.getRemark());
+                    notification.setPriority(0); // 普通
+                    notification.setCrtime(LocalDateTime.now());
+                    notification.setCrname("系统");
+                    notification.setJieshou(String.valueOf(targetUser.getId()));
+                    xinxiMapper.addxinxi(notification);
+                    log.info("驳回通知已发送给用户: {} (ID: {})", targetUser.getUsername(), targetUser.getId());
+                }
+            }
+        }
+
         return Result.success();
     }
 }

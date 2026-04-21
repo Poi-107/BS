@@ -6,6 +6,7 @@ import com.example.bs.entity.Log;
 import com.example.bs.entity.Result;
 import com.example.bs.entity.Xinxi;
 import com.example.bs.service.XinxiService;
+import com.example.bs.tools.UserContext;
 import com.example.bs.tools.interceptor.Per;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,10 @@ public class XinxiController {
         log.info("请求添加信息");
 //        获取时间
         xinxi.setCrtime(LocalDateTime.now());
+//        获取当前登录用户名作为发布人
+        String currentUserName = UserContext.getCurrentUserName();
+        xinxi.setCrname(currentUserName != null ? currentUserName : "系统");
+
         xinxiService.addxinxi(xinxi);
         return Result.success();
     }

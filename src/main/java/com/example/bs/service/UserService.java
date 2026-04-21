@@ -95,7 +95,7 @@ public class UserService {
      * @param id
      * @return
      */
-    public Object seluser2(Integer id) {
+    public User seluser2(Integer id) {
         return userMapper.seluser2(id);
     }
 }

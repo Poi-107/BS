@@ -58,7 +58,7 @@ public interface UserMapper {
     /**
      * 修改用户头像
      * @param id
-     * @param s
+     * @param
      */
     void updateAvatar(@Param("id") Integer id,
                       @Param("avatar_url") String avatarUrl);
@@ -75,5 +75,12 @@ public interface UserMapper {
      * @param id
      * @return
      */
-    Object seluser2(Integer id);
+    User seluser2(Integer id);
+
+    /**
+     * 根据用户名查询用户
+     * @param user
+     * @return
+     */
+    User seluser1(String user);
 }

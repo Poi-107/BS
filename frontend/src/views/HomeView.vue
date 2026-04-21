@@ -1,163 +1,225 @@
 <template>
   <section class="panel home-panel">
-    <section class="hero">
-      <h2>库存管理系统</h2>
-    </section>
+    <div v-if="currentPer > 0">
+      <section class="hero">
+        <h2>库存管理系统</h2>
+      </section>
 
-    <div class="panel-header">
-      <h3>数据统计</h3>
-      <div class="toolbar">
-        <button class="btn" @click="reload">刷新</button>
+      <div class="panel-header">
+        <h3>数据统计</h3>
+        <div class="toolbar">
+          <button class="btn" @click="reload">刷新</button>
+        </div>
+      </div>
+
+      <div class="stats-block">
+        <div class="home-grid">
+          <div class="stat-card">
+            <h3>今日入库</h3>
+            <strong>{{ statsSafe.jinruku }}</strong>
+            <div class="stat-unit">单</div>
+          </div>
+          <div class="stat-card">
+            <h3>今日出库</h3>
+            <strong>{{ statsSafe.jinchuku }}</strong>
+            <div class="stat-unit">单</div>
+          </div>
+          <div class="stat-card">
+            <h3>今日销售</h3>
+            <strong>{{ statsSafe.jinsale }}</strong>
+            <div class="stat-unit">元</div>
+          </div>
+          <div class="stat-card">
+            <h3>今日采购</h3>
+            <strong>{{ statsSafe.jinpur }}</strong>
+            <div class="stat-unit">元</div>
+          </div>
+          <div class="stat-card">
+            <h3>本月入库</h3>
+            <strong>{{ statsSafe.yueruku }}</strong>
+            <div class="stat-unit">单</div>
+          </div>
+          <div class="stat-card">
+            <h3>本月出库</h3>
+            <strong>{{ statsSafe.yuechuku }}</strong>
+            <div class="stat-unit">单</div>
+          </div>
+          <div class="stat-card">
+            <h3>本月销售</h3>
+            <strong>{{ statsSafe.yuesale }}</strong>
+            <div class="stat-unit">元</div>
+          </div>
+          <div class="stat-card">
+            <h3>本月采购</h3>
+            <strong>{{ statsSafe.yuecpur }}</strong>
+            <div class="stat-unit">元</div>
+          </div>
+          <div class="stat-card">
+            <h3>年度销售</h3>
+            <strong>{{ statsSafe.yearsale }}</strong>
+            <div class="stat-unit">元</div>
+          </div>
+          <div class="stat-card">
+            <h3>年度采购</h3>
+            <strong>{{ statsSafe.yearpur }}</strong>
+            <div class="stat-unit">元</div>
+          </div>
+        </div>
+
+        <div class="chart-grid">
+          <section class="chart-card" :class="{ 'is-open': activeChart === 'io' }" @click="openChart('io')">
+            <div class="chart-head">
+              <div class="chart-title">七日入库出库折线图</div>
+              <div class="legend">
+                <span class="dot" style="background:#2a9d8f"></span><span>入库</span>
+                <span class="dot" style="background:#e76f51"></span><span>出库</span>
+              </div>
+            </div>
+            <div class="line-wrap">
+              <div class="y-axis">
+                <span v-for="(v, i) in inOutYAxis" :key="`io-${i}-${v}`">{{ v }}</span>
+              </div>
+              <svg class="line-svg" viewBox="0 0 420 190" preserveAspectRatio="none">
+                <line v-for="y in yGrid" :key="`io-grid-${y}`" class="grid-line" x1="24" :y1="y" x2="408" :y2="y" />
+                <polyline class="line in" :points="inOutChart.inLine" />
+                <polyline class="line out" :points="inOutChart.outLine" />
+                <circle v-for="(p, i) in inOutChart.inPoints" :key="'in'+i" :cx="p.x" :cy="p.y" r="3" class="point in" />
+                <circle v-for="(p, i) in inOutChart.outPoints" :key="'out'+i" :cx="p.x" :cy="p.y" r="3" class="point out" />
+              </svg>
+            </div>
+            <div class="x-axis">
+              <span v-for="d in dayLabels" :key="d">{{ d }}</span>
+            </div>
+          </section>
+
+          <section class="chart-card" :class="{ 'is-open': activeChart === 'money' }" @click="openChart('money')">
+            <div class="chart-head">
+              <div class="chart-title">七日采购销售折线图</div>
+              <div class="legend">
+                <span class="dot" style="background:#3a86ff"></span><span>采购</span>
+                <span class="dot" style="background:#9b5de5"></span><span>销售</span>
+              </div>
+            </div>
+            <div class="line-wrap">
+              <div class="y-axis">
+                <span v-for="(v, i) in moneyYAxis" :key="`money-${i}-${v}`">{{ v }}</span>
+              </div>
+              <svg class="line-svg" viewBox="0 0 420 190" preserveAspectRatio="none">
+                <line v-for="y in yGrid" :key="`money-grid-${y}`" class="grid-line" x1="24" :y1="y" x2="408" :y2="y" />
+                <polyline class="line buy" :points="moneyChart.buyLine" />
+                <polyline class="line sale" :points="moneyChart.saleLine" />
+                <circle v-for="(p, i) in moneyChart.buyPoints" :key="'buy'+i" :cx="p.x" :cy="p.y" r="3" class="point buy" />
+                <circle v-for="(p, i) in moneyChart.salePoints" :key="'sale'+i" :cx="p.x" :cy="p.y" r="3" class="point sale" />
+              </svg>
+            </div>
+            <div class="x-axis">
+              <span v-for="d in dayLabels" :key="d">{{ d }}</span>
+            </div>
+          </section>
+        </div>
+
+        <div class="category-grid">
+          <section class="category-card" :class="{ 'is-open': activeChart === 'category' }" @click="openChart('category')">
+            <div class="chart-head">
+              <div class="chart-title">物品类别占比图</div>
+              <div class="legend">总量 {{ categoryTotal }}</div>
+            </div>
+            <div class="category-wrap">
+              <div class="donut" :style="{ background: categoryGradient }">
+                <div class="donut-center">类别占比</div>
+              </div>
+              <div class="category-list">
+                <div class="category-item" v-for="row in categoryRows" :key="row.name">
+                  <span class="dot" :style="{ background: row.color }"></span>
+                  <span class="category-name">{{ row.name }}</span>
+                  <span class="category-percent">{{ row.percent }}%</span>
+                  <span class="category-value">{{ row.value }}</span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="category-card" :class="{ 'is-open': activeChart === 'warning' }" @click="openChart('warning')">
+            <div class="chart-head">
+              <div class="chart-title">库存预警分布图</div>
+              <div class="legend">总数 {{ warningTotal }}</div>
+            </div>
+            <div class="category-wrap">
+              <div class="donut" :style="{ background: warningGradient }">
+                <div class="donut-center">预警分布</div>
+              </div>
+              <div class="category-list">
+                <div class="category-item" v-for="row in warningRows" :key="'warning-' + row.name">
+                  <span class="dot" :style="{ background: row.color }"></span>
+                  <span class="category-name">{{ row.name }}</span>
+                  <span class="category-percent">{{ row.percent }}%</span>
+                  <span class="category-value">{{ row.value }}</span>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
       </div>
     </div>
 
-    <div class="stats-block">
-      <div class="home-grid">
-        <div class="stat-card">
-          <h3>今日入库</h3>
-          <strong>{{ statsSafe.jinruku }}</strong>
-          <div class="stat-unit">单</div>
-        </div>
-        <div class="stat-card">
-          <h3>今日出库</h3>
-          <strong>{{ statsSafe.jinchuku }}</strong>
-          <div class="stat-unit">单</div>
-        </div>
-        <div class="stat-card">
-          <h3>今日销售</h3>
-          <strong>{{ statsSafe.jinsale }}</strong>
-          <div class="stat-unit">元</div>
-        </div>
-        <div class="stat-card">
-          <h3>今日采购</h3>
-          <strong>{{ statsSafe.jinpur }}</strong>
-          <div class="stat-unit">元</div>
-        </div>
-        <div class="stat-card">
-          <h3>本月入库</h3>
-          <strong>{{ statsSafe.yueruku }}</strong>
-          <div class="stat-unit">单</div>
-        </div>
-        <div class="stat-card">
-          <h3>本月出库</h3>
-          <strong>{{ statsSafe.yuechuku }}</strong>
-          <div class="stat-unit">单</div>
-        </div>
-        <div class="stat-card">
-          <h3>本月销售</h3>
-          <strong>{{ statsSafe.yuesale }}</strong>
-          <div class="stat-unit">元</div>
-        </div>
-        <div class="stat-card">
-          <h3>本月采购</h3>
-          <strong>{{ statsSafe.yuecpur }}</strong>
-          <div class="stat-unit">元</div>
-        </div>
-        <div class="stat-card">
-          <h3>年度销售</h3>
-          <strong>{{ statsSafe.yearsale }}</strong>
-          <div class="stat-unit">元</div>
-        </div>
-        <div class="stat-card">
-          <h3>年度采购</h3>
-          <strong>{{ statsSafe.yearpur }}</strong>
-          <div class="stat-unit">元</div>
+    <div v-else>
+      <section class="hero">
+        <h2>欢迎，{{ currentUser.username }}</h2>
+        <p>开始您一天的工作吧！</p>
+      </section>
+
+      <div class="panel-header">
+        <h3>快捷操作</h3>
+      </div>
+      <div class="quick-actions">
+        <RouterLink to="/inbound-my" class="btn primary">入库登记</RouterLink>
+        <RouterLink to="/outbound-my" class="btn">出库登记</RouterLink>
+      </div>
+
+      <div class="panel-header" style="margin-top: 20px;">
+        <h3>个人通知</h3>
+      </div>
+      <div class="table-wrap" style="max-height: 200px;">
+        <div v-if="personalXinxi.length === 0" class="empty-tip">暂无个人通知</div>
+        <div v-else class="notice-list">
+          <div v-for="row in personalXinxi.slice(0, 5)" :key="row.id" class="notice-item-mini">
+            <div class="notice-title-mini">{{ row.title }}</div>
+            <div class="notice-meta-mini">{{ formatTime(row.crtime) }}</div>
+          </div>
         </div>
       </div>
 
-      <div class="chart-grid">
-        <section class="chart-card" :class="{ 'is-open': activeChart === 'io' }" @click="openChart('io')">
-          <div class="chart-head">
-            <div class="chart-title">七日入库出库折线图</div>
-            <div class="legend">
-              <span class="dot" style="background:#2a9d8f"></span><span>入库</span>
-              <span class="dot" style="background:#e76f51"></span><span>出库</span>
-            </div>
-          </div>
-          <div class="line-wrap">
-            <div class="y-axis">
-              <span v-for="(v, i) in inOutYAxis" :key="`io-${i}-${v}`">{{ v }}</span>
-            </div>
-            <svg class="line-svg" viewBox="0 0 420 190" preserveAspectRatio="none">
-              <line v-for="y in yGrid" :key="`io-grid-${y}`" class="grid-line" x1="24" :y1="y" x2="408" :y2="y" />
-              <polyline class="line in" :points="inOutChart.inLine" />
-              <polyline class="line out" :points="inOutChart.outLine" />
-              <circle v-for="(p, i) in inOutChart.inPoints" :key="'in'+i" :cx="p.x" :cy="p.y" r="3" class="point in" />
-              <circle v-for="(p, i) in inOutChart.outPoints" :key="'out'+i" :cx="p.x" :cy="p.y" r="3" class="point out" />
-            </svg>
-          </div>
-          <div class="x-axis">
-            <span v-for="d in dayLabels" :key="d">{{ d }}</span>
-          </div>
-        </section>
-
-        <section class="chart-card" :class="{ 'is-open': activeChart === 'money' }" @click="openChart('money')">
-          <div class="chart-head">
-            <div class="chart-title">七日采购销售折线图</div>
-            <div class="legend">
-              <span class="dot" style="background:#3a86ff"></span><span>采购</span>
-              <span class="dot" style="background:#9b5de5"></span><span>销售</span>
-            </div>
-          </div>
-          <div class="line-wrap">
-            <div class="y-axis">
-              <span v-for="(v, i) in moneyYAxis" :key="`money-${i}-${v}`">{{ v }}</span>
-            </div>
-            <svg class="line-svg" viewBox="0 0 420 190" preserveAspectRatio="none">
-              <line v-for="y in yGrid" :key="`money-grid-${y}`" class="grid-line" x1="24" :y1="y" x2="408" :y2="y" />
-              <polyline class="line buy" :points="moneyChart.buyLine" />
-              <polyline class="line sale" :points="moneyChart.saleLine" />
-              <circle v-for="(p, i) in moneyChart.buyPoints" :key="'buy'+i" :cx="p.x" :cy="p.y" r="3" class="point buy" />
-              <circle v-for="(p, i) in moneyChart.salePoints" :key="'sale'+i" :cx="p.x" :cy="p.y" r="3" class="point sale" />
-            </svg>
-          </div>
-          <div class="x-axis">
-            <span v-for="d in dayLabels" :key="d">{{ d }}</span>
-          </div>
-        </section>
+      <div class="panel-header" style="margin-top: 20px;">
+        <h3>最近单据</h3>
       </div>
-
-      <div class="category-grid">
-        <section class="category-card" :class="{ 'is-open': activeChart === 'category' }" @click="openChart('category')">
-          <div class="chart-head">
-            <div class="chart-title">物品类别占比图</div>
-            <div class="legend">总量 {{ categoryTotal }}</div>
-          </div>
-          <div class="category-wrap">
-            <div class="donut" :style="{ background: categoryGradient }">
-              <div class="donut-center">类别占比</div>
-            </div>
-            <div class="category-list">
-              <div class="category-item" v-for="row in categoryRows" :key="row.name">
-                <span class="dot" :style="{ background: row.color }"></span>
-                <span class="category-name">{{ row.name }}</span>
-                <span class="category-percent">{{ row.percent }}%</span>
-                <span class="category-value">{{ row.value }}</span>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section class="category-card" :class="{ 'is-open': activeChart === 'warning' }" @click="openChart('warning')">
-          <div class="chart-head">
-            <div class="chart-title">库存预警分布图</div>
-            <div class="legend">总数 {{ warningTotal }}</div>
-          </div>
-          <div class="category-wrap">
-            <div class="donut" :style="{ background: warningGradient }">
-              <div class="donut-center">预警分布</div>
-            </div>
-            <div class="category-list">
-              <div class="category-item" v-for="row in warningRows" :key="'warning-' + row.name">
-                <span class="dot" :style="{ background: row.color }"></span>
-                <span class="category-name">{{ row.name }}</span>
-                <span class="category-percent">{{ row.percent }}%</span>
-                <span class="category-value">{{ row.value }}</span>
-              </div>
-            </div>
-          </div>
-        </section>
+      <div class="table-wrap" style="max-height: 200px;">
+        <div v-if="rukuMine.length === 0 && chukuMine.length === 0" class="empty-tip">暂无单据</div>
+        <table v-else class="table">
+          <thead>
+            <tr>
+              <th>类型</th>
+              <th>物料</th>
+              <th>数量</th>
+              <th>时间</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="row in rukuMine.slice(0, 3)" :key="`in-${row.id}`">
+              <td><span class="badge ok">入库</span></td>
+              <td>{{ row.name }}</td>
+              <td>{{ row.quantity }}</td>
+              <td>{{ formatTime(row.rktime) }}</td>
+            </tr>
+            <tr v-for="row in chukuMine.slice(0, 3)" :key="`out-${row.id}`">
+              <td><span class="badge warn">出库</span></td>
+              <td>{{ row.name }}</td>
+              <td>{{ row.quantity }}</td>
+              <td>{{ formatTime(row.cktime) }}</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
+    </div>
 
     <div v-if="activeChart" class="chart-overlay" @click="closeChart">
       <div class="chart-modal" @click.stop>
@@ -224,19 +286,37 @@
         </div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 </template>
 
 <script setup>
 import { computed, ref } from "vue";
+import { RouterLink } from "vue-router";
 
 const props = defineProps({
   stats: { type: Object, default: () => ({}) },
   rukuList: { type: Array, default: () => [] },
   chukuList: { type: Array, default: () => [] },
-  inventory: { type: Array, default: () => [] }
+  inventory: { type: Array, default: () => [] },
+  currentPer: { type: Number, default: 0 },
+  currentUser: { type: Object, default: () => ({}) },
+  xinxiList: { type: Array, default: () => [] },
+  rukuMine: { type: Array, default: () => [] },
+  chukuMine: { type: Array, default: () => [] },
 });
+
+const personalXinxi = computed(() => {
+  const userId = String(props.currentUser.id || "");
+  const username = props.currentUser.username || "";
+  return (props.xinxiList || []).filter(row => {
+    return row.jieshou !== '0' && (row.crname === username || String(row.jieshou) === userId);
+  });
+});
+
+function formatTime(value) {
+  if (!value) return "";
+  return String(value).replace("T", " ").slice(0, 19);
+}
 
 const statsSafe = computed(() => ({
   jinruku: Number(props.stats.jinruku || 0),
@@ -487,6 +567,40 @@ function reload() {
   gap: 18px;
 }
 
+.quick-actions {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.notice-list {
+  display: grid;
+  gap: 10px;
+}
+
+.notice-item-mini {
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: #f7f8fa;
+  border: 1px solid var(--line);
+}
+
+.notice-title-mini {
+  font-weight: 600;
+}
+
+.notice-meta-mini {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+.empty-tip {
+  text-align: center;
+  color: var(--muted);
+  padding: 20px 12px;
+}
+
 .chart-grid {
   margin-top: 18px;
   display: grid;
@@ -735,5 +849,3 @@ function reload() {
   }
 }
 </style>
-
-

@@ -220,6 +220,8 @@
         @query-chuku-user="queryChukuByUser"
         @reset-chuku-query="resetChukuQuery"
         @filter-kucun="filterKucun"
+        @search-kucun-by-name="searchKucunByName"
+        @search-kucun-by-code="searchKucunByCode"
         @update-inventory="updateInventory"
         @filter-audit="filterAudit"
         @import-inbound-excel="importInboundExcel"
@@ -433,7 +435,7 @@ function buildNav(per) {
         { key: "clients", label: "客户管理", path: "/clients", per: [0, 1, 2] }
       ]
     },
-    { key: "users", label: "用户管理", path: "/users", badge: () => String(users.value.length), per: [2] },
+    { key: "users", label: "用户管理", path: "/users", badge: () => String(users.value.length), per: [1, 2] },
     { key: "log", label: "操作日志", path: "/log", badge: () => String(logList.value.length), per: [2] },
     { key: "xinxi", label: "消息通知", path: "/xinxi", badge: () => xinxiBadge.value, per: [0, 1, 2] },
     { key: "profile", label: "个人中心", path: "/profile", per: [0, 1, 2] }
@@ -446,9 +448,6 @@ function buildNav(per) {
       if (item.children) {
         const visibleChildren = item.children.filter(child => child.per.includes(per));
         if (visibleChildren.length === 0) return null;
-        if (visibleChildren.length === 1 && per === 0) {
-           return { ...visibleChildren[0], badge: typeof visibleChildren[0].badge === 'function' ? visibleChildren[0].badge() : visibleChildren[0].badge };
-        }
         return {
           ...item,
           badge,
@@ -631,6 +630,26 @@ function filterKucun(leibie) {
   loadInventory(leibie || "").catch((err) => {
     notifyQueryError(err, "库存分类查询失败");
   });
+}
+
+async function searchKucunByName(name) {
+  const keyword = String(name || "").trim();
+  if (!keyword) {
+    await loadInventory();
+    return;
+  }
+  const res = await apiGet(`/bs/selname?name=${encodeURIComponent(keyword)}`);
+  inventory.value = res.data ? [res.data] : [];
+}
+
+async function searchKucunByCode(code) {
+  const keyword = String(code || "").trim();
+  if (!keyword) {
+    await loadInventory();
+    return;
+  }
+  const res = await apiGet(`/bs/selcode?code=${encodeURIComponent(keyword)}`);
+  inventory.value = res.data ? [res.data] : [];
 }
 
 function filterAudit(leibie) {

@@ -29,7 +29,7 @@
             <span v-if="row.crname">发布人：{{ row.crname }}</span>
             <span v-if="row.jieshou && activeTab === 'personal'">接收对象：{{ formatJieshou(row.jieshou) }}</span>
           </div>
-          <div v-if="canManage && row.crname === currentUser.username" class="notice-actions" @click.stop>
+          <div v-if="canManage" class="notice-actions" @click.stop>
             <button class="btn" @click="openEdit(row)">修改</button>
             <button class="btn danger" @click="openDelete(row)">删除</button>
           </div>

@@ -20,6 +20,12 @@ public interface RukuMapper {
     void addruku(Ruku ruku);
 
     /**
+     * 批量添加入库单
+     * @param rukuList
+     */
+    void batchAddRuku(List<Ruku> rukuList);
+
+    /**
      * 查询今日入库
      * @return
      */

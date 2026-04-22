@@ -82,6 +82,17 @@ public class RukuService {
     }
 
     /**
+     * 批量添加入库单
+     * @param rukuList
+     */
+    @Transactional
+    public void batchAddRuku(List<Ruku> rukuList) {
+        for (Ruku ruku : rukuList) {
+            addruku(ruku);
+        }
+    }
+
+    /**
      * 查询今日入库
      * @return
      */

@@ -30,7 +30,7 @@
     </select>
 <!--    根据code查询物品，获取leibie和name-->
     <select id="selcode" resultType="com.example.bs.entity.Kucun">
-        select leibie, name from kucun where code=#{code}
+        select *from kucun where code=#{code}
     </select>
 <!--    根据id对库存表进行动态修改（修改code，leibie，name，quantity）-->
     <update id="upkucun2">

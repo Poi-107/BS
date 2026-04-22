@@ -59,7 +59,7 @@ public class UserController {
     }
 
     // 修改用户权限（管理员）
-    @Per(1)
+    @Per(2)
     @AopAnnotation(target = "用户表", action = "修改用户权限")
     @PostMapping("/upuser")
     public Result upuser(@RequestBody User user) {
@@ -88,7 +88,7 @@ public class UserController {
     }
 
     // 删除用户
-    @Per(1)
+    @Per(2)
     @AopAnnotation(target = "用户表", action = "删除用户")
     @PostMapping("/deluser")
     public Result deluser(@RequestBody User user) {

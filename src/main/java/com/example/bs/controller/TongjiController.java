@@ -47,7 +47,7 @@ public class TongjiController {
         int sale=chukuService.jinsale();
         return Result.success(sale);
     }
-//    查询昨日销售
+
 //    查询今日采购
     @GetMapping("/jinpur")
     public Result jinpur(){
@@ -55,7 +55,7 @@ public class TongjiController {
         int pur=rukuService.jinpur();
         return Result.success(pur);
     }
-//    查询昨日采购
+
 //    查询本月入库
     @GetMapping("/yueruku")
     public Result yueruku(){

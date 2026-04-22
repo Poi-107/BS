@@ -110,8 +110,7 @@ public class RukuController {
             return Result.error("未登录或无法获取用户信息");
         }
 
-        int success = 0;
-        int failed = 0;
+        List<Ruku> validRukus = new ArrayList<>();
         List<Map<String, Object>> errors = new ArrayList<>();
 
         try (InputStream is = file.getInputStream(); XSSFWorkbook workbook = new XSSFWorkbook(is)) {
@@ -138,7 +137,7 @@ public class RukuController {
                 Integer quantity = readInt(row.getCell(5));
                 Integer moneyCell = readInt(row.getCell(6));
 
-                // 空行跳过（前 3 列都为空 & 数量/单价为空）
+                // 空行跳过
                 boolean empty = (code == null || code.isBlank())
                         && (leibie == null || leibie.isBlank())
                         && (material == null || material.isBlank())
@@ -150,9 +149,8 @@ public class RukuController {
 
                 String msg = validateRow(material, supplier, leibie, quantity, price, moneyCell);
                 if (msg != null && !msg.isBlank()) {
-                    failed += 1;
                     Map<String, Object> err = new HashMap<>();
-                    err.put("row", i + 1); // Excel 行号（从 1 开始）
+                    err.put("row", i + 1);
                     err.put("message", msg);
                     errors.add(err);
                     continue;
@@ -160,7 +158,6 @@ public class RukuController {
 
                 int expectedMoney = quantity * price;
                 if (moneyCell != null && moneyCell != expectedMoney) {
-                    failed += 1;
                     Map<String, Object> err = new HashMap<>();
                     err.put("row", i + 1);
                     err.put("message", "金额不一致：填写金额=" + moneyCell + "，应为 单价×数量=" + expectedMoney);
@@ -182,17 +179,29 @@ public class RukuController {
                 ruku.setMoney(money);
                 ruku.setUser(userName);
                 ruku.setRktime(LocalDateTime.now());
-                rukuService.addruku(ruku);
-                success += 1;
+                validRukus.add(ruku);
             }
+
+            if (!errors.isEmpty()) {
+                Map<String, Object> data = new HashMap<>();
+                data.put("success", 0);
+                data.put("failed", errors.size());
+                data.put("errors", errors);
+                return Result.success(data);
+            }
+
+            if (!validRukus.isEmpty()) {
+                rukuService.batchAddRuku(validRukus);
+            }
+
         } catch (Exception ex) {
             log.error("导入入库 Excel 失败", ex);
             return Result.error("导入失败：" + ex.getMessage());
         }
 
         Map<String, Object> data = new HashMap<>();
-        data.put("success", success);
-        data.put("failed", failed);
+        data.put("success", validRukus.size());
+        data.put("failed", 0);
         data.put("errors", errors);
         return Result.success(data);
     }

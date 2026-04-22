@@ -8,6 +8,7 @@ import com.example.bs.mapper.AuditMapper;
 import com.example.bs.mapper.ChukuMapper;
 import com.example.bs.mapper.KucunMapper;
 import com.example.bs.mapper.XinxiMapper;
+import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -46,12 +47,20 @@ public class InventoryWarningService {
     private final Set<String> alreadyWarnedItems = ConcurrentHashMap.newKeySet();
     private volatile LocalDate lastCalcDate = null;
 
-    @Scheduled(cron = "0 0 2 * * ?")
-    public void scheduledRecompute() {
-        recomputeSafeStock();
+    //启动时发送预警
+    @PostConstruct
+    public void initialize() {
+        log.info("系统启动，开始初始化安全库存计算...");
+        recomputeSafeStock(true);
     }
 
-    public synchronized void recomputeSafeStock() {
+    //定时任务
+    @Scheduled(cron = "0 0 2 * * ?")
+    public void scheduledRecompute() {
+        recomputeSafeStock(true);
+    }
+
+    public synchronized void recomputeSafeStock(boolean sendNotification) {
         List<ChukuDailyDemand> dailyDemand = chukuMapper.selDailyDemand30();
         List<InboundLeadTime> leadTimes = auditMapper.selInboundLeadTime();
 
@@ -74,28 +83,28 @@ public class InventoryWarningService {
             if (safe < 0) safe = 0;
             nextSafeMap.put(name, safe);
 
-            int quantity = item.getQuantity() != null ? item.getQuantity() : 0;
-            boolean isWarning = quantity <= safe;
+            if (sendNotification) {
+                int quantity = item.getQuantity() != null ? item.getQuantity() : 0;
+                boolean isWarning = quantity <= safe;
 
-            if (isWarning) {
-                // 如果当前处于预警状态，但之前没有发过通知
-                if (!alreadyWarnedItems.contains(name)) {
-                    Xinxi notification = new Xinxi();
-                    notification.setTitle("库存预警");
-                    notification.setText("物料 '" + name + "' 当前库存为 " + quantity + "，已低于或等于安全库存 " + safe + "，请及时处理。");
-                    notification.setPriority(1); // 紧急
-                    notification.setCrtime(LocalDateTime.now());
-                    notification.setCrname("系统");
-                    notification.setJieshou("0"); // 系统全体
-                    xinxiMapper.addxinxi(notification);
-                    alreadyWarnedItems.add(name); // 标记为已发送
-                    log.info("库存预警通知已发送: {}", notification.getText());
-                }
-            } else {
-                // 如果当前库存充足，但之前发送过预警，则移除标记
-                if (alreadyWarnedItems.contains(name)) {
-                    alreadyWarnedItems.remove(name);
-                    log.info("物料 '{}' 库存已恢复，已从预警列表中移除。", name);
+                if (isWarning) {
+                    if (!alreadyWarnedItems.contains(name)) {
+                        Xinxi notification = new Xinxi();
+                        notification.setTitle("库存预警");
+                        notification.setText("物料 '" + name + "' 当前库存为 " + quantity + "，已低于或等于安全库存 " + safe + "，请及时处理。");
+                        notification.setPriority(1); // 紧急
+                        notification.setCrtime(LocalDateTime.now());
+                        notification.setCrname("系统");
+                        notification.setJieshou("0"); // 系统全体
+                        xinxiMapper.addxinxi(notification);
+                        alreadyWarnedItems.add(name);
+                        log.info("库存预警通知已发送: {}", notification.getText());
+                    }
+                } else {
+                    if (alreadyWarnedItems.contains(name)) {
+                        alreadyWarnedItems.remove(name);
+                        log.info("物料 '{}' 库存已恢复，已从预警列表中移除。", name);
+                    }
                 }
             }
         }
@@ -103,13 +112,10 @@ public class InventoryWarningService {
         safeStockMap.clear();
         safeStockMap.putAll(nextSafeMap);
         lastCalcDate = LocalDate.now();
-        log.info("dynamic warning recomputed, itemCount={}, z={}", safeStockMap.size(), z);
+        log.info("dynamic warning recomputed, itemCount={}, z={}, sendNotification={}", safeStockMap.size(), z, sendNotification);
     }
 
     public List<Kucun> enrichWithWarning(List<Kucun> list) {
-        if (lastCalcDate == null) {
-            recomputeSafeStock();
-        }
         List<Kucun> result = new ArrayList<>();
         for (Kucun item : list) {
             if (item == null) continue;

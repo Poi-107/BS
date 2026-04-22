@@ -24,6 +24,14 @@
         insert into ruku(code,leibie,name, supplier, price, quantity, money, rktime, user)
         values(#{code},#{leibie},#{name},#{supplier},#{price},#{quantity},#{money},#{rktime},#{user})
     </insert>
+    <!--    批量添加入库单-->
+    <insert id="batchAddRuku" parameterType="java.util.List">
+        insert into ruku(code,leibie,name, supplier, price, quantity, money, rktime, user)
+        values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.code},#{item.leibie},#{item.name},#{item.supplier},#{item.price},#{item.quantity},#{item.money},#{item.rktime},#{item.user})
+        </foreach>
+    </insert>
     <!-- 查询今日入库单数 -->
     <select id="jinruku" resultType="int">
         SELECT COUNT(*)

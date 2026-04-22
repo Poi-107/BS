@@ -113,7 +113,7 @@ public class AuditService {
         stringRedisTemplate.delete("cache:ruku:all");
         stringRedisTemplate.delete("cache:chuku:all");
         stringRedisTemplate.delete("cache:kucun:all");
-        inventoryWarningService.recomputeSafeStock();
+        inventoryWarningService.recomputeSafeStock(false);
     }
 
 

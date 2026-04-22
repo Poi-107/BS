@@ -21,6 +21,10 @@
     <div class="panel-header">
       <h3>库存台账</h3>
       <div class="toolbar">
+        <input class="table-input" v-model="searchName" placeholder="按名称查询" @keyup.enter="searchByName" />
+        <button class="btn" @click="searchByName">查询</button>
+        <input class="table-input" v-model="searchCode" placeholder="按条形码查询" @keyup.enter="searchByCode" />
+        <button class="btn" @click="searchByCode">查询</button>
         <select class="table-input" v-model="selectedLeibie" @change="applyFilter">
           <option value="all">全部类别</option>
           <option v-for="item in kucunCats" :key="item" :value="item">{{ item }}</option>
@@ -85,7 +89,7 @@
 import { computed, ref } from "vue";
 
 
-const emit = defineEmits(["refresh-all", "filter-kucun", "update-inventory"]);
+const emit = defineEmits(["refresh-all", "filter-kucun", "update-inventory", "search-kucun-by-name", "search-kucun-by-code"]);
 
 const props = defineProps({
   inventory: { type: Array, default: () => [] },
@@ -101,8 +105,18 @@ const canEdit = computed(() => Number(props.currentPer || 0) > 0);
 
 
 const selectedLeibie = ref("all");
+const searchName = ref("");
+const searchCode = ref("");
 const editingId = ref(null);
 const editForm = ref({ id: null, code: "", leibie: "", name: "", quantity: 0 });
+
+function searchByName() {
+  emit("search-kucun-by-name", searchName.value);
+}
+
+function searchByCode() {
+  emit("search-kucun-by-code", searchCode.value);
+}
 
 function startEdit(row) {
   editingId.value = row.id;
@@ -148,4 +162,3 @@ function reload() {
   window.location.reload();
 }
 </script>
-

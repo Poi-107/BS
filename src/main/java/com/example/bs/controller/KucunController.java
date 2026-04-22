@@ -30,11 +30,13 @@ public class KucunController {
         return Result.success(kucun);
     }
 
+
     @GetMapping("/selname")
-    public Result selname(@RequestBody Kucun k) {
+    public Result selname(@RequestParam String name) {
         log.info("请求按名称查询库存");
-        Kucun kucun = kucunService.selname(k.getName());
+        Kucun kucun = kucunService.selname(name);
         return Result.success(kucun);
+
     }
 
     @GetMapping("/selcode")
@@ -63,7 +65,7 @@ public class KucunController {
     public Result upkucun(@RequestBody Kucun kucun) {
         log.info("请求修改库存");
         kucunService.upkucun2(kucun);
-        inventoryWarningService.recomputeSafeStock();
+        inventoryWarningService.recomputeSafeStock(false); // 重新计算但不发送通知
         return Result.success();
     }
 
@@ -92,7 +94,7 @@ public class KucunController {
             return Result.error("z必须大于0");
         }
         inventoryWarningService.setZ(z);
-        inventoryWarningService.recomputeSafeStock();
+        inventoryWarningService.recomputeSafeStock(false); // 重新计算但不发送通知
         return Result.success();
     }
 }

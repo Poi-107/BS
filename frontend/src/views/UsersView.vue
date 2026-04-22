@@ -3,7 +3,7 @@
     <div class="panel-header">
       <h3>用户管理</h3>
       <div class="toolbar">
-        <button class="btn" @click="openAdd">添加用户</button>
+        <button v-if="currentPer >= 1" class="btn" @click="openAdd">添加用户</button>
         <button class="btn" @click="reload">刷新</button>
       </div>
     </div>
@@ -18,7 +18,7 @@
             <th>邮箱</th>
             <th>地址</th>
             <th>权限</th>
-            <th>操作</th>
+            <th v-if="canEdit">操作</th>
           </tr>
         </thead>
         <tbody>
@@ -33,13 +33,13 @@
             <td>{{ row.email || '-' }}</td>
             <td>{{ row.address || '-' }}</td>
             <td>
-              <select v-model.number="row.per" class="table-input">
+              <select v-model.number="row.per" class="table-input" :disabled="!canEdit">
                 <option :value="0">普通用户</option>
                 <option :value="1">主管</option>
                 <option :value="2">经理</option>
               </select>
             </td>
-            <td>
+            <td v-if="canEdit">
               <button class="btn primary" style="margin-right: 8px;" @click="save(row)" :disabled="row.per === row._originPer">保存</button>
               <button class="btn danger" @click="openDelete(row)">删除</button>
             </td>
@@ -91,13 +91,16 @@
 </template>
 
 <script setup>
-import { ref, watch } from "vue";
+import { computed, ref, watch } from "vue";
 
 const props = defineProps({
-  users: { type: Array, default: () => [] }
+  users: { type: Array, default: () => [] },
+  currentPer: { type: Number, default: 0 }
 });
 
 const emit = defineEmits(["load-users", "update-user", "delete-user", "add-user"]);
+
+const canEdit = computed(() => props.currentPer === 2);
 
 const localUsers = ref([]);
 const showDelete = ref(false);

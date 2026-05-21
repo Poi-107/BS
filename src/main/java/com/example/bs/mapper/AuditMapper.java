@@ -23,6 +23,12 @@ public interface AuditMapper {
     void addaudit(Audit audit);
 
     /**
+     * 批量添加审核单
+     * @param audits
+     */
+    void batchAddAudit(List<Audit> audits);
+
+    /**
      * 查询status为0的表单
      * @return
      */
@@ -59,4 +65,10 @@ public interface AuditMapper {
      * @return
      */
     List<InboundLeadTime> selInboundLeadTime();
+
+    /**
+     * 获取最大ID
+     * @return
+     */
+    Integer getMaxId();
 }

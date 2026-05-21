@@ -61,6 +61,10 @@ public class AuditService {
         if(audit.getStatus() == 1) {
             // 1 写入入库表
             Audit dbAudit = auditMapper.selid(audit.getId());
+            if (dbAudit == null) {
+                log.warn("审核单据不存在或已被处理: {}", audit.getId());
+                return;
+            }
             if ("IN".equals(dbAudit.getType())) {
                 Ruku ruku = new Ruku();
                 ruku.setCode(dbAudit.getCode());

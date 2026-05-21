@@ -112,7 +112,7 @@ public class Login implements HandlerInterceptor {
         return true;
     }
 
-    // ⭐ 统一返回方法（推荐）
+    //  统一返回方法
     private boolean writeError(HttpServletResponse resp, String msg, int code) throws Exception {
         resp.setStatus(code);
         Result error = Result.error(msg);

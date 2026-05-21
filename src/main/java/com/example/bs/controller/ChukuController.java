@@ -61,7 +61,7 @@ public class ChukuController {
         chuku.setUser(user);
         chuku.setCktime(LocalDateTime.now());
         chukuService.addchuku(chuku);
-        return Result.error("出库成功！");
+        return Result.success("出库成功！");
     }
 //    按物品名称查询
     @GetMapping("/selchuku3")
@@ -86,4 +86,3 @@ public class ChukuController {
         return Result.success(chuku);
     }
 }
-

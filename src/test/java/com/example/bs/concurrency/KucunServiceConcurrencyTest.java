@@ -98,4 +98,30 @@ class KucunServiceConcurrencyTest {
         assertTrue(terminated);
         verify(kucunMapper, atLeastOnce()).selkucun();
     }
+
+    @Test
+    void shouldHandle50ConcurrentReadRequests() throws InterruptedException, ExecutionException {
+        when(stringRedisTemplate.opsForValue()).thenReturn(valueOperations);
+        when(valueOperations.get("cache:kucun:all")).thenThrow(new RuntimeException("redis down"));
+        when(kucunMapper.selkucun()).thenReturn(dbResult);
+        when(inventoryWarningService.enrichWithWarning(dbResult)).thenReturn(dbResult);
+
+        int threads = 50;
+        ExecutorService pool = Executors.newFixedThreadPool(threads);
+        List<Callable<List<Kucun>>> tasks = new ArrayList<>();
+        for (int i = 0; i < threads; i++) {
+            tasks.add(() -> kucunService.selkucun());
+        }
+
+        List<Future<List<Kucun>>> futures = pool.invokeAll(tasks);
+        pool.shutdown();
+        boolean terminated = pool.awaitTermination(5, TimeUnit.SECONDS);
+
+        for (Future<List<Kucun>> future : futures) {
+            List<Kucun> one = future.get();
+            assertEquals(1, one.size());
+        }
+        assertTrue(terminated);
+        verify(kucunMapper, atLeastOnce()).selkucun();
+    }
 }

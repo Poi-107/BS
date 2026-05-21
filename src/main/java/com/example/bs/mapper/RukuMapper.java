@@ -56,7 +56,7 @@ public interface RukuMapper {
     int yearpur();
     /**
      * 分类查询
-     * @param ruku
+     * @param
      * @return
      */
     List<Ruku> selruku1(String leibie);

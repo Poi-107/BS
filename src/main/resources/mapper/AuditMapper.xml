@@ -17,6 +17,14 @@
         insert into audit(type,code,leibie,name,parther,price,quantity,money,user,createtime,status)
         values(#{type},#{code},#{leibie},#{name},#{parther},#{price},#{quantity},#{money},#{user},#{createtime},#{status})
     </insert>
+    <!--    批量添加审核单-->
+    <insert id="batchAddAudit" parameterType="java.util.List">
+        insert into audit(type,code,leibie,name,parther,price,quantity,money,user,createtime,status)
+        values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.type},#{item.code},#{item.leibie},#{item.name},#{item.parther},#{item.price},#{item.quantity},#{item.money},#{item.user},#{item.createtime},#{item.status})
+        </foreach>
+    </insert>
 <!--    审批表单-->
     <update id="upaudit" parameterType="com.example.bs.entity.Audit">
         update audit set status=#{status},reviewer=#{reviewer},reviewertime=#{reviewertime},remark=#{remark} where id=#{id}
@@ -43,5 +51,9 @@
           and status = 1
           and createtime is not null
         group by name
+    </select>
+<!--    获取最大ID-->
+    <select id="getMaxId" resultType="java.lang.Integer">
+        select max(id) from audit
     </select>
 </mapper>

@@ -1,0 +1,57 @@
+version: "3.8"
+
+services:
+
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_DATABASE: bs
+    ports:
+      - "3307:3306"
+    volumes:
+      - ./bs.sql:/docker-entrypoint-initdb.d/bs.sql
+    networks:
+      - bs-net
+
+  redis:
+    image: redis:7
+    container_name: redis
+    restart: always
+    ports:
+      - "6379:6379"
+    networks:
+      - bs-net
+
+  bs:
+    build: .
+    container_name: bs
+    restart: always
+    ports:
+      - "8080:8080"
+    volumes:
+      - "F:/Idea/bstouxiang:/app/uploads"
+    depends_on:
+      - mysql
+      - redis
+    networks:
+      - bs-net
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./frontend/dist:/usr/share/nginx/html
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - "F:/Idea/bstouxiang:/usr/share/nginx/html/bstouxiang"
+    depends_on:
+      - bs
+    networks:
+      - bs-net
+
+networks:
+  bs-net:

@@ -10,6 +10,7 @@ import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -69,13 +70,42 @@ public class UserController {
     }
 
     // 根据 id 获取个人信息
+//    @GetMapping("/seluser2")
+//    public Result seluser2(HttpServletRequest request) {
+//        String token = request.getHeader("bs_token");
+//        Claims claims = Jwt.parseJwt(token);
+//        Integer id = Integer.valueOf(claims.get("id").toString());
+//        User user = userService.seluser2(id);
+//        return Result.success(user);
+//    }
     @GetMapping("/seluser2")
     public Result seluser2(HttpServletRequest request) {
+        // 尝试从 bs_token, token, Authorization 三个地方找
         String token = request.getHeader("bs_token");
-        Claims claims = Jwt.parseJwt(token);
-        Integer id = Integer.valueOf(claims.get("id").toString());
-        User user = userService.seluser2(id);
-        return Result.success(user);
+        if (token == null || token.isEmpty()) {
+            token = request.getHeader("token");
+        }
+        if (token == null || token.isEmpty()) {
+            String auth = request.getHeader("Authorization");
+            if (auth != null && auth.startsWith("Bearer ")) {
+                token = auth.substring(7);
+            }
+        }
+
+        // 如果还是没找到，返回友好提示，不要让程序崩掉
+        if (token == null || token.isEmpty()) {
+            return Result.error("未获取到Token，请重新登录");
+        }
+
+        try {
+            Claims claims = Jwt.parseJwt(token);
+            Integer id = Integer.valueOf(claims.get("id").toString());
+            User user = userService.seluser2(id);
+            return Result.success(user);
+        } catch (Exception e) {
+            e.printStackTrace(); // 打印详细错误到后台日志
+            return Result.error("Token解析失败: " + e.getMessage());
+        }
     }
 
     // 修改用户信息（用户）
@@ -106,6 +136,9 @@ public class UserController {
         return Result.success(userList);
     }
 
+    @Value("${upload.dir}")
+    private String path;
+
     // 上传头像
     @PostMapping("/uploadAvatar")
     public Result uploadAvatar(@RequestParam("file") MultipartFile file, HttpServletRequest request) {
@@ -119,7 +152,8 @@ public class UserController {
 
         // 保存文件到本地
         String filename = UUID.randomUUID() + "_" + file.getOriginalFilename();
-        String path = "F:/Idea/bstouxiang/";
+//        String path = "F:/Idea/bstouxiang/";
+        String realPath = path.endsWith("/") ? path : path + "/";
         // 检查目录
         File directory = new File(path);
         if (!directory.exists()) {
